@@ -6,10 +6,15 @@ import "zeppelin/contracts/ownership/Ownable.sol";
 
 
 contract KudosVotation is BurnableToken, Ownable {
-
   using SafeMath for uint256;
 
   string public version = "0.0.1";
+
+  struct Gratitude {
+    uint256 kudos;
+    string message;
+    address from;
+  }
 
   string public name;
   string public symbol;
@@ -23,7 +28,15 @@ contract KudosVotation is BurnableToken, Ownable {
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) allowed;
 
+  mapping (address => Gratitude[]) gratitudes;
+
   event AddMember(address indexed member);
+  event Reward(
+    address indexed sender,
+    address indexed rewarded,
+    uint256 kudos,
+    string message
+  );
 
   function KudosVotation(
     string _tokenName,
@@ -46,6 +59,9 @@ contract KudosVotation is BurnableToken, Ownable {
     members.push(_member);
     balances[_member] = kudosByMember;
     totalSupply += kudosByMember;
+
+    AddMember(_member);
+
     return true;
   }
 
@@ -82,9 +98,71 @@ contract KudosVotation is BurnableToken, Ownable {
 
   // Transfers
   function transfer(address _to, uint256 _value) public returns (bool) {
-    require(false);
-    require(_to == 0x0);
-    require(_value == 0);
-    return false;
+    require(false && _to == 0x0 && _value == 0);
+  }
+
+  function balanceOf(address _owner) public constant returns (uint256 balance) {
+    return balances[_owner];
+  }
+
+  function burn(uint256 _value) public {
+    address burner = msg.sender;
+
+    require(_value > 0);
+    require(balances[burner] >= _value);
+
+    balances[burner] -= _value;
+    totalSupply -= _value;
+    Burn(burner, _value);
+  }
+
+  // Kudos
+  function reward(address _to, uint256 _kudos, string _message) public returns (bool) {
+    require(isMember(msg.sender));
+    require(isMember(_to));
+    require(balanceOf(msg.sender) >= _kudos);
+    require(_kudos > 0);
+    require(_kudos < maxKudosToMember);
+    require(bytes(_message).length > 0);
+
+    burn(_kudos);
+
+    gratitudes[_to].push(Gratitude({
+      kudos: _kudos,
+      message: _message,
+      from: msg.sender
+    }));
+
+    Reward(
+      msg.sender,
+      _to,
+      _kudos,
+      _message
+    );
+
+    return true;
+  }
+
+  function getGratitudesOf(address _member) public returns (Gratitude[]) {
+    return gratitudes[_member];
+  }
+
+  function getGratitudeOf(address _member, uint256 _index) public returns (uint256 kudos, string message, address from) {
+    Gratitude memory g = getGratitudesOf(_member)[_index];
+    return (g.kudos, g.message, g.from);
+  }
+
+  function getGratitudesSizeOf(address _member) public returns (uint256) {
+    return getGratitudesOf(_member).length;
+  }
+
+  function getKudosOf(address _member) public returns (uint256 kudos) {
+    Gratitude[] memory gs = getGratitudesOf(_member);
+    kudos = 0;
+    for (uint i = 0; i < gs.length; i++) {
+      Gratitude memory g = gs[i];
+      kudos += g.kudos;
+    }
+    return kudos;
   }
 }

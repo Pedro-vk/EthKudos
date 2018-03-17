@@ -3,16 +3,20 @@
   "version": "0.0.1",
   "description": "Kudos system on Ethereum blockchain",
   "scripts": {
+    "postinstall": "truffle install",
     "lint": "npm run lint:sol",
     "lint:sol": "solium -d contracts/",
+    "lint:fix": "npm run lint:sol:fix",
+    "lint:sol:fix": "solium -d contracts/ --fix",
     "test": "npm run test:sol",
     "test:sol": "solidity-coverage",
-    "test:sol:dev": "truffle test"
+    "test:sol:dev": "truffle test --network dev"
   },
   "author": "Pedro Gutiérrez<info@xitrus.es>",
   "license": "ISC",
   "devDependencies": {
     "solidity-coverage": "^0.4.14",
-    "solium": "^1.1.5"
+    "solium": "^1.1.5",
+    "truffle": "^4.1.3"
   }
 }
