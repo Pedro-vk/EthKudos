@@ -45,3 +45,5 @@ Thumbs.db
 # Truffle
 installed_contracts/*
 build/*
+
+coverage\.json

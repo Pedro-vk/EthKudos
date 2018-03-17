@@ -1,14 +1,15 @@
 pragma solidity ^0.4.18;
 
-import 'zeppelin/contracts/math/SafeMath.sol';
-import 'zeppelin/contracts/token/BurnableToken.sol';
-import 'zeppelin/contracts/ownership/Ownable.sol';
+import "zeppelin/contracts/math/SafeMath.sol";
+import "zeppelin/contracts/token/BurnableToken.sol";
+import "zeppelin/contracts/ownership/Ownable.sol";
+
 
 contract KudosVotation is BurnableToken, Ownable {
 
   using SafeMath for uint256;
 
-  string public version = '0.0.1';
+  string public version = "0.0.1";
 
   string public name;
   string public symbol;

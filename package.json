@@ -3,8 +3,16 @@
   "version": "0.0.1",
   "description": "Kudos system on Ethereum blockchain",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "npm run lint:sol",
+    "lint:sol": "solium -d contracts/",
+    "test": "npm run test:sol",
+    "test:sol": "solidity-coverage",
+    "test:sol:dev": "truffle test"
   },
   "author": "Pedro Gutiérrez<info@xitrus.es>",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "solidity-coverage": "^0.4.14",
+    "solium": "^1.1.5"
+  }
 }

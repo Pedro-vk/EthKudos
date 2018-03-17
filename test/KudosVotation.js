@@ -47,6 +47,20 @@ contract('KudosVotation', accounts => {
     assert.equal(await getMembersNumber(), 2, '2 wasn\'t the members number');
   });
 
+  it('should return the members', async () => {
+    const instance = await contract;
+
+    const members = await instance.getMembers();
+    assert.deepEqual(members, [accounts[0], accounts[1]], `${accounts[0]} and  ${accounts[1]} wasn't the members`);
+  });
+
+  it('should return the members by index', async () => {
+    const instance = await contract;
+
+    const member = await instance.getMember(1);
+    assert.deepEqual(member, accounts[1], `${accounts[1]} wasn't the member #1`);
+  });
+
   it('should prevent the addition of members if is not the owner', async () => {
     const instance = await contract;
     let failed = false;
