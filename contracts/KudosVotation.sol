@@ -39,12 +39,23 @@ contract KudosVotation is BurnableToken, Ownable {
     maxKudosToMember = _maxKudosToMember;
   }
 
+  // Members
   function addMember(address _member) onlyOwner public returns (bool) {
     require(!isMember(_member));
 
     members.push(_member);
     balances[_member] = kudosByMember;
     totalSupply += kudosByMember;
+    return true;
+  }
+
+  function addMembers(address[] _members) onlyOwner public returns (bool) {
+    require(_members.length > 0);
+    for (uint i = 0; i < _members.length; i++) {
+      if (!isMember(_members[i])) {
+        addMember(_members[i]);
+      }
+    }
     return true;
   }
 
@@ -67,5 +78,13 @@ contract KudosVotation is BurnableToken, Ownable {
 
   function membersNumber() public constant returns (uint256) {
     return members.length;
+  }
+
+  // Transfers
+  function transfer(address _to, uint256 _value) public returns (bool) {
+    require(false);
+    require(_to == 0x0);
+    require(_value == 0);
+    return false;
   }
 }
