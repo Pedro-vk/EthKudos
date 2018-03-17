@@ -143,20 +143,20 @@ contract KudosVotation is BurnableToken, Ownable {
     return true;
   }
 
-  function getGratitudesOf(address _member) public returns (Gratitude[]) {
+  function getGratitudesOf(address _member) public constant returns (Gratitude[]) {
     return gratitudes[_member];
   }
 
-  function getGratitudeOf(address _member, uint256 _index) public returns (uint256 kudos, string message, address from) {
+  function getGratitudeOf(address _member, uint256 _index) public constant returns (uint256 kudos, string message, address from) {
     Gratitude memory g = getGratitudesOf(_member)[_index];
     return (g.kudos, g.message, g.from);
   }
 
-  function getGratitudesSizeOf(address _member) public returns (uint256) {
+  function getGratitudesSizeOf(address _member) public constant returns (uint256) {
     return getGratitudesOf(_member).length;
   }
 
-  function getKudosOf(address _member) public returns (uint256 kudos) {
+  function getKudosOf(address _member) public constant returns (uint256 kudos) {
     Gratitude[] memory gs = getGratitudesOf(_member);
     kudos = 0;
     for (uint i = 0; i < gs.length; i++) {

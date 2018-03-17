@@ -1,4 +1,4 @@
-var KudosVotation = artifacts.require('./KudosVotation.sol');
+const KudosVotation = artifacts.require('./KudosVotation.sol');
 
 contract('KudosVotation', accounts => {
   const decimals = 2;
@@ -8,7 +8,7 @@ contract('KudosVotation', accounts => {
   let contract;
 
   before(() => {
-    contract = KudosVotation.new('Kudos votation #1', 'KV1', decimals, kudosByMember, maxKudosToMember);
+    contract = KudosVotation.new('Kudos votation Test', 'KVT', decimals, kudosByMember, maxKudosToMember);
   });
 
   // Members
