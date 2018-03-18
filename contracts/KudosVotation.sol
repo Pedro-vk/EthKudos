@@ -3,22 +3,13 @@ pragma solidity ^0.4.18;
 import "zeppelin/contracts/math/SafeMath.sol";
 import "zeppelin/contracts/token/BurnableToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
+import "./Kudos.structs.sol";
+
 
 contract KudosVotation is BurnableToken, Ownable {
   using SafeMath for uint256;
 
   string public version = "0.0.1";
-
-  struct Gratitude {
-    uint256 kudos;
-    string message;
-    address from;
-  }
-
-  struct Result {
-    uint256 kudos;
-    address member;
-  }
 
   string public name;
   string public symbol;
@@ -34,7 +25,7 @@ contract KudosVotation is BurnableToken, Ownable {
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) allowed;
 
-  mapping (address => Gratitude[]) gratitudes;
+  mapping (address => KudosStructs.Gratitude[]) gratitudes;
 
   event AddMember(address indexed member);
   event Reward(
@@ -151,7 +142,7 @@ contract KudosVotation is BurnableToken, Ownable {
 
     burn(_kudos);
 
-    gratitudes[_to].push(Gratitude({
+    gratitudes[_to].push(KudosStructs.Gratitude({
       kudos: _kudos,
       message: _message,
       from: msg.sender
@@ -167,12 +158,12 @@ contract KudosVotation is BurnableToken, Ownable {
     return true;
   }
 
-  function getGratitudesOf(address _member) public constant returns (Gratitude[]) {
+  function getGratitudesOf(address _member) public constant returns (KudosStructs.Gratitude[]) {
     return gratitudes[_member];
   }
 
   function getGratitudeOf(address _member, uint256 _index) public constant returns (uint256 kudos, string message, address from) {
-    Gratitude memory g = getGratitudesOf(_member)[_index];
+    KudosStructs.Gratitude memory g = getGratitudesOf(_member)[_index];
     return (g.kudos, g.message, g.from);
   }
 
@@ -181,20 +172,20 @@ contract KudosVotation is BurnableToken, Ownable {
   }
 
   function getKudosOf(address _member) public constant returns (uint256 kudos) {
-    Gratitude[] memory gs = getGratitudesOf(_member);
+    KudosStructs.Gratitude[] memory gs = getGratitudesOf(_member);
     kudos = 0;
     for (uint i = 0; i < gs.length; i++) {
-      Gratitude memory g = gs[i];
+      KudosStructs.Gratitude memory g = gs[i];
       kudos += g.kudos;
     }
     return kudos;
   }
 
   // Results
-  function getVotationResults() public constant returns (Result[]) {
-    Result[] storage results;
+  function getVotationResults() public constant returns (KudosStructs.Result[]) {
+    KudosStructs.Result[] storage results;
     for (uint i = 0; i < members.length; i++) {
-      results.push(Result({
+      results.push(KudosStructs.Result({
         kudos: getKudosOf(members[i]),
         member: members[i]
       }));
@@ -203,7 +194,7 @@ contract KudosVotation is BurnableToken, Ownable {
   }
 
   function getVotationResult(uint256 _index) public constant returns (address, uint256) {
-    Result memory result = getVotationResults()[_index];
+    KudosStructs.Result memory result = getVotationResults()[_index];
     return (result.member, result.kudos);
   }
 
