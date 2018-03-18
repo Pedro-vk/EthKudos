@@ -24,6 +24,7 @@ contract KudosVotation is BurnableToken, Ownable {
   uint256 public kudosByMember;
   uint256 public maxKudosToMember;
   address[] public members;
+  uint256 public minDeadline;
 
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) allowed;
@@ -43,13 +44,20 @@ contract KudosVotation is BurnableToken, Ownable {
     string _tokenSymbol,
     uint8 _decimalUnits,
     uint256 _kudosByMember,
-    uint256 _maxKudosToMember
+    uint256 _maxKudosToMember,
+    uint256 _minDurationInMinutes
   ) public {
     name = _tokenName;
     symbol = _tokenSymbol;
     decimals = _decimalUnits;
     kudosByMember = _kudosByMember;
     maxKudosToMember = _maxKudosToMember;
+    minDeadline = now + (_minDurationInMinutes * 1 minutes);
+  }
+
+  // Lifecircle
+  function canBeRemoved() public constant returns (bool) {
+    return minDeadline < now;
   }
 
   // Members

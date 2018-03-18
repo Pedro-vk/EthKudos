@@ -4,11 +4,26 @@ contract('KudosVotation', accounts => {
   const decimals = 2;
   const kudosByMember = 5 * (10 ** decimals);
   const maxKudosToMember = 2 * (10 ** decimals);
+  const deadlineInMin = 1;
 
   let contract;
+  let deadline;
 
   before(() => {
-    contract = KudosVotation.new('Kudos votation Test', 'KVT', decimals, kudosByMember, maxKudosToMember);
+    contract = KudosVotation.new('Kudos votation Test', 'KVT', decimals, kudosByMember, maxKudosToMember, deadlineInMin);
+    deadline = Date.now() + ((deadlineInMin + 0.5) * 60 * 1000);
+  });
+
+  // Lifecircle - Init
+  describe('(Lifecircle - Init)', () => {
+    it('should not be able to be removed', async () => {
+      const instance = await contract;
+      const canBeRemoved = await instance.canBeRemoved();
+
+      if (deadline < Date.now()) {
+        assert.ok(!canBeRemoved, `Can't be removed before the deadline`);
+      }
+    });
   });
 
   // Members
@@ -166,6 +181,29 @@ contract('KudosVotation', accounts => {
       const kudos = await instance.getKudosOf.call(accounts[5]);
 
       assert.equal(+kudos, 175, `1.75 wasn\'t the total of kudos`);
+    });
+  });
+
+  // Lifecircle - End
+  describe('(Lifecircle - End)', () => {
+    it('should be able to be removed', done => {
+      const delay = Math.max(deadline - Date.now(), 0);
+
+      contract
+        .then(instance =>
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(instance)
+            }, delay);
+          }),
+        )
+        .then(instance =>
+          instance.canBeRemoved(),
+        )
+        .then(canBeRemoved => {
+          assert.ok(canBeRemoved, `Can be removed before the deadline`);
+          done();
+        });
     });
   });
 });
