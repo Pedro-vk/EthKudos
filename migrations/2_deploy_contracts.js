@@ -1,5 +1,5 @@
-var KudosVotation = artifacts.require("./KudosVotation.sol");
+var KudosToken = artifacts.require("./KudosToken.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(KudosVotation, 'Kudos votation #1', 'KV1', 2, 5, 2, 10);
+  deployer.deploy(KudosToken, 'ACMECompany Kudos', 'ACMEK', 2);
 };
