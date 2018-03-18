@@ -1,5 +1,5 @@
 const KudosVotation = artifacts.require('./KudosVotation.sol');
-
+return;
 contract('KudosVotation', accounts => {
   const decimals = 2;
   const kudosByMember = 5 * (10 ** decimals);
@@ -84,7 +84,7 @@ contract('KudosVotation', accounts => {
       const instance = await contract;
 
       const members = await instance.getMembers();
-      assert.deepEqual(members, [accounts[0], accounts[1]], `${accounts[0]} and  ${accounts[1]} wasn't the members`);
+      assert.deepEqual(members, [accounts[0], accounts[1]], `${accounts[0]} and ${accounts[1]} wasn't the members`);
     });
 
     it('should return the members by index', async () => {
