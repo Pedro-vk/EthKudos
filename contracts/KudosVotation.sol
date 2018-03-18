@@ -4,7 +4,6 @@ import "zeppelin/contracts/math/SafeMath.sol";
 import "zeppelin/contracts/token/BurnableToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
 
-
 contract KudosVotation is BurnableToken, Ownable {
   using SafeMath for uint256;
 
@@ -26,6 +25,7 @@ contract KudosVotation is BurnableToken, Ownable {
   uint8 public decimals;
   uint256 public totalSupply;
 
+  bool public active;
   uint256 public kudosByMember;
   uint256 public maxKudosToMember;
   address[] public members;
@@ -43,6 +43,7 @@ contract KudosVotation is BurnableToken, Ownable {
     uint256 kudos,
     string message
   );
+  event Close();
 
   function KudosVotation(
     string _tokenName,
@@ -58,15 +59,28 @@ contract KudosVotation is BurnableToken, Ownable {
     kudosByMember = _kudosByMember;
     maxKudosToMember = _maxKudosToMember;
     minDeadline = now + (_minDurationInMinutes * 1 minutes);
+    active = true;
   }
 
   // Lifecircle
-  function canBeRemoved() public constant returns (bool) {
+  modifier onlyActive() {
+    require(active);
+    _;
+  }
+
+  function canBeClosed() public constant returns (bool) {
     return minDeadline < now;
   }
 
+  function close() onlyActive onlyOwner public returns (bool) {
+    require (canBeClosed());
+    active = false;
+    Close();
+    return true;
+  }
+
   // Members
-  function addMember(address _member) onlyOwner public returns (bool) {
+  function addMember(address _member) onlyActive onlyOwner public returns (bool) {
     require(!isMember(_member));
 
     members.push(_member);
@@ -78,7 +92,7 @@ contract KudosVotation is BurnableToken, Ownable {
     return true;
   }
 
-  function addMembers(address[] _members) onlyOwner public returns (bool) {
+  function addMembers(address[] _members) onlyActive onlyOwner public returns (bool) {
     require(_members.length > 0);
     for (uint i = 0; i < _members.length; i++) {
       if (!isMember(_members[i])) {
@@ -118,19 +132,16 @@ contract KudosVotation is BurnableToken, Ownable {
     return balances[_owner];
   }
 
-  function burn(uint256 _value) public {
-    address burner = msg.sender;
-
+  function burn(uint256 _value) onlyActive public {
     require(_value > 0);
-    require(balances[burner] >= _value);
+    require(balances[msg.sender] >= _value);
 
-    balances[burner] -= _value;
+    balances[msg.sender] -= _value;
     totalSupply -= _value;
-    Burn(burner, _value);
   }
 
   // Kudos
-  function reward(address _to, uint256 _kudos, string _message) public returns (bool) {
+  function reward(address _to, uint256 _kudos, string _message) onlyActive public returns (bool) {
     require(isMember(msg.sender));
     require(isMember(_to));
     require(balanceOf(msg.sender) >= _kudos);

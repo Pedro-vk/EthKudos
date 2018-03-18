@@ -18,11 +18,23 @@ contract('KudosVotation', accounts => {
   describe('(Lifecircle - Init)', () => {
     it('should not be able to be removed', async () => {
       const instance = await contract;
-      const canBeRemoved = await instance.canBeRemoved();
+      const canBeClosed = await instance.canBeClosed();
 
       if (deadline < Date.now()) {
-        assert.ok(!canBeRemoved, `Can't be removed before the deadline`);
+        assert.ok(!canBeClosed, `Can't be removed before the deadline`);
       }
+    });
+
+    it('should prevent the closing of the votation', async () => {
+      const instance = await contract;
+
+      let failed = false;
+      try {
+        await instance.close();
+      } catch (e) {
+        failed = true;
+      }
+      assert.ok(failed, 'Must throw an error when tries to close the votation');
     });
   });
 
@@ -137,7 +149,8 @@ contract('KudosVotation', accounts => {
 
       await instance.reward(accounts[1], 100, 'Test message');
 
-      assert.equal(+(await instance.getGratitudesSizeOf.call(accounts[1])), 1, `1 wasn\'t the number of gratitudes of ${accounts[1]}`);
+      const gratitudesSize = await instance.getGratitudesSizeOf.call(accounts[1]);
+      assert.equal(+(gratitudesSize), 1, `1 wasn\'t the number of gratitudes of ${accounts[1]}`);
 
       const gratitude = await instance.getGratitudeOf.call(accounts[1], 0);
       const [kudos, message, fromAddress] = gratitude;
@@ -182,6 +195,19 @@ contract('KudosVotation', accounts => {
 
       assert.equal(+kudos, 175, `1.75 wasn\'t the total of kudos`);
     });
+
+    it('should emit a Reward event', async () => {
+      const instance = await contract;
+
+      const transaction = await instance.reward(accounts[0], 30, 'Test message', {from: accounts[1]});
+      const {event, args} = transaction.logs[0] || {};
+
+      assert.equal(event, 'Reward', 'Reward wasn\'t the event sent');
+      assert.equal((args || {}).sender, accounts[1], `${accounts[1]} wasn\'t the sender`);
+      assert.equal((args || {}).rewarded, accounts[0], `${accounts[0]} wasn\'t the rewarded`);
+      assert.equal((args || {}).kudos, 30, `30 wasn\'t the kudos`);
+      assert.equal((args || {}).message, 'Test message', `'Test message' wasn\'t the message`);
+    });
   });
 
   // Results
@@ -198,7 +224,7 @@ contract('KudosVotation', accounts => {
       const compared = [
         {member: accounts[5], kudos: 175},
         {member: accounts[1], kudos: 150},
-        {member: accounts[0], kudos: 0},
+        {member: accounts[0], kudos: 30},
         {member: accounts[6], kudos: 0},
         {member: accounts[7], kudos: 0}
       ];
@@ -221,12 +247,45 @@ contract('KudosVotation', accounts => {
           }),
         )
         .then(instance =>
-          instance.canBeRemoved(),
+          instance.canBeClosed(),
         )
-        .then(canBeRemoved => {
-          assert.ok(canBeRemoved, `Can be removed before the deadline`);
+        .then(canBeClosed => {
+          assert.ok(canBeClosed, `Can be removed before the deadline`);
           done();
         });
+    });
+
+    it('should prevent to close the votation if is not the owner', async () => {
+      const instance = await contract;
+      let failed = false;
+
+      try {
+        await instance.close({from: accounts[1]});
+      } catch (e) {
+        failed = true;
+      }
+      assert.ok(failed, 'Must throw an error when tries to close');
+    });
+
+    it('should be able to close the votation and send a Close event', async () => {
+      const instance = await contract;
+
+      const transaction = await instance.close();
+      const {event} = transaction.logs[0] || {};
+
+      assert.equal(event, 'Close', 'Close wasn\'t the event sent');
+    });
+
+    it('should prevent the addition of a new member if is closed', async () => {
+      const instance = await contract;
+      let failed = false;
+
+      try {
+        await instance.addMember(accounts[2]);
+      } catch (e) {
+        failed = true;
+      }
+      assert.ok(failed, 'Must throw an error when tries to add a new member');
     });
   });
 });
