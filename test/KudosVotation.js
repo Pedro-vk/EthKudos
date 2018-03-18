@@ -184,6 +184,29 @@ contract('KudosVotation', accounts => {
     });
   });
 
+  // Results
+  describe('(Results)', () => {
+    it('should generate the list of results', async () => {
+      const instance = await contract;
+
+      const resultsPromises = Array.from(new Array(+(await instance.getVotationResultsSize())))
+        .map((_, i) => instance.getVotationResult(i));
+      const results = (await Promise.all(resultsPromises))
+        .map(([member, kudos]) => ({member, kudos: +kudos}))
+        .sort((a, b) => b.kudos - a.kudos);
+
+      const compared = [
+        {member: accounts[5], kudos: 175},
+        {member: accounts[1], kudos: 150},
+        {member: accounts[0], kudos: 0},
+        {member: accounts[6], kudos: 0},
+        {member: accounts[7], kudos: 0}
+      ];
+
+      assert.deepEqual(results, compared, `The results wasn\'t the expected`);
+    });
+  });
+
   // Lifecircle - End
   describe('(Lifecircle - End)', () => {
     it('should be able to be removed', done => {

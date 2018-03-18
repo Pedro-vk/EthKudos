@@ -16,6 +16,11 @@ contract KudosVotation is BurnableToken, Ownable {
     address from;
   }
 
+  struct Result {
+    uint256 kudos;
+    address member;
+  }
+
   string public name;
   string public symbol;
   uint8 public decimals;
@@ -172,5 +177,26 @@ contract KudosVotation is BurnableToken, Ownable {
       kudos += g.kudos;
     }
     return kudos;
+  }
+
+  // Results
+  function getVotationResults() public constant returns (Result[]) {
+    Result[] storage results;
+    for (uint i = 0; i < members.length; i++) {
+      results.push(Result({
+        kudos: getKudosOf(members[i]),
+        member: members[i]
+      }));
+    }
+    return results;
+  }
+
+  function getVotationResult(uint256 _index) public constant returns (address, uint256) {
+    Result memory result = getVotationResults()[_index];
+    return (result.member, result.kudos);
+  }
+
+  function getVotationResultsSize() public constant returns (uint256) {
+    return members.length;
   }
 }
