@@ -241,5 +241,21 @@ contract('KudosToken', accounts => {
       assert.equal(+(await instance.balanceOf(accounts[4])), 75, `75 wasn't in the balance of ${accounts[0]}`);
       assert.equal(+(await instance.balanceOf(accounts[7])), 100, `100 wasn't in the balance of ${accounts[0]}`);
     });
+
+    it('should create a new poll before close the previous one', async () => {
+      assert.equal(+(await instance.getPollsSize()), 1, '1 wasn\'t in the number of polls');
+
+      await instance.newPoll(500, 200, 1);
+      deadline = Date.now() + ((1 + 0.5) * 60 * 1000);
+
+      assert.equal(+(await instance.getPollsSize()), 2, '2 wasn\'t in the number of polls');
+    });
+
+    it('should keep all the pools', async () => {
+      const polls = await instance.getPolls();
+
+      assert.equal(polls.length, 2, '2 wasn\'t in the number of polls');
+      assert.equal(polls[1], await instance.activePoll(), 'Active poll address wasn\'t the last on the list');
+    });
   });
 });

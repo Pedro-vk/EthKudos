@@ -63,8 +63,8 @@ contract KudosToken is StandardToken, Ownable {
     polls.push(newPollAddress);
     isActivePoll = true;
 
-    KudosPoll newPoll = KudosPoll(newPollAddress);
-    newPoll.addMembers(members);
+    KudosPoll poll = KudosPoll(newPollAddress);
+    poll.addMembers(members);
 
     NewPoll(newPollAddress);
 
