@@ -135,6 +135,7 @@ contract KudosVotation is BurnableToken, Ownable {
   function reward(address _to, uint256 _kudos, string _message) onlyActive public returns (bool) {
     require(isMember(msg.sender));
     require(isMember(_to));
+    require(msg.sender != _to);
     require(balanceOf(msg.sender) >= _kudos);
     require(_kudos > 0);
     require(_kudos < maxKudosToMember);

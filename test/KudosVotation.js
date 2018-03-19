@@ -16,12 +16,12 @@ contract('KudosVotation', accounts => {
 
   // Lifecircle - Init
   describe('(Lifecircle - Init)', () => {
-    it('should not be able to be removed', async () => {
+    it('should not be able to be closed', async () => {
       const instance = await contract;
       const canBeClosed = await instance.canBeClosed();
 
       if (deadline < Date.now()) {
-        assert.ok(!canBeClosed, `Can't be removed before the deadline`);
+        assert.ok(!canBeClosed, `Can't be closed before the deadline`);
       }
     });
 
@@ -235,24 +235,18 @@ contract('KudosVotation', accounts => {
 
   // Lifecircle - End
   describe('(Lifecircle - End)', () => {
-    it('should be able to be removed', done => {
+    it('should be able to be closed', async () => {
+      const instance = await contract;
       const delay = Math.max(deadline - Date.now(), 0);
+      const timeout = new Promise(resolve => {
+        setTimeout(() => {
+          resolve(undefined);
+        }, delay);
+      });
 
-      contract
-        .then(instance =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(instance)
-            }, delay);
-          }),
-        )
-        .then(instance =>
-          instance.canBeClosed(),
-        )
-        .then(canBeClosed => {
-          assert.ok(canBeClosed, `Can be removed before the deadline`);
-          done();
-        });
+      await timeout;
+      const canBeClosed = await instance.canBeClosed();
+      assert.ok(canBeClosed, `Can be closed before the deadline`);
     });
 
     it('should prevent to close the votation if is not the owner', async () => {

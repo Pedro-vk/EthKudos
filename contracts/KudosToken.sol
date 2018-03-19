@@ -19,9 +19,10 @@ contract KudosToken is StandardToken, Ownable {
   uint256 public totalSupply;
 
   address[] public members;
+  mapping (address => string) public contacts;
 
-  address[] votations;
-  bool isActiveVotation = false;
+  address[] public votations;
+  bool public isActiveVotation = false;
 
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) allowed;
@@ -49,7 +50,7 @@ contract KudosToken is StandardToken, Ownable {
   ) onlyOwner public returns (address) {
     require (!isActiveVotation);
 
-    string memory number = uint2str(7);
+    string memory number = uint2str(votations.length + 1);
     address newVotationAddress = new KudosVotation(
       StringUtils.strConcat(name, " - Votation #", number),
       StringUtils.strConcat(symbol, "#", number),
@@ -70,6 +71,23 @@ contract KudosToken is StandardToken, Ownable {
     return newVotationAddress;
   }
 
+  function closeVotation() onlyOwner public returns (bool) {
+    require(isActiveVotation);
+
+    KudosVotation currentVotation = KudosVotation(activeVotation());
+    require(currentVotation.canBeClosed());
+
+    currentVotation.close();
+    isActiveVotation = false;
+
+    for (uint i = 0; i < currentVotation.getVotationResultsSize(); i++) {
+      var (member, kudos) = currentVotation.getVotationResult(i);
+      addKudos(member, kudos);
+    }
+
+    return true;
+  }
+
   function activeVotation() public constant returns (address) {
     if (isActiveVotation) {
       return votations[votations.length - 1];
@@ -84,11 +102,19 @@ contract KudosToken is StandardToken, Ownable {
     return votations.length;
   }
 
+  // Kudos balances
+  function addKudos(address _member, uint256 _kudos) onlyOwner public returns (bool) {
+    balances[_member] += _kudos;
+    totalSupply += _kudos;
+    return true;
+  }
+
   // Members
-  function addMember(address _member) onlyOwner public returns (bool) {
+  function addMember(address _member, string _contact) onlyOwner public returns (bool) {
     require(!isMember(_member));
 
     members.push(_member);
+    contacts[_member] = _contact;
     AddMember(_member);
 
     if (isActiveVotation) {
@@ -108,16 +134,6 @@ contract KudosToken is StandardToken, Ownable {
     members.length = members.length - 1;
     RemoveMember(_member);
 
-    return true;
-  }
-
-  function addMembers(address[] _members) onlyOwner public returns (bool) {
-    require(_members.length > 0);
-    for (uint i = 0; i < _members.length; i++) {
-      if (!isMember(_members[i])) {
-        addMember(_members[i]);
-      }
-    }
     return true;
   }
 
@@ -148,6 +164,21 @@ contract KudosToken is StandardToken, Ownable {
 
   function membersNumber() public constant returns (uint256) {
     return members.length;
+  }
+
+  // Contacts
+  function editContact(address _member, string _contact) onlyOwner public returns (bool) {
+    require(isMember(_member));
+
+    contacts[_member] = _contact;
+
+    return true;
+  }
+
+  function getContact(address _member) public constant returns (string) {
+    if (isMember(_member)) {
+      return contacts[_member];
+    }
   }
 
   // Transfers
