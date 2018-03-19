@@ -1,29 +1,52 @@
 const KudosToken = artifacts.require('./KudosToken.sol');
-const KudosVotation = artifacts.require('./KudosVotation.sol');
+const KudosPoll = artifacts.require('./KudosPoll.sol');
 
 contract('KudosToken', accounts => {
   const decimals = 2;
 
-  let contract;
+  let instance;
 
-  before(() => {
-    contract = KudosToken.new('KudosToken', 'KKT', decimals);
+  before(async function() {
+    this.timeout(10 * 60 * 1000);
+
+    instance = await KudosToken.new('KudosToken', 'KKT', decimals);
   });
 
   // Lifecircle - Init
-  describe('(Lifecircle - Init)', () => {
+  describe('(Lifecircle - Init)', function() {
+    this.timeout(10 * 60 * 1000);
+
     it('should have 0 of total supply', async () => {
-      const instance = await contract;
       const totalSupply = await instance.totalSupply();
 
       assert.equal(+totalSupply, 0, '0 wasn\'t in the total supply');
     });
   });
 
+  // Ownership
+  describe('(Ownership)', function() {
+    this.timeout(10 * 60 * 1000);
+
+    it('should have as onwer the contract deployer', async () => {
+      const owner = await instance.owner();
+
+      assert.equal(owner, accounts[0], `${accounts[0]} wasn't the owner`);
+    });
+
+    it('should transfer the ownership', async () => {
+      await instance.transferOwnership(accounts[1]);
+      assert.equal(await instance.owner(), accounts[1], `${accounts[1]} wasn't the owner`);
+
+      await instance.transferOwnership(accounts[0], {from: accounts[1]});
+      assert.equal(await instance.owner(), accounts[0], `${accounts[0]} wasn't the owner`);
+    });
+  });
+
   // Members
-  describe('(Members management)', () => {
+  describe('(Members management)', function() {
+    this.timeout(10 * 60 * 1000);
+
     it('should be able to add members', async () => {
-      const instance = await contract;
       const getMembersNumber = async () => +(await instance.membersNumber());
 
       assert.equal(await getMembersNumber(), 0, '0 wasn\'t the members number');
@@ -33,7 +56,6 @@ contract('KudosToken', accounts => {
     });
 
     it('should prevent to add a member twice', async () => {
-      const instance = await contract;
       const getMembersNumber = async () => +(await instance.membersNumber());
 
       let failed = false;
@@ -49,21 +71,16 @@ contract('KudosToken', accounts => {
     });
 
     it('should return the members', async () => {
-      const instance = await contract;
-
       const members = await instance.getMembers();
       assert.deepEqual(members, [accounts[0], accounts[1]], `${accounts[0]} and ${accounts[1]} wasn't the members`);
     });
 
     it('should return the members by index', async () => {
-      const instance = await contract;
-
       const member = await instance.getMember(1);
       assert.deepEqual(member, accounts[1], `${accounts[1]} wasn't the member #1`);
     });
 
     it('should prevent the addition of members if is not the owner', async () => {
-      const instance = await contract;
       let failed = false;
 
       try {
@@ -75,8 +92,6 @@ contract('KudosToken', accounts => {
     });
 
     it('should emit a AddMember event', async () => {
-      const instance = await contract;
-
       const transaction = await instance.addMember(accounts[7], 'Test member 7');
       const {event, args} = transaction.logs[0] || {};
 
@@ -85,7 +100,6 @@ contract('KudosToken', accounts => {
     });
 
     it('should be able to remove members', async () => {
-      const instance = await contract;
       const getMembersNumber = async () => +(await instance.membersNumber());
 
       await instance.addMember(accounts[4], 'Test member 4');
@@ -96,8 +110,6 @@ contract('KudosToken', accounts => {
     });
 
     it('should emit a RemoveMember event', async () => {
-      const instance = await contract;
-
       await instance.addMember(accounts[3], 'Test member 3');
       const transaction = await instance.removeMember(accounts[3]);
       const {event, args} = transaction.logs[0] || {};
@@ -108,17 +120,16 @@ contract('KudosToken', accounts => {
   });
 
   // Contacts
-  describe('(Contacts)', () => {
+  describe('(Contacts)', function() {
+    this.timeout(10 * 60 * 1000);
+
     it('should store the contact name of the members', async () => {
-      const instance = await contract;
       const contactName = await instance.getContact(accounts[0]);
 
       assert.equal(contactName, 'Test member 0', `'Test member 0' wasn\'t the event sent`);
     });
 
     it('should edit contact name of the members', async () => {
-      const instance = await contract;
-
       await instance.editContact(accounts[0], 'Test member edited 0');
 
       const contactName = await instance.getContact(accounts[0]);
@@ -128,9 +139,10 @@ contract('KudosToken', accounts => {
   });
 
   // Transfers
-  describe('(Transfers)', () => {
+  describe('(Transfers)', function() {
+    this.timeout(10 * 60 * 1000);
+
     it('should prevent the transfer', async () => {
-      const instance = await contract;
       let failed = false;
 
       try {
@@ -142,75 +154,68 @@ contract('KudosToken', accounts => {
     });
   });
 
-  // Votations
-  describe('(Votations)', () => {
-    const getKudosVotation = async address => await KudosVotation.at(address);
+  // Polls
+  describe('(Polls)', function() {
+    this.timeout(10 * 60 * 1000);
+
+    const getKudosPoll = async address => await KudosPoll.at(address);
     let deadline;
 
-    it('should create a new votation', async () => {
-      const instance = await contract;
+    it('should create a new poll', async () => {
+      assert.equal(+(await instance.getPollsSize()), 0, '0 wasn\'t in the number of polls');
 
-      assert.equal(+(await instance.getVotationsSize()), 0, '0 wasn\'t in the number of votations');
-
-      await instance.newVotation(500, 200, 1);
+      await instance.newPoll(500, 200, 1);
       deadline = Date.now() + ((1 + 0.5) * 60 * 1000);
 
 
-      assert.equal(+(await instance.getVotationsSize()), 1, '1 wasn\'t in the number of votations');
+      assert.equal(+(await instance.getPollsSize()), 1, '1 wasn\'t in the number of polls');
     });
 
-    it('should know the address of the current votation', async () => {
-      const instance = await contract;
-
-      assert.ok(/^0x[0-9a-f]{40}$/.test(await instance.activeVotation()), 'Wasn\'t an address');
+    it('should know the address of the current poll', async () => {
+      assert.ok(/^0x[0-9a-f]{40}$/.test(await instance.activePoll()), 'Wasn\'t an address');
     });
 
-    it('should add the members to new votation', async () => {
-      const instance = await contract;
-      const kudosVotation = await getKudosVotation(await instance.activeVotation());
+    it('should add the members to new poll', async () => {
+      const kudosPoll = await getKudosPoll(await instance.activePoll());
 
-      assert.equal(await kudosVotation.membersNumber(), 3, '3 wasn\'t in the number of members');
+      assert.equal(await kudosPoll.membersNumber(), 3, '3 wasn\'t in the number of members');
     });
 
-    it('should set the token name and symbol of the votation', async () => {
-      const instance = await contract;
-      const kudosVotation = await getKudosVotation(await instance.activeVotation());
+    it('should set the token name and symbol of the poll', async () => {
+      const kudosPoll = await getKudosPoll(await instance.activePoll());
 
       assert.equal(
-        await kudosVotation.name(),
-        'KudosToken - Votation #1',
-        `'KudosToken - Votation #1' wasn't in the number of members`,
+        await kudosPoll.name(),
+        'KudosToken - Poll #1',
+        `'KudosToken - Poll #1' wasn't in the number of members`,
       );
       assert.equal(
-        await kudosVotation.symbol(),
+        await kudosPoll.symbol(),
         'KKT#1',
         `'KKT#1' wasn't in the number of members`,
       );
     });
 
-    it('should add a new member to the current votation', async () => {
-      const instance = await contract;
-      const kudosVotation = await getKudosVotation(await instance.activeVotation());
+    it('should add a new member to the current poll', async () => {
+      const kudosPoll = await getKudosPoll(await instance.activePoll());
 
       await instance.addMember(accounts[4], 'Test member 4');
 
-      assert.equal(await kudosVotation.membersNumber(), 4, '4 wasn\'t in the number of members');
+      assert.equal(await kudosPoll.membersNumber(), 4, '4 wasn\'t in the number of members');
     });
 
-    it('should be possible to make a votation', async () => {
-      const instance = await contract;
-      const kudosVotation = await getKudosVotation(await instance.activeVotation());
+    it('should be possible to make a poll', async () => {
+      const kudosPoll = await getKudosPoll(await instance.activePoll());
 
-      await kudosVotation.reward(accounts[1], 100, 'Test message', {from: accounts[0]});
-      await kudosVotation.reward(accounts[4], 50, 'Test message', {from: accounts[0]});
-      await kudosVotation.reward(accounts[7], 50, 'Test message', {from: accounts[0]});
-      await kudosVotation.reward(accounts[0], 150, 'Test message', {from: accounts[1]});
-      await kudosVotation.reward(accounts[4], 25, 'Test message', {from: accounts[1]});
-      await kudosVotation.reward(accounts[7], 50, 'Test message', {from: accounts[1]});
+      await kudosPoll.reward(accounts[1], 100, 'Test message', {from: accounts[0]});
+      await kudosPoll.reward(accounts[4], 50, 'Test message', {from: accounts[0]});
+      await kudosPoll.reward(accounts[7], 50, 'Test message', {from: accounts[0]});
+      await kudosPoll.reward(accounts[0], 150, 'Test message', {from: accounts[1]});
+      await kudosPoll.reward(accounts[4], 25, 'Test message', {from: accounts[1]});
+      await kudosPoll.reward(accounts[7], 50, 'Test message', {from: accounts[1]});
     });
 
-    it('should close a votation', async () => {
-      const instance = await contract;
+    it('should close a poll', async () => {
       const delay = Math.max(deadline - Date.now(), 0);
       const timeout = new Promise(resolve => {
         setTimeout(() => {
@@ -219,21 +224,18 @@ contract('KudosToken', accounts => {
       });
 
       await timeout;
-      await instance.closeVotation();
-      const isActiveVotation = await instance.isActiveVotation();
-      assert.ok(!isActiveVotation, `Mustn't be active.`);
+      await instance.closePoll();
+      const isActivePoll = await instance.isActivePoll();
+      assert.ok(!isActivePoll, `Mustn't be active.`);
     });
 
     it('should increase the total supply with the kudos sent', async () => {
-      const instance = await contract;
       const totalSupply = await instance.totalSupply();
 
       assert.equal(+totalSupply, 425, '425 wasn\'t in the total supply');
     });
 
     it('should add the kudos to the members', async () => {
-      const instance = await contract;
-
       assert.equal(+(await instance.balanceOf(accounts[0])), 150, `150 wasn't in the balance of ${accounts[0]}`);
       assert.equal(+(await instance.balanceOf(accounts[1])), 100, `100 wasn't in the balance of ${accounts[0]}`);
       assert.equal(+(await instance.balanceOf(accounts[4])), 75, `75 wasn't in the balance of ${accounts[0]}`);

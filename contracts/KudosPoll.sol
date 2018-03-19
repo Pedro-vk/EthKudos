@@ -6,7 +6,7 @@ import "zeppelin/contracts/ownership/Ownable.sol";
 import "./Kudos.structs.sol";
 
 
-contract KudosVotation is BurnableToken, Ownable {
+contract KudosPoll is BurnableToken, Ownable {
   using SafeMath for uint256;
 
   string public version = "0.0.1";
@@ -36,7 +36,7 @@ contract KudosVotation is BurnableToken, Ownable {
   );
   event Close();
 
-  function KudosVotation(
+  function KudosPoll(
     string _tokenName,
     string _tokenSymbol,
     uint8 _decimalUnits,
@@ -183,7 +183,7 @@ contract KudosVotation is BurnableToken, Ownable {
   }
 
   // Results
-  function getVotationResults() public constant returns (KudosStructs.Result[]) {
+  function getPollResults() public constant returns (KudosStructs.Result[]) {
     KudosStructs.Result[] storage results;
     for (uint i = 0; i < members.length; i++) {
       results.push(KudosStructs.Result({
@@ -194,12 +194,12 @@ contract KudosVotation is BurnableToken, Ownable {
     return results;
   }
 
-  function getVotationResult(uint256 _index) public constant returns (address, uint256) {
-    KudosStructs.Result memory result = getVotationResults()[_index];
+  function getPollResult(uint256 _index) public constant returns (address, uint256) {
+    KudosStructs.Result memory result = getPollResults()[_index];
     return (result.member, result.kudos);
   }
 
-  function getVotationResultsSize() public constant returns (uint256) {
+  function getPollResultsSize() public constant returns (uint256) {
     return members.length;
   }
 }

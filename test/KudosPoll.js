@@ -1,23 +1,26 @@
-const KudosVotation = artifacts.require('./KudosVotation.sol');
-return;
-contract('KudosVotation', accounts => {
+const KudosPoll = artifacts.require('./KudosPoll.sol');
+
+contract('KudosPoll', accounts => {
   const decimals = 2;
   const kudosByMember = 5 * (10 ** decimals);
   const maxKudosToMember = 2 * (10 ** decimals);
   const deadlineInMin = 1;
 
-  let contract;
+  let instance;
   let deadline;
 
-  before(() => {
-    contract = KudosVotation.new('Kudos votation Test', 'KVT', decimals, kudosByMember, maxKudosToMember, deadlineInMin);
+  before(async function() {
+    this.timeout(10 * 60 * 1000);
+
+    instance = await KudosPoll.new('Kudos poll Test', 'KVT', decimals, kudosByMember, maxKudosToMember, deadlineInMin);
     deadline = Date.now() + ((deadlineInMin + 0.5) * 60 * 1000);
   });
 
   // Lifecircle - Init
-  describe('(Lifecircle - Init)', () => {
+  describe('(Lifecircle - Init)', function() {
+    this.timeout(10 * 60 * 1000);
+
     it('should not be able to be closed', async () => {
-      const instance = await contract;
       const canBeClosed = await instance.canBeClosed();
 
       if (deadline < Date.now()) {
@@ -25,30 +28,28 @@ contract('KudosVotation', accounts => {
       }
     });
 
-    it('should prevent the closing of the votation', async () => {
-      const instance = await contract;
-
+    it('should prevent the closing of the poll', async () => {
       let failed = false;
       try {
         await instance.close();
       } catch (e) {
         failed = true;
       }
-      assert.ok(failed, 'Must throw an error when tries to close the votation');
+      assert.ok(failed, 'Must throw an error when tries to close the poll');
     });
   });
 
   // Members
-  describe('(Members management)', () => {
+  describe('(Members management)', function() {
+    this.timeout(10 * 60 * 1000);
+
     it('should have 0 of total supply', async () => {
-      const instance = await contract;
       const totalSupply = await instance.totalSupply();
 
       assert.equal(+totalSupply, 0, '0 wasn\'t in the total supply');
     });
 
     it('should be able to add members', async () => {
-      const instance = await contract;
       const getMembersNumber = async () => +(await instance.membersNumber());
 
       assert.equal(await getMembersNumber(), 0, '0 wasn\'t the members number');
@@ -58,14 +59,12 @@ contract('KudosVotation', accounts => {
     });
 
     it('should add the default amount of Kudos to the new member', async () => {
-      const instance = await contract;
       const totalSupply = await instance.totalSupply();
 
       assert.equal(+totalSupply, 500, '5.00 wasn\'t in the total supply');
     });
 
     it('should prevent to add a member twice', async () => {
-      const instance = await contract;
       const getMembersNumber = async () => +(await instance.membersNumber());
 
       let failed = false;
@@ -81,21 +80,16 @@ contract('KudosVotation', accounts => {
     });
 
     it('should return the members', async () => {
-      const instance = await contract;
-
       const members = await instance.getMembers();
       assert.deepEqual(members, [accounts[0], accounts[1]], `${accounts[0]} and ${accounts[1]} wasn't the members`);
     });
 
     it('should return the members by index', async () => {
-      const instance = await contract;
-
       const member = await instance.getMember(1);
       assert.deepEqual(member, accounts[1], `${accounts[1]} wasn't the member #1`);
     });
 
     it('should prevent the addition of members if is not the owner', async () => {
-      const instance = await contract;
       let failed = false;
 
       try {
@@ -107,7 +101,6 @@ contract('KudosVotation', accounts => {
     });
 
     it('should be able to add multiple members and not fail if one of them exist', async () => {
-      const instance = await contract;
       const getMembersNumber = async () => +(await instance.membersNumber());
 
       assert.equal(await getMembersNumber(), 2, '2 wasn\'t the members number');
@@ -117,8 +110,6 @@ contract('KudosVotation', accounts => {
     });
 
     it('should emit a AddMember event', async () => {
-      const instance = await contract;
-
       const transaction = await instance.addMember(accounts[7]);
       const {event, args} = transaction.logs[0] || {};
 
@@ -128,9 +119,10 @@ contract('KudosVotation', accounts => {
   });
 
   // Transfers
-  describe('(Transfers)', () => {
+  describe('(Transfers)', function() {
+    this.timeout(10 * 60 * 1000);
+
     it('should prevent the transfer', async () => {
-      const instance = await contract;
       let failed = false;
 
       try {
@@ -143,10 +135,10 @@ contract('KudosVotation', accounts => {
   });
 
   // Kudos
-  describe('(Kudos)', () => {
-    it('should be able to send gratitudes', async () => {
-      const instance = await contract;
+  describe('(Kudos)', function() {
+    this.timeout(10 * 60 * 1000);
 
+    it('should be able to send gratitudes', async () => {
       await instance.reward(accounts[1], 100, 'Test message');
 
       const gratitudesSize = await instance.getGratitudesSizeOf.call(accounts[1]);
@@ -161,8 +153,6 @@ contract('KudosVotation', accounts => {
     });
 
     it('should burn the kudos sent', async () => {
-      const instance = await contract;
-
       const initialBalance = +(await instance.balanceOf.call(accounts[0]));
 
       await instance.reward(accounts[1], 50, 'Test message');
@@ -173,7 +163,6 @@ contract('KudosVotation', accounts => {
     });
 
     it('should prevent to reward with more kudos than max. defined', async () => {
-      const instance = await contract;
       let failed = false;
 
       try {
@@ -185,8 +174,6 @@ contract('KudosVotation', accounts => {
     });
 
     it('should know the total number of kudos of a member', async () => {
-      const instance = await contract;
-
       await instance.reward(accounts[5], 100, 'Test message', {from: accounts[1]});
       await instance.reward(accounts[5], 50, 'Test message', {from: accounts[1]});
       await instance.reward(accounts[5], 25, 'Test message', {from: accounts[1]});
@@ -197,8 +184,6 @@ contract('KudosVotation', accounts => {
     });
 
     it('should emit a Reward event', async () => {
-      const instance = await contract;
-
       const transaction = await instance.reward(accounts[0], 30, 'Test message', {from: accounts[1]});
       const {event, args} = transaction.logs[0] || {};
 
@@ -211,12 +196,12 @@ contract('KudosVotation', accounts => {
   });
 
   // Results
-  describe('(Results)', () => {
-    it('should generate the list of results', async () => {
-      const instance = await contract;
+  describe('(Results)', function() {
+    this.timeout(10 * 60 * 1000);
 
-      const resultsPromises = Array.from(new Array(+(await instance.getVotationResultsSize())))
-        .map((_, i) => instance.getVotationResult(i));
+    it('should generate the list of results', async () => {
+      const resultsPromises = Array.from(new Array(+(await instance.getPollResultsSize())))
+        .map((_, i) => instance.getPollResult(i));
       const results = (await Promise.all(resultsPromises))
         .map(([member, kudos]) => ({member, kudos: +kudos}))
         .sort((a, b) => b.kudos - a.kudos);
@@ -234,9 +219,10 @@ contract('KudosVotation', accounts => {
   });
 
   // Lifecircle - End
-  describe('(Lifecircle - End)', () => {
+  describe('(Lifecircle - End)', function() {
+    this.timeout(10 * 60 * 1000);
+
     it('should be able to be closed', async () => {
-      const instance = await contract;
       const delay = Math.max(deadline - Date.now(), 0);
       const timeout = new Promise(resolve => {
         setTimeout(() => {
@@ -249,8 +235,7 @@ contract('KudosVotation', accounts => {
       assert.ok(canBeClosed, `Can be closed before the deadline`);
     });
 
-    it('should prevent to close the votation if is not the owner', async () => {
-      const instance = await contract;
+    it('should prevent to close the poll if is not the owner', async () => {
       let failed = false;
 
       try {
@@ -261,9 +246,7 @@ contract('KudosVotation', accounts => {
       assert.ok(failed, 'Must throw an error when tries to close');
     });
 
-    it('should be able to close the votation and send a Close event', async () => {
-      const instance = await contract;
-
+    it('should be able to close the poll and send a Close event', async () => {
       const transaction = await instance.close();
       const {event} = transaction.logs[0] || {};
 
@@ -271,7 +254,6 @@ contract('KudosVotation', accounts => {
     });
 
     it('should prevent the addition of a new member if is closed', async () => {
-      const instance = await contract;
       let failed = false;
 
       try {

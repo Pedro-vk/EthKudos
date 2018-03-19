@@ -11,8 +11,8 @@ module.exports = {
     },
     ropsten: {
       provider: new HDWalletProvider(TRUFFLE_MNEMONIC, `https://ropsten.infura.io/${TRUFFLE_INFURA_API_KEY}`, 0, 10),
-      gas: 4000000,
-      gasPrice: 2 * 1000000000,
+      gas: 4600000,
+      gasPrice: 8 * 1000000000,
       network_id: 3
     }
   },

@@ -5,7 +5,7 @@ import "zeppelin/contracts/token/StandardToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
 import "./string-utils.sol";
 import "./Kudos.structs.sol";
-import "./KudosVotation.sol";
+import "./KudosPoll.sol";
 
 
 contract KudosToken is StandardToken, Ownable {
@@ -21,16 +21,16 @@ contract KudosToken is StandardToken, Ownable {
   address[] public members;
   mapping (address => string) public contacts;
 
-  address[] public votations;
-  bool public isActiveVotation = false;
+  address[] public polls;
+  bool public isActivePoll = false;
 
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) allowed;
 
   event AddMember(address indexed member);
   event RemoveMember(address indexed member);
-  event NewVotation(address indexed votation);
-  event CloseVotation(address indexed votation);
+  event NewPoll(address indexed poll);
+  event ClosePoll(address indexed poll);
 
   function KudosToken(
     string _tokenName,
@@ -42,17 +42,17 @@ contract KudosToken is StandardToken, Ownable {
     decimals = _decimalUnits;
   }
 
-  // Votations
-  function newVotation(
+  // Polls
+  function newPoll(
     uint256 _kudosByMember,
     uint256 _maxKudosToMember,
     uint256 _minDurationInMinutes
   ) onlyOwner public returns (address) {
-    require (!isActiveVotation);
+    require (!isActivePoll);
 
-    string memory number = uint2str(votations.length + 1);
-    address newVotationAddress = new KudosVotation(
-      StringUtils.strConcat(name, " - Votation #", number),
+    string memory number = uint2str(polls.length + 1);
+    address newPollAddress = new KudosPoll(
+      StringUtils.strConcat(name, " - Poll #", number),
       StringUtils.strConcat(symbol, "#", number),
       decimals,
       _kudosByMember,
@@ -60,46 +60,46 @@ contract KudosToken is StandardToken, Ownable {
       _minDurationInMinutes
     );
 
-    votations.push(newVotationAddress);
-    isActiveVotation = true;
+    polls.push(newPollAddress);
+    isActivePoll = true;
 
-    KudosVotation newVotation = KudosVotation(newVotationAddress);
-    newVotation.addMembers(members);
+    KudosPoll newPoll = KudosPoll(newPollAddress);
+    newPoll.addMembers(members);
 
-    NewVotation(newVotationAddress);
+    NewPoll(newPollAddress);
 
-    return newVotationAddress;
+    return newPollAddress;
   }
 
-  function closeVotation() onlyOwner public returns (bool) {
-    require(isActiveVotation);
+  function closePoll() onlyOwner public returns (bool) {
+    require(isActivePoll);
 
-    KudosVotation currentVotation = KudosVotation(activeVotation());
-    require(currentVotation.canBeClosed());
+    KudosPoll currentPoll = KudosPoll(activePoll());
+    require(currentPoll.canBeClosed());
 
-    currentVotation.close();
-    isActiveVotation = false;
+    currentPoll.close();
+    isActivePoll = false;
 
-    for (uint i = 0; i < currentVotation.getVotationResultsSize(); i++) {
-      var (member, kudos) = currentVotation.getVotationResult(i);
+    for (uint i = 0; i < currentPoll.getPollResultsSize(); i++) {
+      var (member, kudos) = currentPoll.getPollResult(i);
       addKudos(member, kudos);
     }
 
     return true;
   }
 
-  function activeVotation() public constant returns (address) {
-    if (isActiveVotation) {
-      return votations[votations.length - 1];
+  function activePoll() public constant returns (address) {
+    if (isActivePoll) {
+      return polls[polls.length - 1];
     }
   }
 
-  function getVotations() public constant returns (address[]) {
-    return votations;
+  function getPolls() public constant returns (address[]) {
+    return polls;
   }
 
-  function getVotationsSize() public constant returns (uint256) {
-    return votations.length;
+  function getPollsSize() public constant returns (uint256) {
+    return polls.length;
   }
 
   // Kudos balances
@@ -117,9 +117,9 @@ contract KudosToken is StandardToken, Ownable {
     contacts[_member] = _contact;
     AddMember(_member);
 
-    if (isActiveVotation) {
-      KudosVotation currentVotation = KudosVotation(activeVotation());
-      currentVotation.addMember(_member);
+    if (isActivePoll) {
+      KudosPoll currentPoll = KudosPoll(activePoll());
+      currentPoll.addMember(_member);
     }
 
     return true;
