@@ -6,6 +6,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppComponent } from './app.component';
 
+import { PROVIDERS } from './shared';
+
 import { environment } from '../environments/environment';
 
 @NgModule({
@@ -17,7 +19,9 @@ import { environment } from '../environments/environment';
     AppRoutingModule,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [],
+  providers: [
+    ...PROVIDERS,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
