@@ -1,14 +1,14 @@
 pragma solidity ^0.4.18;
 
 import "zeppelin/contracts/math/SafeMath.sol";
-import "zeppelin/contracts/token/StandardToken.sol";
+import "zeppelin/contracts/token/BasicToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
 import "./string-utils.sol";
 import "./Kudos.structs.sol";
 import "./KudosPoll.sol";
 
 
-contract KudosToken is StandardToken, Ownable {
+contract KudosToken is BasicToken, Ownable {
   using SafeMath for uint256;
 
   string public version = "0.0.1";
@@ -100,13 +100,6 @@ contract KudosToken is StandardToken, Ownable {
 
   function getPollsSize() public constant returns (uint256) {
     return polls.length;
-  }
-
-  // Kudos balances
-  function addKudos(address _member, uint256 _kudos) onlyOwner public returns (bool) {
-    balances[_member] += _kudos;
-    totalSupply += _kudos;
-    return true;
   }
 
   // Members
@@ -206,5 +199,12 @@ contract KudosToken is StandardToken, Ownable {
       i /= 10;
     }
     return string(bstr);
+  }
+
+  // Kudos balances
+  function addKudos(address _member, uint256 _kudos) onlyOwner private returns (bool) {
+    balances[_member] += _kudos;
+    totalSupply += _kudos;
+    return true;
   }
 }

@@ -1,12 +1,12 @@
 pragma solidity ^0.4.18;
 
 import "zeppelin/contracts/math/SafeMath.sol";
-import "zeppelin/contracts/token/BurnableToken.sol";
+import "zeppelin/contracts/token/BasicToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
 import "./Kudos.structs.sol";
 
 
-contract KudosPoll is BurnableToken, Ownable {
+contract KudosPoll is BasicToken, Ownable {
   using SafeMath for uint256;
 
   string public version = "0.0.1";
@@ -21,6 +21,7 @@ contract KudosPoll is BurnableToken, Ownable {
   uint256 public maxKudosToMember;
   address[] public members;
   uint256 public minDeadline;
+  uint256 public creation;
 
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) allowed;
@@ -50,6 +51,7 @@ contract KudosPoll is BurnableToken, Ownable {
     kudosByMember = _kudosByMember;
     maxKudosToMember = _maxKudosToMember;
     minDeadline = now + (_minDurationInMinutes * 1 minutes);
+    creation = now;
     active = true;
   }
 
