@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
+import contract from "truffle-contract";
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
@@ -13,14 +14,19 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/startWith';
-import contract from "truffle-contract";
 
 import Migrations from '../../../build/contracts/Migrations.json';
 
-export type connectionStatus = 'total' | 'no-account' | 'no-provider' | 'no-network';
+export enum ConnectionStatus {
+  Total = 'total',
+  NoAccount = 'no-account',
+  NoProvider = 'no-provider',
+  NoNetwork = 'no-network',
+}
 
 @Injectable()
 export class Web3Service {
+  status: ConnectionStatus;
   private _web3: Web3;
   private existInNetwork: boolean;
 
@@ -40,19 +46,19 @@ export class Web3Service {
     .merge(this.newBlock$, this.newAccount$)
     .map(() => undefined)
     .share();
-  readonly status$: Observable<connectionStatus> = this.interval$
+  readonly status$: Observable<ConnectionStatus> = this.interval$
     .mergeMap(() => this.getAccount())
-    .map((account): connectionStatus => {
+    .map((account): ConnectionStatus => {
       if (!this.web3) {
-        return "no-provider";
+        return ConnectionStatus.NoProvider;
       }
       if (!account) {
-        return "no-account";
+        return ConnectionStatus.NoAccount;
       }
       if (!this.existInNetwork) {
-        return 'no-network';
+        return ConnectionStatus.NoNetwork;
       }
-      return 'total';
+      return ConnectionStatus.Total;
     })
     .distinctUntilChanged();
 
@@ -62,6 +68,7 @@ export class Web3Service {
 
   constructor() {
     this.checkContractInNetwork();
+    this.status$.subscribe(status => this.status = status);
   }
 
   private initWeb3(): Web3 {
