@@ -22,6 +22,7 @@ interface KudosTokenConstants {
   symbol: string;
   decimals: number;
   totalSupply: number;
+  owner: string;
   activePoll: string;
   getPolls: string[];
   getPollsSize: number;
@@ -50,41 +51,63 @@ export class KudosTokenService {
         kudosToken.setProvider(this.web3Service.web3.currentProvider);
         kudosToken.deployed()
           .then(contract => this.contract = contract);
-        console.log(this);
       });
   }
 
-  get version(): Promise<KudosToken['version']> {
+  // Constants
+  version(): Promise<KudosToken['version']> {
     return this.contract.version();
   }
-  get name(): Promise<KudosToken['name']> {
+  name(): Promise<KudosToken['name']> {
     return this.contract.name();
   }
-  get symbol(): Promise<KudosToken['symbol']> {
+  symbol(): Promise<KudosToken['symbol']> {
     return this.contract.symbol();
   }
-  get decimals(): Promise<KudosToken['decimals']> {
+  decimals(): Promise<KudosToken['decimals']> {
     return this.contract.decimals();
   }
-  get totalSupply(): Promise<KudosToken['totalSupply']> {
+  totalSupply(): Promise<KudosToken['totalSupply']> {
     return this.contract.totalSupply();
   }
 
-  // newPoll
-  // closePoll
-  // activePoll
-  // getPolls
-  // getPollsSize
-  // addMember
-  // removeMember
-  // isMember
-  // memberIndex
-  // getMembers
-  // getMember
-  // membersNumber
-  // editContact
-  // getContact
-  // transfer
-  // balanceOf
+  owner(): Promise<KudosToken['owner']> {
+    return this.contract.owner();
+  }
+
+  activePoll(): Promise<KudosToken['activePoll']> {
+    return this.contract.activePoll();
+  }
+  getPolls(): Promise<KudosToken['getPolls']> {
+    return this.contract.getPolls();
+  }
+  getPollsSize(): Promise<KudosToken['getPollsSize']> {
+    return this.contract.getPollsSize();
+  }
+
+  isMember(address: string): Promise<KudosToken['isMember']> {
+    return this.contract.isMember(address);
+  }
+  memberIndex(address: string): Promise<KudosToken['memberIndex']> {
+    return this.contract.memberIndex(address);
+  }
+  getMembers(): Promise<KudosToken['getMembers']> {
+    return this.contract.getMembers();
+  }
+  getMember(index: number): Promise<KudosToken['getMember']> {
+    return this.contract.getMember(index);
+  }
+  membersNumber(): Promise<KudosToken['membersNumber']> {
+    return this.contract.membersNumber();
+  }
+
+  getContact(address: string): Promise<KudosToken['getContact']> {
+    return this.contract.getContact(address);
+  }
+
+  balanceOf(address: string): Promise<KudosToken['balanceOf']> {
+    return this.contract.balanceOf(address);
+  }
+
 
 }
