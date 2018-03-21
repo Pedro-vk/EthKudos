@@ -140,7 +140,7 @@ contract KudosPoll is BasicToken, Ownable {
     require(msg.sender != _to);
     require(balanceOf(msg.sender) >= _kudos);
     require(_kudos > 0);
-    require(_kudos < maxKudosToMember);
+    require(_kudos <= maxKudosToMember);
     require(bytes(_message).length > 0);
 
     burn(_kudos);

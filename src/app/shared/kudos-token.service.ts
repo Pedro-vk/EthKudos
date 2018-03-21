@@ -7,6 +7,7 @@ import 'rxjs/add/operator/first';
 
 import KudosToken from '../../../build/contracts/KudosToken.json';
 
+import { SmartContract } from './smart-contract.abstract';
 import { Contract, TruffleContract, TruffleContractActionMethods, TruffleContractEventMethods } from './truffle.interface';
 import { Web3Service, ConnectionStatus } from './web3.service';
 
@@ -47,8 +48,33 @@ export type KudosToken = KudosTokenActions & KudosTokenConstants & KudosTokenEve
 export type KudosTokenContract = TruffleContract<KudosTokenConstants, KudosTokenActions, KudosTokenEvents>;
 
 @Injectable()
-export class KudosTokenService {
-  private contract: KudosTokenContract;
+export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosTokenActions, KudosTokenEvents> {
+
+  // Constants
+  readonly version = () => this.generateConstant('version')();
+  readonly name = () => this.generateConstant('name')();
+  readonly symbol = () => this.generateConstant('symbol')();
+  readonly decimals = () => this.generateConstant('decimals')();
+  readonly totalSupply = () => this.generateConstant('totalSupply')();
+  readonly owner = () => this.generateConstant('owner')();
+  readonly activePoll = () => this.generateConstant('activePoll')();
+  readonly getPolls = () => this.generateConstant('getPolls')();
+  readonly getPollsSize = () => this.generateConstant('getPollsSize')();
+  readonly isMember = (address: string) => this.generateConstant('isMember')(address);
+  readonly memberIndex = (address: string) => this.generateConstant('memberIndex')(address);
+  readonly getMembers = () => this.generateConstant('getMembers')();
+  readonly getMember = (index: number) => this.generateConstant('getMember')(index);
+  readonly membersNumber = () => this.generateConstant('membersNumber')();
+  readonly getContact = (address: string) => this.generateConstant('getContact')(address);
+  readonly balanceOf = (address: string) => this.generateConstant('balanceOf')(address);
+
+  // Actions
+  readonly newPoll = (kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number) => this.generateAction('newPoll')(kudosByMember, maxKudosToMember, minDurationInMinutes);
+  readonly closePoll = () => this.generateAction('closePoll')();
+  readonly addMember = (member: string, name: string) => this.generateAction('addMember')(member, name);
+  readonly removeMember = (address: string) => this.generateAction('removeMember')(address);
+  readonly editContact = (address: string, name: string) => this.generateAction('editContact')(address, name);
+  readonly transfer = (to: string, value: number) => this.generateAction('transfer')(to, value);
 
   // Events
   readonly AddMember$ = this.generateEventObservable('AddMember');
@@ -57,7 +83,8 @@ export class KudosTokenService {
   readonly ClosePoll$ = this.generateEventObservable('ClosePoll');
   readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
 
-  constructor(private web3Service: Web3Service) {
+  constructor(protected web3Service: Web3Service) {
+    super(web3Service);
     this.web3Service
       .status$
       .filter(status => status === ConnectionStatus.Total)
@@ -69,93 +96,4 @@ export class KudosTokenService {
           .then(contract => this.contract = contract);
       });
   }
-
-  // Constants
-  version(): Promise<KudosToken['version']> {
-    return this.contract.version();
-  }
-  name(): Promise<KudosToken['name']> {
-    return this.contract.name();
-  }
-  symbol(): Promise<KudosToken['symbol']> {
-    return this.contract.symbol();
-  }
-  decimals(): Promise<KudosToken['decimals']> {
-    return this.contract.decimals();
-  }
-  totalSupply(): Promise<KudosToken['totalSupply']> {
-    return this.contract.totalSupply();
-  }
-
-  owner(): Promise<KudosToken['owner']> {
-    return this.contract.owner();
-  }
-
-  activePoll(): Promise<KudosToken['activePoll']> {
-    return this.contract.activePoll();
-  }
-  getPolls(): Promise<KudosToken['getPolls']> {
-    return this.contract.getPolls();
-  }
-  getPollsSize(): Promise<KudosToken['getPollsSize']> {
-    return this.contract.getPollsSize();
-  }
-
-  isMember(address: string): Promise<KudosToken['isMember']> {
-    return this.contract.isMember(address);
-  }
-  memberIndex(address: string): Promise<KudosToken['memberIndex']> {
-    return this.contract.memberIndex(address);
-  }
-  getMembers(): Promise<KudosToken['getMembers']> {
-    return this.contract.getMembers();
-  }
-  getMember(index: number): Promise<KudosToken['getMember']> {
-    return this.contract.getMember(index);
-  }
-  membersNumber(): Promise<KudosToken['membersNumber']> {
-    return this.contract.membersNumber();
-  }
-
-  getContact(address: string): Promise<KudosToken['getContact']> {
-    return this.contract.getContact(address);
-  }
-
-  balanceOf(address: string): Promise<KudosToken['balanceOf']> {
-    return this.contract.balanceOf(address);
-  }
-
-  // Actions
-  newPoll(kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number): Promise<Tx> {
-    return this.generateAction('newPoll')(kudosByMember, maxKudosToMember, minDurationInMinutes);
-  }
-  closePoll(): Promise<Tx> {
-    return this.generateAction('closePoll')();
-  }
-
-  addMember(member: string, name: string): Promise<Tx> {
-    return this.generateAction('addMember')(member, name);
-  }
-  removeMember(address: string): Promise<Tx> {
-    return this.generateAction('removeMember')(address);
-  }
-
-  editContact(address: string, name: string): Promise<Tx> {
-    return this.generateAction('editContact')(address, name);
-  }
-
-  transfer(to: string, value: number): Promise<Tx> {
-    return this.generateAction('transfer')(to, value);
-  }
-
-  // Helpers
-  private generateAction<P extends keyof TruffleContractActionMethods<KudosTokenActions>>(action: P): (...args) => Promise<Tx> {
-    return (...args) => (<any>this.contract)[action](...args, {from: this.web3Service.account});
-  }
-  private generateEventObservable<P extends keyof TruffleContractEventMethods<KudosTokenEvents>>(event: P): Observable<KudosTokenEvents[P]> {
-    return Observable
-      .create(observer => (<any>this.contract)[event]().watch((e, _) => observer.next(_.args)))
-      .share();
-  }
-
 }
