@@ -27,6 +27,7 @@ export enum ConnectionStatus {
 @Injectable()
 export class Web3Service {
   status: ConnectionStatus;
+  account: string;
   private _web3: Web3;
   private existInNetwork: boolean;
 
@@ -69,6 +70,7 @@ export class Web3Service {
   constructor() {
     this.checkContractInNetwork();
     this.status$.subscribe(status => this.status = status);
+    this.newAccount$.subscribe(account => this.account = account);
   }
 
   private initWeb3(): Web3 {
