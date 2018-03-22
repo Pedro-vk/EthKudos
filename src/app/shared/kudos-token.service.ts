@@ -8,6 +8,8 @@ import KudosTokenDefinition from '../../../build/contracts/KudosToken.json';
 import { SmartContract } from './smart-contract.abstract';
 import { Contract, TruffleContract, TruffleContractActionMethods, TruffleContractEventMethods } from './truffle.interface';
 import { Web3Service, ConnectionStatus } from './web3.service';
+import { KudosPollFactoryService } from './kudos-poll-factory.service';
+import { KudosPollService } from './kudos-poll.service';
 
 interface KudosTokenConstants {
   version: string;
@@ -15,6 +17,7 @@ interface KudosTokenConstants {
   symbol: string;
   decimals: number;
   totalSupply: number;
+  isActivePoll: boolean;
   owner: string;
   activePoll: string;
   getPolls: string[];
@@ -47,6 +50,7 @@ export type KudosToken = KudosTokenActions & KudosTokenConstants & KudosTokenEve
 
 @Injectable()
 export class KudosTokenService extends SmartContract<KudosTokenConstants, undefined, KudosTokenActions, KudosTokenEvents> {
+  private kudosPollInstances: {[address: string]: KudosPollService} = {};
 
   // Constants
   readonly version = () => this.generateConstant('version')();
@@ -54,6 +58,7 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
   readonly symbol = () => this.generateConstant('symbol')();
   readonly decimals = () => this.generateConstant('decimals')();
   readonly totalSupply = () => this.generateConstant('totalSupply')();
+  readonly isActivePoll = () => this.generateConstant('isActivePoll')();
   readonly owner = () => this.generateConstant('owner')();
   readonly activePoll = () => this.generateConstant('activePoll')();
   readonly getPolls = () => this.generateConstant('getPolls')();
@@ -82,7 +87,7 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
   readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
   readonly Transfer$ = this.generateEventObservable('Transfer');
 
-  constructor(protected web3Service: Web3Service) {
+  constructor(protected web3Service: Web3Service, private kudosPollFactoryService: KudosPollFactoryService) {
     super(web3Service);
     this.web3Service
       .status$
@@ -94,4 +99,28 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
           .then(contract => this.contract = contract);
       });
   }
+
+  getPollContractByAddress(address: string): KudosPollService {
+    return this.kudosPollInstances[address] = this.kudosPollInstances[address] || this.kudosPollFactoryService.getKudosPollServiceAt(address);
+  }
+  async getPollContract(index: number): Promise<KudosPollService> {
+    const polls = await this.getPolls();
+    return this.getPollContractByAddress(polls[index]);
+  }
+  async getPollsContracts(): Promise<KudosPollService[]> {
+    const polls = await this.getPolls();
+    return polls.map(address => this.getPollContractByAddress(address));
+  }
+  async getActivePollContract(): Promise<KudosPollService> {
+    const activePoll = await this.activePoll();
+    return this.getPollContractByAddress(activePoll);
+  }
+  async getPreviousPollsContracts(): Promise<KudosPollService[]> {
+    const polls = await this.getPolls();
+    if (await this.isActivePoll()) {
+      polls.pop();
+    }
+    return polls.map(address => this.getPollContractByAddress(address));
+  }
+
 }
