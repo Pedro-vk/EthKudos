@@ -16,8 +16,8 @@ contract('KudosPoll', accounts => {
     deadline = Date.now() + ((deadlineInMin + 0.5) * 60 * 1000);
   });
 
-  // Lifecircle - Init
-  describe('(Lifecircle - Init)', function() {
+  // Lifecycle - Init
+  describe('(Lifecycle - Init)', function() {
     this.timeout(10 * 60 * 1000);
 
     it('should not be able to be closed', async () => {
@@ -218,8 +218,8 @@ contract('KudosPoll', accounts => {
     });
   });
 
-  // Lifecircle - End
-  describe('(Lifecircle - End)', function() {
+  // Lifecycle - End
+  describe('(Lifecycle - End)', function() {
     this.timeout(10 * 60 * 1000);
 
     it('should be able to be closed', async () => {

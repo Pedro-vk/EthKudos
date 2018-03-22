@@ -55,7 +55,7 @@ contract KudosPoll is BasicToken, Ownable {
     active = true;
   }
 
-  // Lifecircle
+  // lifecycle
   modifier onlyActive() {
     require(active);
     _;
@@ -161,7 +161,7 @@ contract KudosPoll is BasicToken, Ownable {
     return true;
   }
 
-  function getGratitudesOf(address _member) public constant returns (KudosStructs.Gratitude[]) {
+  function getGratitudesOf(address _member) public constant returns (KudosStructs.Gratitude[] gratitudesList) {
     return gratitudes[_member];
   }
 
@@ -185,18 +185,18 @@ contract KudosPoll is BasicToken, Ownable {
   }
 
   // Results
-  function getPollResults() public constant returns (KudosStructs.Result[]) {
-    KudosStructs.Result[] storage results;
+  function getPollResults() public constant returns (KudosStructs.Result[] resultsList) {
+    KudosStructs.Result[] memory results = new KudosStructs.Result[](members.length);
     for (uint i = 0; i < members.length; i++) {
-      results.push(KudosStructs.Result({
+      results[i] = KudosStructs.Result({
         kudos: getKudosOf(members[i]),
         member: members[i]
-      }));
+      });
     }
     return results;
   }
 
-  function getPollResult(uint256 _index) public constant returns (address, uint256) {
+  function getPollResult(uint256 _index) public constant returns (address member, uint256 kudos) {
     KudosStructs.Result memory result = getPollResults()[_index];
     return (result.member, result.kudos);
   }

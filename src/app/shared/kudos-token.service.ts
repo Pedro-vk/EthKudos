@@ -1,23 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Tx } from 'web3/types';
-import contract from "truffle-contract";
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 
-import KudosToken from '../../../build/contracts/KudosToken.json';
+import KudosTokenDefinition from '../../../build/contracts/KudosToken.json';
 
 import { SmartContract } from './smart-contract.abstract';
 import { Contract, TruffleContract, TruffleContractActionMethods, TruffleContractEventMethods } from './truffle.interface';
 import { Web3Service, ConnectionStatus } from './web3.service';
 
-interface KudosTokenEvents {
-  AddMember: {member: string};
-  RemoveMember: {member: string};
-  NewPoll: {poll: string};
-  ClosePoll: {poll: string};
-  OwnershipTransferred: {previousOwner: string, newOwner: string};
-}
 interface KudosTokenConstants {
   version: string;
   name: string;
@@ -44,11 +35,18 @@ interface KudosTokenActions {
   editContact: boolean;
   transfer: boolean;
 }
+interface KudosTokenEvents {
+  AddMember: {member: string};
+  RemoveMember: {member: string};
+  NewPoll: {poll: string};
+  ClosePoll: {poll: string};
+  OwnershipTransferred: {previousOwner: string, newOwner: string};
+  Transfer: {from: string, to: string, value: number};
+}
 export type KudosToken = KudosTokenActions & KudosTokenConstants & KudosTokenEvents;
-export type KudosTokenContract = TruffleContract<KudosTokenConstants, KudosTokenActions, KudosTokenEvents>;
 
 @Injectable()
-export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosTokenActions, KudosTokenEvents> {
+export class KudosTokenService extends SmartContract<KudosTokenConstants, undefined, KudosTokenActions, KudosTokenEvents> {
 
   // Constants
   readonly version = () => this.generateConstant('version')();
@@ -82,6 +80,7 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosT
   readonly NewPoll$ = this.generateEventObservable('NewPoll');
   readonly ClosePoll$ = this.generateEventObservable('ClosePoll');
   readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
+  readonly Transfer$ = this.generateEventObservable('Transfer');
 
   constructor(protected web3Service: Web3Service) {
     super(web3Service);
@@ -90,8 +89,7 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosT
       .filter(status => status === ConnectionStatus.Total)
       .first()
       .subscribe(() => {
-        const kudosToken = <Contract<KudosTokenContract>>contract(KudosToken);
-        kudosToken.setProvider(this.web3Service.web3.currentProvider);
+        const kudosToken = this.getContract(KudosTokenDefinition);
         kudosToken.deployed()
           .then(contract => this.contract = contract);
       });

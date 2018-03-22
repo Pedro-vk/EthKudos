@@ -1,0 +1,126 @@
+import KudosPollDefinition from '../../../build/contracts/KudosPoll.json';
+
+import { SmartContract } from './smart-contract.abstract';
+import { Web3Service, ConnectionStatus } from './web3.service';
+
+export interface Gratitude {
+  kudos: number;
+  message: string;
+  from: number;
+}
+
+export interface Result {
+  kudos: number;
+  member: number;
+}
+
+interface KudosPollConstants {
+  version: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  totalSupply: number;
+  active: boolean;
+  kudosByMember: number;
+  maxKudosToMember: number;
+  members: string[];
+  minDeadline: number;
+  creation: number;
+  canBeClosed: boolean;
+  isMember: boolean;
+  getMembers: string[];
+  getMember: string;
+  membersNumber: number;
+  balanceOf: number;
+  getGratitudeOf: Gratitude;
+  getGratitudesSizeOf: number;
+  getKudosOf: number;
+  getPollResult: Result;
+  getPollResultsSize: number;
+}
+type KudosPollConstantsIteratiors = {
+  getGratitudesOf: Gratitude[];
+  getPollResults: Result[];
+}
+interface KudosPollActions {
+  close: boolean;
+  addMember: boolean;
+  addMembers: boolean;
+  transfer: boolean;
+  burn: undefined;
+  reward: boolean;
+}
+interface KudosPollEvents {
+  AddMember: {member: string};
+  Close: {};
+  OwnershipTransferred: {previousOwner: string, newOwner: string};
+  Reward: {sender: string, rewarded: string, kudos: number, message: string};
+  Transfer: {from: string, to: string, value: number};
+}
+export type KudosPoll = KudosPollActions & KudosPollConstantsIteratiors & KudosPollConstants & KudosPollEvents;
+
+export class KudosPollService extends SmartContract<KudosPollConstants, KudosPollConstantsIteratiors, KudosPollActions, KudosPollEvents> {
+  private _initialized = false;
+
+  get initialized(): boolean {
+    return this._initialized;
+  }
+
+  // Constants
+  readonly version = () => this.generateConstant('version')();
+  readonly name = () => this.generateConstant('name')();
+  readonly symbol = () => this.generateConstant('symbol')();
+  readonly decimals = () => this.generateConstant('decimals')();
+  readonly totalSupply = () => this.generateConstant('totalSupply')();
+  readonly active = () => this.generateConstant('active')();
+  readonly kudosByMember = () => this.generateConstant('kudosByMember')();
+  readonly maxKudosToMember = () => this.generateConstant('maxKudosToMember')();
+  readonly members = () => this.generateConstant('members')();
+  readonly minDeadline = () => this.generateConstant('minDeadline')();
+  readonly creation = () => this.generateConstant('creation')();
+  readonly canBeClosed = () => this.generateConstant('canBeClosed')();
+  readonly isMember = (member: string) => this.generateConstant('isMember')(member);
+  readonly getMembers = () => this.generateConstant('getMembers')();
+  readonly getMember = (index: number) => this.generateConstant('getMember')(index);
+  readonly membersNumber = () => this.generateConstant('membersNumber')();
+  readonly balanceOf = (owner: string) => this.generateConstant('balanceOf')(owner);
+  readonly getGratitudeOf = (member: string, index: number) => this.generateConstant('getGratitudeOf', ([kudos, message, from]) => ({kudos, message, from}))(member, index);
+  readonly getGratitudesSizeOf = (member: string) => this.generateConstant('getGratitudesSizeOf')(member);
+  readonly getKudosOf = (member: string) => this.generateConstant('getKudosOf')(member);
+  readonly getPollResult = (index: number) => this.generateConstant('getPollResult', ([member, kudos]) => ({member, kudos}))(index);
+  readonly getPollResultsSize = () => this.generateConstant('getPollResultsSize')();
+
+  // Constant iterators
+  readonly getGratitudesOf = (member: string) => this.generateConstantIteration<'getGratitudesOf'>(() => this.getGratitudesSizeOf(member), i => this.getGratitudeOf(member, i));
+  readonly getPollResults = () => this.generateConstantIteration<'getPollResults'>(() => this.getPollResultsSize(), i => this.getPollResult(i));
+
+  // Actions
+  readonly close = () => this.generateAction('close')();
+  readonly addMember = (member: string) => this.generateAction('addMember')(member);
+  readonly addMembers = (members: string[]) => this.generateAction('addMembers')(members);
+  readonly transfer = (to: string, value: number) => this.generateAction('transfer')(to, value);
+  readonly burn = (value: number) => this.generateAction('burn')(value);
+  readonly reward = (to: string, kudos: number, message: string) => this.generateAction('reward')(to, kudos, message);
+
+  // Events
+  readonly AddMember$ = this.generateEventObservable('AddMember');
+  readonly Close$ = this.generateEventObservable('Close');
+  readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
+  readonly Reward$ = this.generateEventObservable('Reward');
+  readonly Transfer$ = this.generateEventObservable('Transfer');
+
+  constructor(protected web3Service: Web3Service) {
+    super(web3Service);
+  }
+
+  initAt(address: string): void {
+    if (this.web3Service.status === ConnectionStatus.Total) {
+      const kudosPoll = this.getContract(KudosPollDefinition);
+      kudosPoll.at(address)
+        .then(contract => {
+          this.contract = contract;
+          this._initialized = true;
+        });
+    }
+  }
+}

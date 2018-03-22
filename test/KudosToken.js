@@ -12,8 +12,8 @@ contract('KudosToken', accounts => {
     instance = await KudosToken.new('KudosToken', 'KKT', decimals);
   });
 
-  // Lifecircle - Init
-  describe('(Lifecircle - Init)', function() {
+  // Lifecycle - Init
+  describe('(Lifecycle - Init)', function() {
     this.timeout(10 * 60 * 1000);
 
     it('should have 0 of total supply', async () => {

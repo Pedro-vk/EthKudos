@@ -27,6 +27,9 @@ interface TruffleContractMethodAction<T> extends TruffleContractMethodBase<T> {
 export type TruffleContractConstantMethods<T> = {
   [P in keyof T]: TruffleContractMethodConstant<T[P]>;
 }
+export type TruffleContractConstantIteratorMethods<T extends {[p: string]: any[]}> = {
+  [P in keyof T]: Promise<T>;
+}
 export type TruffleContractActionMethods<T> = {
   [P in keyof T]: TruffleContractMethodAction<T[P]>;
 }
@@ -39,13 +42,14 @@ interface TruffleContractBase {
   abi: any[];
 }
 
-export type TruffleContract<C, A, E>
+export type TruffleContract<C, CI extends {[p: string]: any[]}, A, E>
   = TruffleContractBase
   & TruffleContractConstantMethods<C>
+  & TruffleContractConstantIteratorMethods<CI>
   & TruffleContractActionMethods<A>
   & TruffleContractEventMethods<E>;
 
-export interface Contract<T extends TruffleContract<any, any, any>> {
+export interface Contract<T extends TruffleContract<any, any, any, any>> {
   at(string): Promise<T>;
   deployed(): Promise<T>;
   setProvider(Provider): void;
