@@ -123,4 +123,19 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
         });
     }
   }
+
+  async remainingKudos(): Promise<number> {
+    const myAccount = await this.web3Service.getAccount().toPromise();
+    return await this.balanceOf(myAccount);
+  }
+
+  async imMember(): Promise<boolean> {
+    const myAccount = await this.web3Service.getAccount().toPromise();
+    return await this.isMember(myAccount);
+  }
+
+  async myGratitudes(): Promise<Gratitude[]> {
+    const myAccount = await this.web3Service.getAccount().toPromise();
+    return await this.getGratitudesOf(myAccount);
+  }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/toPromise';
 
 import KudosTokenDefinition from '../../../build/contracts/KudosToken.json';
 
@@ -98,6 +99,22 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
         kudosToken.deployed()
           .then(contract => this.contract = contract);
       });
+  }
+
+  async myBalance(): Promise<number> {
+    const myAccount = await this.web3Service.getAccount().toPromise();
+    return await this.balanceOf(myAccount);
+  }
+
+  async imOnwer(): Promise<boolean> {
+    const owner = await this.owner();
+    const i = await this.web3Service.getAccount().toPromise();
+    return owner.toLowerCase() === i.toLowerCase();
+  }
+
+  async imMember(): Promise<boolean> {
+    const myAccount = await this.web3Service.getAccount().toPromise();
+    return await this.isMember(myAccount);
   }
 
   getPollContractByAddress(address: string): KudosPollService {

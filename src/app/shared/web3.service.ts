@@ -39,12 +39,12 @@ export class Web3Service {
     .mergeMap(() => this.getBlockNumber())
     .distinctUntilChanged()
     .share();
-  readonly newAccount$: Observable<string> = this.interval$
+  readonly account$: Observable<string> = this.interval$
     .mergeMap(() => this.getAccount())
     .distinctUntilChanged()
     .share();
   readonly changes$: Observable<undefined> = Observable
-    .merge(this.newBlock$, this.newAccount$)
+    .merge(this.newBlock$, this.account$)
     .map(() => undefined)
     .share();
   readonly status$: Observable<ConnectionStatus> = this.interval$
@@ -70,7 +70,7 @@ export class Web3Service {
   constructor() {
     this.checkContractInNetwork();
     this.status$.subscribe(status => this.status = status);
-    this.newAccount$.subscribe(account => this.account = account);
+    this.account$.subscribe(account => this.account = account);
   }
 
   private initWeb3(): Web3 {
