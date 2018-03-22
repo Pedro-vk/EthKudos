@@ -97,7 +97,10 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
       .subscribe(() => {
         const kudosToken = this.getContract(KudosTokenDefinition);
         kudosToken.deployed()
-          .then(contract => this.contract = contract);
+          .then(contract => {
+            this.contract = contract
+            this.initialized = true;
+          });
       });
   }
 

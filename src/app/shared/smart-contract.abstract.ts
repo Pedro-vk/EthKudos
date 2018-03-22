@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import { Tx } from 'web3/types';
 import contract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/share';
@@ -13,8 +14,19 @@ import {
 } from './truffle.interface';
 
 export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
+  protected readonly _onInitialized: BehaviorSubject<any> = new BehaviorSubject(undefined);
+  readonly onInitialized: Observable<any> = this._onInitialized.filter(_ => !!_);
   protected contract: TruffleContract<C, CI, A, E>;
   private readonly isBigNumber = (new Web3()).utils.isBigNumber;
+
+  get initialized(): boolean {
+    return !!this.contract;
+  }
+  set initialized(value: boolean) {
+    if (value) {
+      this._onInitialized.next(true);
+    }
+  }
 
   constructor(protected web3Service: Web3Service) { }
 

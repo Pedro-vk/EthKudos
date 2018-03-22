@@ -13,10 +13,12 @@ import { AppComponent } from './app.component';
 import { PROVIDERS } from './shared';
 
 import { environment } from '../environments/environment';
+import { COMPONENTS } from './components';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ...COMPONENTS,
   ],
   imports: [
     BrowserModule,

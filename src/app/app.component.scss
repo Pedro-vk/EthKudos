@@ -1,11 +1,8 @@
 @import '~@angular/material/theming';
+@import './styles/index';
 
 $header---height: 64px !default;
 $header--secondary---height: 48px !default;
-
-@mixin transition() {
-  transition: all .26s ease;
-}
 
 .header,
 .container {
@@ -70,6 +67,10 @@ $header--secondary---height: 48px !default;
       &--name {
         line-height: 16px;
         color: #262626;
+
+        @media (max-width: 600px) {
+          line-height: 30px;
+        }
       }
       &--no-member {
         display: none;
@@ -90,6 +91,12 @@ $header--secondary---height: 48px !default;
     }
     &--no-member &-row--no-member {
       display: block;
+    }
+
+    @media (max-width: 600px) {
+      &-row--address {
+        display: none;
+      }
     }
   }
   &__balance {

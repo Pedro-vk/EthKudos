@@ -60,11 +60,6 @@ interface KudosPollEvents {
 export type KudosPoll = KudosPollActions & KudosPollConstantsIteratiors & KudosPollConstants & KudosPollEvents;
 
 export class KudosPollService extends SmartContract<KudosPollConstants, KudosPollConstantsIteratiors, KudosPollActions, KudosPollEvents> {
-  private _initialized = false;
-
-  get initialized(): boolean {
-    return this._initialized;
-  }
 
   // Constants
   readonly version = () => this.generateConstant('version')();
@@ -119,7 +114,7 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
       kudosPoll.at(address)
         .then(contract => {
           this.contract = contract;
-          this._initialized = true;
+          this.initialized = true;
         });
     }
   }
