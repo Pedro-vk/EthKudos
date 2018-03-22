@@ -106,6 +106,11 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
     return await this.balanceOf(myAccount);
   }
 
+  async myContact(): Promise<string> {
+    const myAccount = await this.web3Service.getAccount().toPromise();
+    return await this.getContact(myAccount);
+  }
+
   async imOnwer(): Promise<boolean> {
     const owner = await this.owner();
     const i = await this.web3Service.getAccount().toPromise();

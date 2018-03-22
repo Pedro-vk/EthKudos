@@ -1,0 +1,123 @@
+@import '~@angular/material/theming';
+
+$header---height: 64px !default;
+$header--secondary---height: 48px !default;
+
+@mixin transition() {
+  transition: all .26s ease;
+}
+
+.header,
+.container {
+  &:not(.visible) {
+    display: none;
+  }
+}
+
+.container {
+  position: fixed;
+  top: $header---height + $header--secondary---height;
+  display: block;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: auto;
+  z-index: 1;
+  padding: 0 40px;
+
+  @media (min-width: #{(560px * 2) + (40px * 3)}) {
+    display: flex;
+    justify-content: center;
+    padding: 0 20px;
+
+    &__side {
+      width: 560px;
+      margin: 0 20px;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  width: 100%;
+  top: 0;
+
+  &--primary {
+    z-index: 3;
+    height: $header---height;
+  }
+  &--secondary {
+    z-index: 2;
+    top: $header---height;
+    height: $header--secondary---height;
+    box-shadow: 0 0 12px rgba(0, 0, 0, .3);
+  }
+
+  &__account {
+    padding-left: 10px;
+    vertical-align: middle;
+    font-size: 14px;
+
+    &-wrapper {
+      display: flex;
+    }
+    &-row {
+      display: block;
+
+      &--no-member,
+      &--name {
+        line-height: 16px;
+        color: #262626;
+      }
+      &--no-member {
+        display: none;
+        color: red;
+        font-weight: 400;
+        opacity: .7;
+      }
+      &--address {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 12px;
+        line-height: 14px;
+        opacity: .6;
+      }
+    }
+
+    &--no-member &-row--name {
+      display: none;
+    }
+    &--no-member &-row--no-member {
+      display: block;
+    }
+  }
+  &__balance {
+    font-size: 12px;
+    text-align: right;
+
+    &-row {
+      height: ($header--secondary---height - 8px) / 2;
+      line-height: ($header--secondary---height - 8px) / 2;
+      font-weight: 300;
+
+      code {
+        font-family: 'Roboto Mono', monospace;
+        font-weight: normal;
+      }
+      .symbol {
+        opacity: .6;
+      }
+    }
+  }
+}
+
+.link {
+  color: #2578FF;
+  transition: all .3s ease;
+  cursor: pointer;
+
+  &:hover {
+    opacity: .6;
+  }
+}
