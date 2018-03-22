@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/share';
 
 import { Web3Service } from './web3.service';
@@ -31,10 +32,11 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   constructor(protected web3Service: Web3Service) { }
 
   checkUpdates<T>(fn: (context: this) => Promise<T>): Observable<T> {
-    return this.web3Service
-      .changes$
+    return this.web3Service.changes$
+      .mergeMap(() => this.onInitialized)
       .mergeMap(() => Observable.fromPromise(fn(this)))
       .catch(() => Observable.empty<any>())
+      .distinctUntilChanged()
       .share();
   }
 

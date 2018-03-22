@@ -1,5 +1,10 @@
 <mat-toolbar [class.visible]="true" class="header header--primary" color="primary">
-  <span>{{token?.name}}</span>
+  <div class="title">
+    <button mat-icon-button routerLink="/admin" *ngIf="imOwner$ | async">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <span>{{token?.name}}</span>
+  </div>
   <span>
     <a href="https://github.com/Pedro-vk/EthKudos" target="_blank">
       <button mat-button color="accent">Check on GitHub</button>
@@ -28,4 +33,5 @@
 </mat-toolbar>
 
 <div class="container" [class.visible]="true">
+  <router-outlet></router-outlet>
 </div>

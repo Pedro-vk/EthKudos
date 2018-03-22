@@ -21,16 +21,15 @@ $header--secondary---height: 48px !default;
   overflow: auto;
   z-index: 1;
   padding: 0 40px;
+}
 
-  @media (min-width: #{(560px * 2) + (40px * 3)}) {
-    display: flex;
-    justify-content: center;
-    padding: 0 20px;
-
-    &__side {
-      width: 560px;
-      margin: 0 20px;
-    }
+.title {
+  [mat-icon-button] {
+    margin-right: 4px;
+  }
+  span {
+    display: inline-block;
+    vertical-align: middle;
   }
 }
 
