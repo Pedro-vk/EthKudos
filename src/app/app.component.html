@@ -1,6 +1,9 @@
 <mat-toolbar [class.visible]="true" class="header header--primary" color="primary">
   <div class="title">
-    <button mat-icon-button routerLink="/admin" *ngIf="imOwner$ | async">
+    <button @buttonFade mat-icon-button routerLink="/" *ngIf="currentUrl !== '/'">
+      <mat-icon>keyboard_arrow_left</mat-icon>
+    </button>
+    <button @buttonFade mat-icon-button routerLink="/admin" *ngIf="imOwner$ | async">
       <mat-icon>settings</mat-icon>
     </button>
     <span>{{token?.name}}</span>
