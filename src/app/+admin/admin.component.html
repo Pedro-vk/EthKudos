@@ -1,5 +1,7 @@
 <form #newPollForm="ngForm" novalidate *ngIf="(isActivePoll$ | async) === false">
-  <mat-card>
+  <mat-card [attr.disabled]="newPoll.working">
+    <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
+
     <mat-card-header>
       <mat-card-title>New Poll</mat-card-title>
       <mat-card-subtitle>
@@ -61,7 +63,9 @@
   </mat-card>
 </form>
 
-<mat-card *ngIf="(isActivePoll$ | async) === true">
+<mat-card *ngIf="(isActivePoll$ | async) === true"  [attr.disabled]="closePollWorking">
+  <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
+
   <mat-card-header>
     <mat-card-title>Close the active polling</mat-card-title>
     <mat-card-subtitle>

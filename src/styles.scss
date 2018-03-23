@@ -19,3 +19,15 @@ body {
 code {
   font-family: 'Roboto Mono', monospace;
 }
+
+.on-disabled {
+  display: none !important;
+}
+[disabled] {
+  opacity: .66;
+  pointer-events: none;
+
+  .on-disabled {
+    display: block !important;
+  }
+}

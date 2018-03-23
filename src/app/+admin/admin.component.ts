@@ -19,7 +19,9 @@ import { Web3Service, KudosTokenService } from '../shared';
 })
 export class AdminComponent implements OnInit {
   token: {name: string, symbol: string} = <any>{};
-  newPoll: {kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number} = <any>{};
+  newPoll: {kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number, working: boolean} = <any>{};
+  closePollWorking: boolean;
+  newMember: {member: string, contact: string, working: boolean} = <any>{};
 
   readonly isActivePoll$ = this.kudosTokenService.checkUpdates(_ => _.isActivePoll());
 
@@ -86,14 +88,28 @@ export class AdminComponent implements OnInit {
   }
 
   async createPoll() {
-    this.kudosTokenService.newPoll(
-      await this.kudosTokenService.fromDecimals(this.newPoll.kudosByMember),
-      await this.kudosTokenService.fromDecimals(this.newPoll.maxKudosToMember),
-      this.newPoll.minDurationInMinutes,
-    );
+    const done = () => {
+      this.newPoll.working = false;
+    };
+    this.newPoll.working = true;
+    this.kudosTokenService
+      .newPoll(
+        await this.kudosTokenService.fromDecimals(this.newPoll.kudosByMember),
+        await this.kudosTokenService.fromDecimals(this.newPoll.maxKudosToMember),
+        this.newPoll.minDurationInMinutes,
+      )
+      .then(() => done)
+      .catch(() => done);
   }
 
   closePoll() {
-    this.kudosTokenService.closePoll();
+    const done = () => {
+      this.closePollWorking = false;
+    };
+    this.closePollWorking = true;
+    this.kudosTokenService.closePoll()
+      .then(() => done)
+      .catch(() => done);
+  }
   }
 }

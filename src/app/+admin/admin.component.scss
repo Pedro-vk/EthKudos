@@ -76,3 +76,15 @@ mat-card-actions {
     opacity: .9;
   }
 }
+
+[disabled] {
+  position: relative;
+  overflow: hidden;
+
+  mat-progress-bar.on-disabled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+}
