@@ -5,7 +5,7 @@
       <mat-card-subtitle>
         Is necessary to define how much kudos is going to have each member.
         <br>
-        If the member doesn't use them, the remaining kudos will be freezed.
+        If the member doesn't use them, the remaining kudos will be frozen.
       </mat-card-subtitle>
     </mat-card-header>
 
@@ -65,7 +65,7 @@
   <mat-card-header>
     <mat-card-title>Close the active polling</mat-card-title>
     <mat-card-subtitle>
-      The remaining kudos not sent are going to be freezed.
+      The remaining kudos not sent are going to be frozen.
       <br>
       The kudos sent as gratitudes will be converted to <code>{{token?.symbol}}</code>.
     </mat-card-subtitle>
@@ -73,10 +73,15 @@
 
   <div class="transfered">
     <div class="transfered__title">Kudos sent</div>
-
-    {{kudosSentOnActivePoll$ | async}}
-    <br>
-    {{totalSupplyOnActivePoll$ | async}}
+    <code>
+      <span class="transfered__number transfered__number--left">
+        {{kudosSentOnActivePoll$ | async}}<span class="transfered__symbol">{{token?.symbol}}</span>
+      </span>
+      <span class="transfered__of"></span>
+      <span class="transfered__number transfered__number--right">
+        {{(kudosSentOnActivePoll$ | async) + (totalSupplyOnActivePoll$ | async)}}<span class="transfered__symbol">{{token?.symbol}}</span>
+      </span>
+    </code>
 
     <mat-progress-bar
       mode="determinate"
@@ -85,6 +90,10 @@
   </div>
 
   <mat-card-actions>
+    <span class="action-warn" *ngIf="!(activePollCanBeClosed$ | async)">
+      <mat-icon>warning</mat-icon>
+      Closable at {{activePollMinDeadline$ | async | date : 'short'}}
+    </span>
     <button
       mat-button
       color="warn"

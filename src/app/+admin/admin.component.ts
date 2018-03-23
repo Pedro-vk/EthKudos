@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/observable/fromPromise';
@@ -7,6 +8,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/map';
 
 import { Web3Service, KudosTokenService } from '../shared';
 
@@ -48,16 +50,27 @@ export class AdminComponent implements OnInit {
     .share();
   readonly percentageKudosSentOnActivePoll$ = Observable
     .combineLatest(this.kudosSentOnActivePoll$, this.totalSupplyOnActivePoll$)
-    .map(([sent, remaining]) => sent / (sent + remaining))
+    .map(([sent, remaining]) => (sent || 0) / ((sent || 0) + (remaining || 0)))
+    .share();
+  readonly activePollMinDeadline$ = this.activePollContract$
+    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.minDeadline()))
+    .map(_ => _ * 1000)
+    .catch(() => Observable.empty())
+    .distinctUntilChanged()
     .share();
 
-  constructor(private web3Service: Web3Service, private kudosTokenService: KudosTokenService) { }
+  constructor(private web3Service: Web3Service, private kudosTokenService: KudosTokenService, private router: Router) { }
 
   ngOnInit(): void {
     this.kudosTokenService
       .onInitialized
       .subscribe(() => {
         this.setTokenInfo();
+        this.kudosTokenService
+          .checkUpdates(_ => _.imOnwer())
+          .filter(imOnwer => !imOnwer)
+          .first()
+          .subscribe(() => this.router.navigate(['/']));
       });
   }
 

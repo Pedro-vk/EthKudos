@@ -12,7 +12,7 @@ export class AppComponent {
 
   readonly account$ = this.web3Service.account$;
   readonly balance$ = this.web3Service.checkUpdates(_ => _.getEthBalance());
-  readonly kudosBalance$ = this.kudosTokenService.checkUpdates(_ => _.myBalance());
+  readonly kudosBalance$ = this.kudosTokenService.checkUpdates(async _ => _.fromInt(await _.myBalance()));
   readonly imOwner$ = this.kudosTokenService.checkUpdates(_ => _.imOnwer());
   readonly imMember$ = this.kudosTokenService.checkUpdates(_ => _.imMember());
   readonly myContact$ = this.kudosTokenService.checkUpdates(_ => _.myContact());

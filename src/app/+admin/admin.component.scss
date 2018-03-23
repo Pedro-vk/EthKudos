@@ -1,3 +1,5 @@
+@import '~@angular/material/theming';
+
 :host {
   max-width: 600px;
   display: block;
@@ -9,4 +11,68 @@ mat-form-field {
 }
 mat-card-actions {
   text-align: right;
+}
+
+.transfered {
+  font-size: 20px;
+  display: block;
+  max-width: 200px;
+  margin: auto;
+  padding: 20px 0;
+
+  &__title {
+    font-size: 18px;
+    text-align: center;
+    padding-bottom: 6px;
+  }
+  code {
+    font-weight: 400;
+  }
+  &__of {
+    display: block;
+    position: relative;
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 2px;
+      left: 50%;
+      height: 2px;
+      width: 46px;
+      background: #3f51b5;
+      transform: translateX(-50%) rotate(-45deg);
+    }
+  }
+  &__symbol {
+    padding-left: 4px;
+    font-size: 12px;
+    opacity: .7;
+  }
+  &__number {
+    display: block;
+    &--right {
+      text-align: right;
+    }
+    &--left {
+      text-align: left;
+    }
+  }
+
+  mat-progress-bar {
+    margin-top: 12px;
+  }
+}
+
+.action-warn {
+  font-size: 12px;
+  opacity: .7;
+
+  mat-icon {
+    font-size: 14px;
+    line-height: 20px;
+    margin-right: 2px;
+    vertical-align: middle;
+    opacity: .9;
+  }
 }
