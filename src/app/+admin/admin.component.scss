@@ -6,6 +6,13 @@
   margin: auto;
 }
 
+h2.heading {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-size: 24px;
+  margin: 20px 0;
+}
+
 mat-form-field {
   display: block;
 }
@@ -67,10 +74,25 @@ mat-card-actions {
   }
 }
 
+.actions-with-warn {
+  display: flex;
+  padding-left: 10px;
+
+  .align {
+    margin-left: auto;
+  }
+}
 .action-warn {
   font-size: 12px;
+  line-height: 36px;
   opacity: .7;
+  flex-grow: 1;
+  margin-right: auto;
+  text-align: left;
 
+  & ~ button {
+    flex-grow: 0;
+  }
   mat-icon {
     font-size: 14px;
     line-height: 20px;
@@ -89,5 +111,35 @@ mat-card-actions {
     top: 0;
     left: 0;
     right: 0;
+  }
+}
+
+mat-expansion-panel-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.contact-header {
+  display: flex;
+  align-items: center;
+
+  eth-kudos-blockie {
+    margin-right: 16px;
+    height: 26px;
+  }
+
+  &__row {
+    font-size: 16px;
+    height: 18px;
+    line-height: 18px;
+    font-weight: 400;
+    display: block;
+
+    &--address {
+      font-family: 'Roboto Mono', monospace;
+      font-weight: normal;
+      font-size: 14px;
+      padding-top: 1px;
+      opacity: .5;
+    }
   }
 }

@@ -112,7 +112,9 @@ contract KudosToken is BasicToken, Ownable {
 
     if (isActivePoll) {
       KudosPoll currentPoll = KudosPoll(activePoll());
-      currentPoll.addMember(_member);
+      if (!currentPoll.isMember(_member)) {
+        currentPoll.addMember(_member);
+      }
     }
 
     return true;

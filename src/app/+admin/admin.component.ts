@@ -24,7 +24,11 @@ export class AdminComponent implements OnInit {
   closePollWorking: boolean;
   newMember: {member: string, contact: string, working: boolean} = <any>{};
 
+  memberName: {[address: string]: string} = {};
+  memberWorking: {[address: string]: boolean} = {};
+
   readonly isActivePoll$ = this.kudosTokenService.checkUpdates(_ => _.isActivePoll());
+  readonly getContacts$ = this.kudosTokenService.checkUpdates(_ => _.getContacts());
 
   readonly activePollContract$ = this.web3Service.changes$
     .startWith(undefined)
@@ -80,6 +84,11 @@ export class AdminComponent implements OnInit {
           .first()
           .subscribe(() => this.router.navigate(['/']));
       });
+
+    this.getContacts$
+      .subscribe(contacts => {
+        contacts.forEach(({member, name}) => this.memberName[member] = this.memberName[member] || name);
+      });
   }
 
   async setTokenInfo(): Promise<undefined> {
@@ -130,6 +139,26 @@ export class AdminComponent implements OnInit {
       .catch(() => done());
   }
 
+  editContact(address: string, name: string) {
+    const done = (success?: boolean) => {
+      this.memberWorking[address] = undefined;
+    };
+    this.memberWorking[address] = true;
+    this.kudosTokenService.editContact(address, name)
+      .then(() => done(true))
+      .catch(() => done());
+  }
+
+  removeMember(address: string) {
+    const done = (success?: boolean) => {
+      this.memberWorking[address] = undefined;
+    };
+    this.memberWorking[address] = true;
+    this.kudosTokenService.removeMember(address)
+      .then(() => done(true))
+      .catch(() => done());
+  }
+
   private onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {
     if (success) {
       if (form) {
@@ -140,5 +169,9 @@ export class AdminComponent implements OnInit {
       setter({...<any>obj, working: undefined})
     }
     this.changeDetectorRef.markForCheck();
+  }
+
+  trackMember(index: number, {member}: {member:string} & any): string {
+    return member || undefined;
   }
 }

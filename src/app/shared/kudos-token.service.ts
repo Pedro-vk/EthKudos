@@ -114,6 +114,12 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
     return value / (10 ** decimals);
   }
 
+  async getContacts(): Promise<{member: string, name: string}[]> {
+    const members = await this.getMembers();
+    const contacts = members.map(async member => ({member, name: await this.getContact(member)}));
+    return await Promise.all(contacts);
+  }
+
   async myBalance(): Promise<number> {
     const myAccount = await this.web3Service.getAccount().toPromise();
     return await this.balanceOf(myAccount);
