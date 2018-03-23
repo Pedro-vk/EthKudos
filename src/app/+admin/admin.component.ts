@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
@@ -61,7 +62,12 @@ export class AdminComponent implements OnInit {
     .distinctUntilChanged()
     .share();
 
-  constructor(private web3Service: Web3Service, private kudosTokenService: KudosTokenService, private router: Router) { }
+  constructor(
+    private web3Service: Web3Service,
+    private kudosTokenService: KudosTokenService,
+    private router: Router,
+    private changeDetectorRef: ChangeDetectorRef,
+  ) { }
 
   ngOnInit(): void {
     this.kudosTokenService
@@ -87,10 +93,9 @@ export class AdminComponent implements OnInit {
     return Math.round(Date.now() / min) * min + (minutes * min);
   }
 
-  async createPoll() {
-    const done = () => {
-      this.newPoll.working = false;
-    };
+  async createPoll(form?: NgForm) {
+    const done = (success?) => this.onActionFinished(success, this.newPoll, _ => this.newPoll = _, form);
+
     this.newPoll.working = true;
     this.kudosTokenService
       .newPoll(
@@ -98,18 +103,42 @@ export class AdminComponent implements OnInit {
         await this.kudosTokenService.fromDecimals(this.newPoll.maxKudosToMember),
         this.newPoll.minDurationInMinutes,
       )
-      .then(() => done)
-      .catch(() => done);
+      .then(() => done(true))
+      .catch(() => done());
   }
 
   closePoll() {
-    const done = () => {
-      this.closePollWorking = false;
+    const done = (success?: boolean) => {
+      this.closePollWorking = undefined;
     };
     this.closePollWorking = true;
     this.kudosTokenService.closePoll()
-      .then(() => done)
-      .catch(() => done);
+      .then(() => done(true))
+      .catch(() => done());
   }
+
+  addMember(form?: NgForm) {
+    const done = (success?) => this.onActionFinished(success, this.newMember, _ => this.newMember = _, form);
+
+    this.newMember.working = true;
+    this.kudosTokenService
+      .addMember(
+        this.newMember.member,
+        this.newMember.contact,
+      )
+      .then(() => done(true))
+      .catch(() => done());
+  }
+
+  private onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {
+    if (success) {
+      if (form) {
+        setter(<any>{});
+        form.reset();
+      }
+    } else {
+      setter({...<any>obj, working: undefined})
+    }
+    this.changeDetectorRef.markForCheck();
   }
 }

@@ -1,1 +1,5 @@
-<div class="blockie blockie--{{variant}}" [style.background-image]="blockie"></div>
+<div
+  class="blockie blockie--{{variant}}"
+  [class.blockie--hidden]="variant === 'prefix' && !address"
+  [style.background-image]="blockie">
+</div>

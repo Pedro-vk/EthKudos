@@ -21,9 +21,9 @@ export class BlockieComponent implements OnChanges {
     }
   }
 
-  getImageOf(account: string = '#'): SafeStyle {
+  getImageOf(account: string): SafeStyle {
     return this.domSanitizer.bypassSecurityTrustStyle(
-      `url(${blockies({seed: account.toLowerCase(), size: 8, scale: 8}).toDataURL()})`,
+      `url(${blockies({seed: (account || '#').toLowerCase(), size: 8, scale: 8}).toDataURL()})`,
     );
   }
 }

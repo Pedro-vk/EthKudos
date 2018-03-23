@@ -2,11 +2,11 @@
   <div class="title">
     <button @buttonFade mat-icon-button routerLink="/" *ngIf="currentUrl !== '/'">
       <mat-icon>keyboard_arrow_left</mat-icon>
-    </button>
-    <button @buttonFade mat-icon-button routerLink="/admin" *ngIf="imOwner$ | async">
+    </button><!--
+ --><button @buttonFade mat-icon-button routerLink="/admin" *ngIf="(imOwner$ | async) && currentUrl !== '/admin'">
       <mat-icon>settings</mat-icon>
-    </button>
-    <span>{{token?.name}}</span>
+    </button><!--
+ --><span>{{token?.name}}</span>
   </div>
   <span>
     <a href="https://github.com/Pedro-vk/EthKudos" target="_blank">
