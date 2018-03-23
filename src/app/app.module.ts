@@ -1,9 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -26,10 +30,15 @@ import { ADMIN_COMPONENTS } from './+admin';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
+    BrowserAnimationsModule,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
 
     MatButtonModule,
+    MatCardModule,
     MatIconModule,
+    MatInputModule,
+    MatProgressBarModule,
     MatToolbarModule,
   ],
   providers: [

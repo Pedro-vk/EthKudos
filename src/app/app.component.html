@@ -14,7 +14,7 @@
 <mat-toolbar [class.visible]="true" class="header header--secondary" color="accent">
   <div>
     <div class="header__account-wrapper" *ngIf="account$ | async as account">
-      <eth-kudos-blockie [address]="account"></eth-kudos-blockie>
+      <eth-kudos-blockie [address]="account" variant="big"></eth-kudos-blockie>
       <div class="header__account" [class.header__account--no-member]="!(imMember$ | async)">
         <span class="header__account-row header__account-row--name">{{(myContact$ | async) || "&nbsp;"}}</span>
         <span class="header__account-row header__account-row--no-member">You are not member</span>

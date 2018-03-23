@@ -1,3 +1,98 @@
-<p>
-  +admin works!
-</p>
+<form #newPollForm="ngForm" novalidate *ngIf="(isActivePoll$ | async) === false">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>New Poll</mat-card-title>
+      <mat-card-subtitle>
+        Is necessary to define how much kudos is going to have each member.
+        <br>
+        If the member doesn't use them, the remaining kudos will be freezed.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-form-field>
+      <input
+        matInput
+        [(ngModel)]="newPoll.kudosByMember"
+        type="number"
+        [min]="0"
+        name="newPollKudosByMember"
+        placeholder="Kudos to each member"
+        required>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        [(ngModel)]="newPoll.maxKudosToMember"
+        type="number"
+        [max]="newPoll.kudosByMember"
+        [min]="0"
+        name="newPollMaxKudosToMember"
+        placeholder="Max. number of kudos on each gratitude"
+        required>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        [(ngModel)]="newPoll.minDurationInMinutes"
+        type="number"
+        [min]="0"
+        name="newPollMinDurationInMinutes"
+        placeholder="Min. duration of the polling (minutes)"
+        required>
+      <mat-hint *ngIf="newPoll.minDurationInMinutes" align="end">
+        Closable at {{isGoingToFinishOn(newPoll.minDurationInMinutes) | date : 'short'}}
+      </mat-hint>
+    </mat-form-field>
+
+    <mat-card-actions>
+      <button mat-button (click)="newPollForm.reset()" type="button">Clear</button>
+      <button
+        mat-button
+        color="primary"
+        type="button"
+        [disabled]="!newPollForm.valid"
+        (click)="createPoll()">
+
+        Create poll
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>
+
+<mat-card *ngIf="(isActivePoll$ | async) === true">
+  <mat-card-header>
+    <mat-card-title>Close the active polling</mat-card-title>
+    <mat-card-subtitle>
+      The remaining kudos not sent are going to be freezed.
+      <br>
+      The kudos sent as gratitudes will be converted to <code>{{token?.symbol}}</code>.
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <div class="transfered">
+    <div class="transfered__title">Kudos sent</div>
+
+    {{kudosSentOnActivePoll$ | async}}
+    <br>
+    {{totalSupplyOnActivePoll$ | async}}
+
+    <mat-progress-bar
+      mode="determinate"
+      [value]="(percentageKudosSentOnActivePoll$ | async) * 100">
+    </mat-progress-bar>
+  </div>
+
+  <mat-card-actions>
+    <button
+      mat-button
+      color="warn"
+      type="button"
+      [disabled]="!(activePollCanBeClosed$ | async)"
+      (click)="closePoll()">
+
+      Close polling
+    </button>
+  </mat-card-actions>
+</mat-card>

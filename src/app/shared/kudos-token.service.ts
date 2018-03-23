@@ -104,6 +104,16 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
       });
   }
 
+  async fromDecimals(value: number): Promise<number> {
+    const decimals = await this.decimals();
+    return value * (10 ** decimals);
+  }
+
+  async fromInt(value: number): Promise<number> {
+    const decimals = await this.decimals();
+    return value / (10 ** decimals);
+  }
+
   async myBalance(): Promise<number> {
     const myAccount = await this.web3Service.getAccount().toPromise();
     return await this.balanceOf(myAccount);
@@ -126,7 +136,9 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
   }
 
   getPollContractByAddress(address: string): KudosPollService {
-    return this.kudosPollInstances[address] = this.kudosPollInstances[address] || this.kudosPollFactoryService.getKudosPollServiceAt(address);
+    if (+address !== 0) {
+      return this.kudosPollInstances[address] = this.kudosPollInstances[address] || this.kudosPollFactoryService.getKudosPollServiceAt(address);
+    }
   }
   async getPollContract(index: number): Promise<KudosPollService> {
     const polls = await this.getPolls();

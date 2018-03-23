@@ -10,6 +10,7 @@ import blockies from 'blockies';
 })
 export class BlockieComponent implements OnChanges {
   @Input() address: string;
+  @Input() variant: string;
   blockie: SafeStyle;
 
   constructor(private domSanitizer: DomSanitizer) { }

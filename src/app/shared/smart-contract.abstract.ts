@@ -4,6 +4,7 @@ import contract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/share';
@@ -32,8 +33,9 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   constructor(protected web3Service: Web3Service) { }
 
   checkUpdates<T>(fn: (context: this) => Promise<T>): Observable<T> {
-    return this.web3Service.changes$
-      .mergeMap(() => this.onInitialized)
+    return Observable
+      .merge(this.web3Service.changes$, this.onInitialized)
+      .filter(() => this.initialized)
       .mergeMap(() => Observable.fromPromise(fn(this)))
       .catch(() => Observable.empty<any>())
       .distinctUntilChanged()

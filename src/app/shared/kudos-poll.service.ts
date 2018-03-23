@@ -119,6 +119,16 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
     }
   }
 
+  async fromDecimals(value: number): Promise<number> {
+    const decimals = await this.decimals();
+    return value * (10 ** decimals);
+  }
+
+  async fromInt(value: number): Promise<number> {
+    const decimals = await this.decimals();
+    return value / (10 ** decimals);
+  }
+
   async remainingKudos(): Promise<number> {
     const myAccount = await this.web3Service.getAccount().toPromise();
     return await this.balanceOf(myAccount);
