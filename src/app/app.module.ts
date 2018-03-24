@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -20,12 +21,14 @@ import { PROVIDERS } from './shared';
 
 import { environment } from '../environments/environment';
 import { COMPONENTS } from './components';
+import { HOME_COMPONENTS } from './+home';
 import { ADMIN_COMPONENTS } from './+admin';
 
 @NgModule({
   declarations: [
     AppComponent,
     ...COMPONENTS,
+    ...HOME_COMPONENTS,
     ...ADMIN_COMPONENTS,
   ],
   imports: [
@@ -40,6 +43,7 @@ import { ADMIN_COMPONENTS } from './+admin';
     MatExpansionModule,
     MatIconModule,
     MatInputModule,
+    MatListModule,
     MatProgressBarModule,
     MatToolbarModule,
   ],

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -70,7 +70,6 @@ export class AdminComponent implements OnInit {
     private web3Service: Web3Service,
     private kudosTokenService: KudosTokenService,
     private router: Router,
-    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
@@ -168,7 +167,6 @@ export class AdminComponent implements OnInit {
     } else {
       setter({...<any>obj, working: undefined})
     }
-    this.changeDetectorRef.markForCheck();
   }
 
   trackMember(index: number, {member}: {member:string} & any): string {

@@ -31,6 +31,9 @@ interface KudosTokenConstants {
   getContact: string;
   balanceOf: number;
 }
+type KudosTokenConstantsIteratiors = {
+  getBalances: {member: string, balance: number, name: string}[];
+}
 interface KudosTokenActions {
   newPoll: boolean;
   closePoll: boolean;
@@ -50,7 +53,7 @@ interface KudosTokenEvents {
 export type KudosToken = KudosTokenActions & KudosTokenConstants & KudosTokenEvents;
 
 @Injectable()
-export class KudosTokenService extends SmartContract<KudosTokenConstants, undefined, KudosTokenActions, KudosTokenEvents> {
+export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> {
   private kudosPollInstances: {[address: string]: KudosPollService} = {};
 
   // Constants
@@ -71,6 +74,16 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, undefi
   readonly membersNumber = () => this.generateConstant('membersNumber')();
   readonly getContact = (address: string) => this.generateConstant('getContact')(address);
   readonly balanceOf = (address: string) => this.generateConstant('balanceOf')(address);
+
+  // Constant iterators
+  readonly getBalances = () => this.generateConstantIteration<'getBalances'>(
+    () => this.membersNumber(),
+    async i => {
+      const member = await this.getMember(i);
+      const name = await this.getContact(member);
+      return {member, name, balance: await this.balanceOf(member)};
+    },
+  );
 
   // Actions
   readonly newPoll = (kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number) => this.generateAction('newPoll')(kudosByMember, maxKudosToMember, minDurationInMinutes);

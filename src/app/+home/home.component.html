@@ -1,0 +1,23 @@
+<h2 class="heading">Most awarded</h2>
+
+<mat-accordion>
+  <mat-expansion-panel
+    *ngFor="let balance of getBalances$ | async; let i = index; trackBy: trackMember"
+    [hideToggle]="true"
+    [disabled]="true">
+
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <div class="ranking" [attr.data-n]="i + 1">
+          <span class="ranking__balance-wrapper">
+            <span class="ranking__balance">{{balance.balance}}<code>{{token.symbol}}</code></span>
+          </span>
+
+          <eth-kudos-blockie [address]="balance.member"></eth-kudos-blockie>
+
+          <span class="ranking__name">{{balance.name}}</span>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+</mat-accordion>
