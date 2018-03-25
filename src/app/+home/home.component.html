@@ -16,6 +16,11 @@
   </div>
 </mat-card>
 
+<div class="no-active-poll" *ngIf="!(getActivePollContract$ | async)">
+  <mat-icon>not_interested</mat-icon>
+  No active poll
+</div>
+
 <h2 class="heading" *ngIf="getPreviousPollsContracts$ | async">Previous polls</h2>
 
 <mat-accordion *ngIf="getPreviousPollsContracts$ | async as previousPollsContracts">

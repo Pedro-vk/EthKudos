@@ -20,6 +20,20 @@ mat-card-actions {
   text-align: right;
 }
 
+.no-active-poll {
+  padding: 14px 0 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 300;
+  opacity: .6;
+
+  mat-icon {
+    vertical-align: middle;
+    line-height: 0.84em;
+    margin-left: 4px;
+  }
+}
+
 .previous {
   color: #333333;
   display: flex;
