@@ -127,6 +127,11 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosT
     return value / (10 ** decimals);
   }
 
+  async getContactsOf(members: string[]): Promise<{member: string, name: string}[]> {
+    const contacts = members.map(async member => ({member, name: await this.getContact(member)}));
+    return await Promise.all(contacts);
+  }
+
   async getContacts(): Promise<{member: string, name: string}[]> {
     const members = await this.getMembers();
     const contacts = members.map(async member => ({member, name: await this.getContact(member)}));

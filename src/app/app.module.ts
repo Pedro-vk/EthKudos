@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -47,6 +48,7 @@ import { POLL_COMPONENTS } from './+poll';
     MatInputModule,
     MatListModule,
     MatProgressBarModule,
+    MatSelectModule,
     MatToolbarModule,
   ],
   providers: [

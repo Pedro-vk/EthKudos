@@ -35,6 +35,18 @@ mat-card-actions {
   }
 }
 
+[disabled] {
+  position: relative;
+  overflow: hidden;
+
+  mat-progress-bar.on-disabled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
 .icon-block {
   display: inline-block;
   vertical-align: middle;
@@ -82,4 +94,26 @@ mat-card-actions {
 .symbol-suffix {
   opacity: .7;
   font-size: .8em;
+}
+
+.select-contact {
+  display: flex;
+  align-items: center;
+
+  &__info {
+    line-height: 18px;
+    padding-left: 8px;
+  }
+  &__name {
+    font-size: 14px;
+  }
+  &__account {
+    font-family: "Roboto Mono";
+    opacity: .7;
+    font-size: 12px;
+
+    &:before {
+      content: attr(data-address);
+    }
+  }
 }

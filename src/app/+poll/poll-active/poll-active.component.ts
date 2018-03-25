@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/share';
 
-import { KudosTokenService } from '../../shared';
+import { Web3Service, KudosTokenService } from '../../shared';
 
 @Component({
   selector: 'eth-kudos-poll-active',
@@ -36,8 +43,15 @@ export class PollActiveComponent implements OnInit {
     })))
     .map(({remaining, maxKudos}) => Math.min(remaining, maxKudos))
     .share();
+  readonly getOtherMembers$ = this.getActivePollContract$
+    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.getMembers()))
+    .map(members => this.kudosTokenService.getContactsOf(members))
+    .mergeMap(_ => Observable.fromPromise(_))
+    .combineLatest(this.web3Service.account$)
+    .map(([contacts, account]) => contacts.filter(_ => (_.member || '').toLowerCase() !== (account || '').toLowerCase()))
+    .share();
 
-  constructor(private kudosTokenService: KudosTokenService, private router: Router) { }
+  constructor(private web3Service: Web3Service, private kudosTokenService: KudosTokenService, private router: Router) { }
 
   ngOnInit() {
     this.kudosTokenService

@@ -150,7 +150,9 @@ export class AdminComponent implements OnInit {
 
   removeMember(address: string) {
     const done = (success?: boolean) => {
-      this.memberWorking[address] = undefined;
+      if (!success) {
+        this.memberWorking[address] = undefined;
+      }
     };
     this.memberWorking[address] = true;
     this.kudosTokenService.removeMember(address)

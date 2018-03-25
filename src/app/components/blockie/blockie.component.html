@@ -3,5 +3,5 @@
   [class.blockie--hidden]="variant === 'prefix' && !address"
   [style.background-image]="blockie">
 
-  <mat-icon *ngIf="(isActiveAccount$ | async) && noicon === undefined">account_circle</mat-icon>
+  <mat-icon *ngIf="(isActiveAccount$ | async) && noicon === undefined && variant !== 'prefix'">account_circle</mat-icon>
 </div>
