@@ -4,10 +4,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { IsOwnerGuard } from './shared';
 import { HomeComponent } from './+home';
 import { AdminComponent } from './+admin';
+import { PollActiveComponent } from './+poll';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},
+  {path: 'active', component: PollActiveComponent},
   {path: '**', redirectTo: '/'},
 ];
 

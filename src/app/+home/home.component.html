@@ -1,9 +1,13 @@
-<mat-card class="active-poll relative" *ngIf="getActivePollContract$ | async as activePollContract">
+<mat-card
+  *ngIf="getActivePollContract$ | async as activePollContract"
+  routerLink="/active"
+  class="active-poll relative pointer">
+
   <mat-card-header>
     <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
     <mat-card-title>Active polling</mat-card-title>
     <mat-card-subtitle>
-      There are {{getActivePollMembersNumber$ | async}} members in this polling.
+      There are {{ getActivePollMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}  members in this polling.
     </mat-card-subtitle>
   </mat-card-header>
 

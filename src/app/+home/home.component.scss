@@ -175,7 +175,8 @@ mat-card-actions {
     margin-right: 12px;
   }
   mat-card-title {
-    margin-top: 2px;
+    position: relative;
+    top: 2px;
   }
   mat-card-subtitle {
     margin-bottom: 0;

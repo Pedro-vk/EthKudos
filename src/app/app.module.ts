@@ -23,6 +23,7 @@ import { environment } from '../environments/environment';
 import { COMPONENTS } from './components';
 import { HOME_COMPONENTS } from './+home';
 import { ADMIN_COMPONENTS } from './+admin';
+import { POLL_COMPONENTS } from './+poll';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ADMIN_COMPONENTS } from './+admin';
     ...COMPONENTS,
     ...HOME_COMPONENTS,
     ...ADMIN_COMPONENTS,
+    ...POLL_COMPONENTS,
   ],
   imports: [
     BrowserModule,
