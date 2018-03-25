@@ -16,7 +16,32 @@
   </div>
 </mat-card>
 
-<h2 class="heading">Most awarded</h2>
+<h2 class="heading" *ngIf="getPreviousPollsContracts$ | async">Previous polls</h2>
+
+<mat-accordion *ngIf="getPreviousPollsContracts$ | async as previousPollsContracts">
+  <mat-expansion-panel
+    *ngFor="let poll of previousPollsContracts; trackBy: trackContracts"
+    [hideToggle]="true"
+    [disabled]="true">
+
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <div class="previous">
+
+          <eth-kudos-blockie [address]="poll.address"></eth-kudos-blockie>
+
+          <span class="previous__number">#{{poll.i + 1 | number : '2.0-0'}}</span>
+
+          <mat-icon>date_range</mat-icon>
+
+          <span class="previous__date">started at {{poll.creation | date : 'short'}}</span>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<h2 class="heading" *ngIf="(getBalances$ | async)?.length">Most awarded</h2>
 
 <mat-accordion>
   <mat-expansion-panel

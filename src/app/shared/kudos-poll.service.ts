@@ -134,6 +134,11 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
     return await this.balanceOf(myAccount);
   }
 
+  async myKudos(): Promise<number> {
+    const myAccount = await this.web3Service.getAccount().toPromise();
+    return await this.getKudosOf(myAccount);
+  }
+
   async imMember(): Promise<boolean> {
     const myAccount = await this.web3Service.getAccount().toPromise();
     return await this.isMember(myAccount);

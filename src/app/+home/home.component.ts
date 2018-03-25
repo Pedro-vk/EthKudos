@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 
-import { KudosTokenService } from '../shared';
+import { KudosTokenService, KudosPollService } from '../shared';
 
 @Component({
   selector: 'eth-kudos-home',
@@ -32,6 +33,25 @@ export class HomeComponent implements OnInit {
       return await _.fromInt(await _.remainingKudos());
     }))
     .share();
+  readonly getPreviousPollsContracts$ = this.kudosTokenService.checkUpdates(_ => _.getPreviousPollsContracts())
+    .map(list =>
+      list
+        .map((kudosPollService, i) =>
+          kudosPollService
+            .checkUpdates(async _ => ({
+              creation: await _.creation(),
+              myKudos: await _.myKudos(),
+            }))
+            .map(({creation, myKudos}) => ({
+              i,
+              address: kudosPollService.address,
+              creation,
+              kudos: myKudos,
+            })),
+        ),
+    )
+    .mergeMap(list => Observable.combineLatest(list))
+    .map(_ => _.reverse());
 
   constructor(private kudosTokenService: KudosTokenService) { }
 
@@ -49,6 +69,9 @@ export class HomeComponent implements OnInit {
     return;
   }
 
+  // trackContracts(index: number, contract: KudosPollService): string {
+  //   return contract.address;
+  // }
   trackMember(index: number, {member}: {member:string} & any): string {
     return member || undefined;
   }
