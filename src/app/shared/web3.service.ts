@@ -13,6 +13,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
 
 import Migrations from '../../../build/contracts/Migrations.json';
@@ -42,7 +43,7 @@ export class Web3Service {
   readonly account$: Observable<string> = this.interval$
     .mergeMap(() => this.getAccount())
     .distinctUntilChanged()
-    .share();
+    .shareReplay(1);
   readonly changes$: Observable<undefined> = Observable
     .merge(this.newBlock$, this.account$)
     .map(() => undefined)

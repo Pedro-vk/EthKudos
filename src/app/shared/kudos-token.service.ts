@@ -169,7 +169,7 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosT
   }
   async getActivePollContract(): Promise<KudosPollService> {
     const activePoll = await this.activePoll();
-    return this.getPollContractByAddress(activePoll);
+    return activePoll ? this.getPollContractByAddress(activePoll) : undefined;
   }
   async getPreviousPollsContracts(): Promise<KudosPollService[]> {
     const polls = await this.getPolls();

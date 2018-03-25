@@ -3,6 +3,7 @@
 $size: 26px;
 $size-prefix: 20px;
 $size-big: 30px;
+$size-card: 40px;
 
 :host {
   line-height: 0;
@@ -20,6 +21,7 @@ $size-big: 30px;
   background-image: linear-gradient(120deg, #0a3518 0%, #002e2d 100%);
   box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, .1);
 
+  &--card,
   &--big {
     border-radius: $size-big / 2;
     height: $size-big;
@@ -28,6 +30,12 @@ $size-big: 30px;
     top: 0;
     margin: 0;
     box-shadow: inset 0 -1px 1px 1px rgba(0, 0, 0, .2);
+  }
+  &--card {
+    border-radius: $size-card / 2;
+    height: $size-card;
+    width: $size-card;
+    min-width: $size-card;
   }
   &--prefix {
     @include transition;

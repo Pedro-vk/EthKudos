@@ -1,6 +1,10 @@
 import { Component, OnChanges, Input, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import blockies from 'blockies';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/shareReplay';
+
+import { Web3Service } from '../../shared/web3.service';
 
 @Component({
   selector: 'eth-kudos-blockie',
@@ -11,9 +15,14 @@ import blockies from 'blockies';
 export class BlockieComponent implements OnChanges {
   @Input() address: string;
   @Input() variant: string;
+  @Input() noicon: undefined;
   blockie: SafeStyle;
 
-  constructor(private domSanitizer: DomSanitizer) { }
+  readonly isActiveAccount$ = this.web3Service.account$
+    .map((account: string = '') => (this.address || '').toLowerCase() === account.toLowerCase())
+    .shareReplay(1);
+
+  constructor(private web3Service: Web3Service, private domSanitizer: DomSanitizer) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.address) {

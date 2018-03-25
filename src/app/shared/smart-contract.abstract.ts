@@ -30,6 +30,10 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
     }
   }
 
+  get address(): string {
+    return (this.contract || {} as any).address;
+  }
+
   constructor(protected web3Service: Web3Service) { }
 
   checkUpdates<T>(fn: (context: this) => Promise<T>): Observable<T> {
@@ -37,7 +41,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
       .merge(this.web3Service.changes$, this.onInitialized)
       .filter(() => this.initialized)
       .mergeMap(() => Observable.fromPromise(fn(this)))
-      .catch(() => Observable.empty<any>())
+      .catch(e => console.warn('checkUpdates error: ', {fn, e}) || Observable.empty<any>())
       .distinctUntilChanged()
       .share();
   }

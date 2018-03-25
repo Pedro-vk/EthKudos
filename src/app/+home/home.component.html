@@ -1,3 +1,21 @@
+<mat-card class="active-poll relative" *ngIf="getActivePollContract$ | async as activePollContract">
+  <mat-card-header>
+    <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
+    <mat-card-title>Active polling</mat-card-title>
+    <mat-card-subtitle>
+      There are {{getActivePollMembersNumber$ | async}} members in this polling.
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <div class="remaining-wrapper">
+    Remaining
+
+    <code class="remaining">
+      {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{token?.symbol}}</span>
+    </code>
+  </div>
+</mat-card>
+
 <h2 class="heading">Most awarded</h2>
 
 <mat-accordion>
