@@ -26,3 +26,68 @@
     </code>
   </div>
 </mat-card>
+
+<form #rewardForm="ngForm" novalidate>
+  <mat-card [attr.disabled]="reward.working">
+    <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
+
+    <mat-card-header>
+      <mat-card-title>Send gratitudes</mat-card-title>
+      <mat-card-subtitle>
+        Send {{token.symbol}} and a gratitude message to other members.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-form-field class="input-address">
+      <eth-kudos-blockie matPrefix [address]="reward.member" variant="prefix"></eth-kudos-blockie>
+      <input
+        matInput
+        [(ngModel)]="reward.member"
+        type="text"
+        #rewardMember="ngModel"
+        name="rewardMember"
+        placeholder="Member address (0x...)"
+        pattern="^0x[0-9a-fA-F]{40}$"
+        required>
+      <mat-error align="end" *ngIf="rewardMember.errors?.pattern">
+        Is not a valid Ethereum address.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="input-address kudos-input">
+      <input
+        matInput
+        [(ngModel)]="reward.kudos"
+        type="number"
+        [max]="maxKudosToSend$ | async"
+        [min]="0"
+        name="rewardKudos"
+        placeholder="How many {{token.symbol}} do you want to send"
+        required>
+      <span class="symbol-suffix" matSuffix>{{token.symbol}}</span>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        [(ngModel)]="reward.message"
+        type="text"
+        name="rewardMessage"
+        placeholder="Message of gratitude"
+        required>
+    </mat-form-field>
+
+    <mat-card-actions>
+      <button mat-button (click)="rewardForm.reset()" type="button">Clear</button>
+      <button
+        mat-button
+        color="primary"
+        type="button"
+        [disabled]="!rewardForm.valid"
+        (click)="sendReward(rewardForm)">
+
+        Send gratitudes
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>

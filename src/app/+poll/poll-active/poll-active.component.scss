@@ -4,6 +4,22 @@
   margin: auto;
 }
 
+mat-form-field {
+  display: block;
+}
+mat-card,
+mat-accordion {
+  margin-bottom: 40px;
+  display: block;
+
+  &.relative {
+    position: relative;
+  }
+}
+mat-card-actions {
+  text-align: right;
+}
+
 .active-poll {
   eth-kudos-blockie {
     display: block;
@@ -56,4 +72,14 @@
     right: 20px;
     transform: translateY(-50%);
   }
+}
+
+.kudos-input {
+  input {
+    text-align: right;
+  }
+}
+.symbol-suffix {
+  opacity: .7;
+  font-size: .8em;
 }
