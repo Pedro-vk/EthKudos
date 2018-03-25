@@ -22,6 +22,9 @@ mat-card-actions {
 
 .previous {
   color: #333333;
+  display: flex;
+  align-items: center;
+  width: 100%;
 
   eth-kudos-blockie {
     display: inline-block;
@@ -30,11 +33,12 @@ mat-card-actions {
 
   &__number {
     font-family: 'Roboto Mono';
-    padding-left: 8px;
-    padding-right: 24px;
+    padding-left: 14px;
+    padding-right: 34px;
     display: inline-block;
     vertical-align: middle;
     font-size: 18px;
+    opacity: .7;
   }
 
   mat-icon {
@@ -43,16 +47,34 @@ mat-card-actions {
     font-size: 18px;
     line-height: 22px;
     opacity: .7;
-    width: 20px;
+    width: 24px;
     position: relative;
-    top: 2px;
+    top: 1px;
   }
 
   &__date {
     display: inline-block;
     vertical-align: middle;
     position: relative;
-    top: 2px;
+    top: 1px;
+  }
+
+  &__right {
+    margin-left: auto;
+    font-size: 16px;
+    color: #666666;
+  }
+  &__my-kudos {
+    display: inline-block;
+    font-size: 16px;
+    padding-left: 4px;
+    color: #222222;
+
+    &-symbol {
+      padding-left: 2px;
+      font-size: 12px;
+      opacity: .6;
+    }
   }
 }
 

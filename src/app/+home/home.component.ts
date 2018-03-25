@@ -39,14 +39,14 @@ export class HomeComponent implements OnInit {
         .map((kudosPollService, i) =>
           kudosPollService
             .checkUpdates(async _ => ({
-              creation: await _.creation(),
-              myKudos: await _.myKudos(),
+              creation: await _.creation() * 1000,
+              kudos: await _.fromInt(await _.myKudos()),
             }))
-            .map(({creation, myKudos}) => ({
+            .map(({creation, kudos}) => ({
               i,
               address: kudosPollService.address,
               creation,
-              kudos: myKudos,
+              kudos: kudos,
             })),
         ),
     )

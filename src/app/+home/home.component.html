@@ -34,7 +34,15 @@
 
           <mat-icon>date_range</mat-icon>
 
-          <span class="previous__date">started at {{poll.creation | date : 'short'}}</span>
+          <span class="previous__date">at {{poll.creation | date : 'short'}}</span>
+
+          <div class="previous__right" *ngIf="poll.kudos">
+            Gratified
+            <code class="previous__my-kudos">
+              {{poll.kudos}}<!--
+           --><span class="previous__my-kudos-symbol">{{token?.symbol}}</span>
+            </code>
+          </div>
         </div>
       </mat-panel-title>
     </mat-expansion-panel-header>
