@@ -8,7 +8,7 @@
   "scripts": {
     "postinstall": "truffle install",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build -prod --aot",
     "lint": "npm run lint:sol && npm run lint:ng",
     "lint:ng": "ng lint",
     "lint:sol": "solium -d contracts/",
@@ -19,7 +19,8 @@
     "test:ng:watch": "ng test --code-coverage",
     "test:sol": "solidity-coverage && mv coverage coverage-sol",
     "test:sol:dev": "truffle test --network dev",
-    "test:sol:live": "truffle test --network ropsten"
+    "test:sol:live": "truffle test --network ropsten",
+    "clean:sol:build": "for i in build/contracts/*.json; do npx jq '{contractName, abi, bytecode, deployedBytecode, compiler, networks, schemaVersion, updatedAt}' \"$i\" > \"$i.tmp\" && mv \"$i.tmp\" \"$i\"; done"
   },
   "dependencies": {
     "@angular/animations": "^5.2.9",
@@ -44,7 +45,7 @@
   "devDependencies": {
     "@angular-devkit/core": "^0.4.6",
     "@angular/cli": "1.5.5",
-    "@angular/compiler-cli": "^5.0.0",
+    "@angular/compiler-cli": "^5.2.9",
     "@angular/language-service": "^5.0.0",
     "@types/jasmine": "~2.5.53",
     "@types/jasminewd2": "~2.0.2",
@@ -52,6 +53,7 @@
     "codelyzer": "^4.0.1",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
+    "jq-cli-wrapper": "^0.4.0",
     "karma": "~1.7.0",
     "karma-cli": "~1.0.1",
     "karma-coverage-istanbul-reporter": "^1.2.1",

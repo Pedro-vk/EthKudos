@@ -5,7 +5,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppCommonModule } from './app-common.module';
 
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppComponent } from './app.component';
 
 import { PROVIDERS } from './shared';
@@ -28,7 +27,6 @@ import { POLL_COMPONENTS } from './+poll';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
 
     AppCommonModule,
   ],

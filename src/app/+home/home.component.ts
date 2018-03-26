@@ -69,9 +69,9 @@ export class HomeComponent implements OnInit {
     return;
   }
 
-  // trackContracts(index: number, contract: KudosPollService): string {
-  //   return contract.address;
-  // }
+  trackContracts(index: number, contract: KudosPollService): string {
+    return contract.address;
+  }
   trackMember(index: number, {member}: {member:string} & any): string {
     return member || undefined;
   }

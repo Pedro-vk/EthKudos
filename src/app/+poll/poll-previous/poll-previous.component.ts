@@ -64,4 +64,7 @@ export class PollPreviousComponent implements OnInit {
   trackGratitude(index: string): string {
     return `${index}` || undefined;
   }
+  trackMember(index: number, {member}: {member:string} & any): string {
+    return member || undefined;
+  }
 }
