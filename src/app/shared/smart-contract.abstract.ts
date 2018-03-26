@@ -52,7 +52,11 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
     return contractLoader;
   }
 
-  protected generateConstant<P extends keyof TruffleContractConstantMethods<C>>(constant: P, mapper?: (response: any) => C[P]): (...args) => Promise<C[P]> {
+  protected generateConstant<P extends keyof TruffleContractConstantMethods<C>>(
+    constant: P,
+    mapper?: (response: any) => C[P]
+  ): (...args) => Promise<C[P]> {
+
     return (...args) =>
       new Promise((resolve, reject) => {
         if (!this.contract) {
@@ -72,7 +76,11 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
       });
   }
 
-  protected async generateConstantIteration<P extends keyof TruffleContractConstantIteratorMethods<CI>>(lengthFn: () => Promise<number>, getter: (i: number) => Promise<CI[P][0]>): Promise<CI[P]> {
+  protected async generateConstantIteration<P extends keyof TruffleContractConstantIteratorMethods<CI>>(
+    lengthFn: () => Promise<number>,
+    getter: (i: number) => Promise<CI[P][0]>
+  ): Promise<CI[P]> {
+
     const length = await lengthFn();
     return await Promise.all(
       Array.from(new Array(+length))

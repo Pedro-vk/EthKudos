@@ -40,10 +40,10 @@ interface KudosPollConstants {
   getPollResult: Result;
   getPollResultsSize: number;
 }
-type KudosPollConstantsIteratiors = {
+type KudosPollConstantsIteratiors = { // tslint:disable-line
   getGratitudesOf: Gratitude[];
   getPollResults: Result[];
-}
+};
 interface KudosPollActions {
   close: boolean;
   addMember: boolean;
@@ -64,6 +64,13 @@ export type KudosPoll = KudosPollActions & KudosPollConstantsIteratiors & KudosP
 @Injectable()
 export class KudosPollService extends SmartContract<KudosPollConstants, KudosPollConstantsIteratiors, KudosPollActions, KudosPollEvents> {
 
+  // Events
+  readonly AddMember$ = this.generateEventObservable('AddMember');
+  readonly Close$ = this.generateEventObservable('Close');
+  readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
+  readonly Reward$ = this.generateEventObservable('Reward');
+  readonly Transfer$ = this.generateEventObservable('Transfer');
+
   // Constants
   readonly version = () => this.generateConstant('version')();
   readonly name = () => this.generateConstant('name')();
@@ -82,15 +89,18 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
   readonly getMember = (index: number) => this.generateConstant('getMember')(index);
   readonly membersNumber = () => this.generateConstant('membersNumber')();
   readonly balanceOf = (owner: string) => this.generateConstant('balanceOf')(owner);
-  readonly getGratitudeOf = (member: string, index: number) => this.generateConstant('getGratitudeOf', ([kudos, message, from]) => ({kudos, message, from}))(member, index);
+  readonly getGratitudeOf = (member: string, index: number) =>
+    this.generateConstant('getGratitudeOf', ([kudos, message, from]) => ({kudos, message, from}))(member, index)
   readonly getGratitudesSizeOf = (member: string) => this.generateConstant('getGratitudesSizeOf')(member);
   readonly getKudosOf = (member: string) => this.generateConstant('getKudosOf')(member);
   readonly getPollResult = (index: number) => this.generateConstant('getPollResult', ([member, kudos]) => ({member, kudos}))(index);
   readonly getPollResultsSize = () => this.generateConstant('getPollResultsSize')();
 
   // Constant iterators
-  readonly getGratitudesOf = (member: string) => this.generateConstantIteration<'getGratitudesOf'>(() => this.getGratitudesSizeOf(member), i => this.getGratitudeOf(member, i));
-  readonly getPollResults = () => this.generateConstantIteration<'getPollResults'>(() => this.getPollResultsSize(), i => this.getPollResult(i));
+  readonly getGratitudesOf = (member: string) =>
+    this.generateConstantIteration<'getGratitudesOf'>(() => this.getGratitudesSizeOf(member), i => this.getGratitudeOf(member, i))
+  readonly getPollResults = () =>
+    this.generateConstantIteration<'getPollResults'>(() => this.getPollResultsSize(), i => this.getPollResult(i))
 
   // Actions
   readonly close = () => this.generateAction('close')();
@@ -99,13 +109,6 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
   readonly transfer = (to: string, value: number) => this.generateAction('transfer')(to, value);
   readonly burn = (value: number) => this.generateAction('burn')(value);
   readonly reward = (to: string, kudos: number, message: string) => this.generateAction('reward')(to, kudos, message);
-
-  // Events
-  readonly AddMember$ = this.generateEventObservable('AddMember');
-  readonly Close$ = this.generateEventObservable('Close');
-  readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
-  readonly Reward$ = this.generateEventObservable('Reward');
-  readonly Transfer$ = this.generateEventObservable('Transfer');
 
   constructor(protected web3Service: Web3Service) {
     super(web3Service);

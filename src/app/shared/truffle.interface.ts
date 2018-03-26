@@ -26,16 +26,16 @@ interface TruffleContractMethodAction<T> extends TruffleContractMethodBase<T> {
 
 export type TruffleContractConstantMethods<T> = {
   [P in keyof T]: TruffleContractMethodConstant<T[P]>;
-}
+};
 export type TruffleContractConstantIteratorMethods<T extends {[p: string]: any[]}> = {
   [P in keyof T]: Promise<T>;
-}
+};
 export type TruffleContractActionMethods<T> = {
   [P in keyof T]: TruffleContractMethodAction<T[P]>;
-}
+};
 export type TruffleContractEventMethods<T> = {
   [P in keyof T]: () => TruffleContractMethodEvent<T[P]>;
-}
+};
 
 interface TruffleContractBase {
   address: string;

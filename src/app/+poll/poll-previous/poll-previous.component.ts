@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { KudosTokenService, KudosPollFactoryService } from '../../shared'
+import { KudosTokenService, KudosPollFactoryService } from '../../shared';
 
 @Component({
   selector: 'eth-kudos-poll-previous',
@@ -45,7 +45,11 @@ export class PollPreviousComponent implements OnInit {
     })))
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)));
 
-  constructor(private route: ActivatedRoute, private kudosTokenService: KudosTokenService, private kudosPollFactoryService: KudosPollFactoryService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private kudosTokenService: KudosTokenService,
+    private kudosPollFactoryService: KudosPollFactoryService,
+  ) { }
 
   ngOnInit() {
     this.kudosTokenService
@@ -64,7 +68,7 @@ export class PollPreviousComponent implements OnInit {
   trackGratitude(index: string): string {
     return `${index}` || undefined;
   }
-  trackMember(index: number, {member}: {member:string} & any): string {
+  trackMember(index: number, {member}: {member: string} & any): string {
     return member || undefined;
   }
 }

@@ -167,11 +167,11 @@ export class AdminComponent implements OnInit {
         form.reset();
       }
     } else {
-      setter({...<any>obj, working: undefined})
+      setter({...<any>obj, working: undefined});
     }
   }
 
-  trackMember(index: number, {member}: {member:string} & any): string {
+  trackMember(index: number, {member}: {member: string} & any): string {
     return member || undefined;
   }
 }

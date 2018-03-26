@@ -97,7 +97,7 @@ export class PollActiveComponent implements OnInit {
         form.reset();
       }
     } else {
-      setter({...<any>obj, working: undefined})
+      setter({...<any>obj, working: undefined});
     }
   }
 

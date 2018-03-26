@@ -31,9 +31,9 @@ interface KudosTokenConstants {
   getContact: string;
   balanceOf: number;
 }
-type KudosTokenConstantsIteratiors = {
+type KudosTokenConstantsIteratiors = {  // tslint:disable-line
   getBalances: {member: string, balance: number, name: string}[];
-}
+};
 interface KudosTokenActions {
   newPoll: boolean;
   closePoll: boolean;
@@ -53,7 +53,16 @@ interface KudosTokenEvents {
 export type KudosToken = KudosTokenActions & KudosTokenConstants & KudosTokenEvents;
 
 @Injectable()
-export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> {
+export class KudosTokenService
+  extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> {
+
+  // Events
+  readonly AddMember$ = this.generateEventObservable('AddMember');
+  readonly RemoveMember$ = this.generateEventObservable('RemoveMember');
+  readonly NewPoll$ = this.generateEventObservable('NewPoll');
+  readonly ClosePoll$ = this.generateEventObservable('ClosePoll');
+  readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
+  readonly Transfer$ = this.generateEventObservable('Transfer');
 
   // Constants
   readonly version = () => this.generateConstant('version')();
@@ -82,23 +91,16 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosT
       const name = await this.getContact(member);
       return {member, name, balance: await this.balanceOf(member)};
     },
-  );
+  )
 
   // Actions
-  readonly newPoll = (kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number) => this.generateAction('newPoll')(kudosByMember, maxKudosToMember, minDurationInMinutes);
+  readonly newPoll = (kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number) =>
+    this.generateAction('newPoll')(kudosByMember, maxKudosToMember, minDurationInMinutes)
   readonly closePoll = () => this.generateAction('closePoll')();
   readonly addMember = (member: string, name: string) => this.generateAction('addMember')(member, name);
   readonly removeMember = (address: string) => this.generateAction('removeMember')(address);
   readonly editContact = (address: string, name: string) => this.generateAction('editContact')(address, name);
   readonly transfer = (to: string, value: number) => this.generateAction('transfer')(to, value);
-
-  // Events
-  readonly AddMember$ = this.generateEventObservable('AddMember');
-  readonly RemoveMember$ = this.generateEventObservable('RemoveMember');
-  readonly NewPoll$ = this.generateEventObservable('NewPoll');
-  readonly ClosePoll$ = this.generateEventObservable('ClosePoll');
-  readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
-  readonly Transfer$ = this.generateEventObservable('Transfer');
 
   constructor(protected web3Service: Web3Service, private kudosPollFactoryService: KudosPollFactoryService) {
     super(web3Service);
@@ -110,7 +112,7 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosT
         const kudosToken = this.getContract(KudosTokenDefinition);
         kudosToken.deployed()
           .then(contract => {
-            this.contract = contract
+            this.contract = contract;
             this.initialized = true;
           });
       });

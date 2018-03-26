@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import contract from "truffle-contract";
+import contract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';

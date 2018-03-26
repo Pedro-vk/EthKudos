@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { Web3Service, ConnectionStatus, KudosTokenService } from './shared';
@@ -32,7 +32,7 @@ import { Web3Service, ConnectionStatus, KudosTokenService } from './shared';
     ]),
   ],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   token: {name: string, symbol: string} = <any>{};
   clickedInstallMetaMask: boolean;
 
@@ -51,7 +51,7 @@ export class AppComponent {
   constructor(
     private web3Service: Web3Service,
     private kudosTokenService: KudosTokenService,
-    private http: Http,
+    private http: HttpClient,
     private router: Router,
   ) { }
 
