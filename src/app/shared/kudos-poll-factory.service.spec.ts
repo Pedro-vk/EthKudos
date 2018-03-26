@@ -1,11 +1,16 @@
 import { TestBed, inject } from '@angular/core/testing';
 
+import { Web3Service } from './web3.service';
+
 import { KudosPollFactoryService } from './kudos-poll-factory.service';
 
 describe('KudosPollFactoryService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [KudosPollFactoryService]
+      providers: [
+        KudosPollFactoryService,
+        Web3Service,
+      ]
     });
   });
 

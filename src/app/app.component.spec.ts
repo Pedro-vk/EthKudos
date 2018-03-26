@@ -1,31 +1,42 @@
-import { TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
+import { AppCommonModule } from './app-common.module';
+import { COMPONENTS } from './components';
+import { PROVIDERS } from './shared';
+
 import { AppComponent } from './app.component';
+
 describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        AppCommonModule,
+        RouterTestingModule,
+        NoopAnimationsModule,
       ],
       declarations: [
-        AppComponent
+        AppComponent,
+        ...COMPONENTS,
       ],
-    }).compileComponents();
+      providers: [
+        ...PROVIDERS,
+      ],
+    })
+    .compileComponents();
   }));
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
-  it(`should have as title 'eth-kudos'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('eth-kudos');
-  }));
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to eth-kudos!');
-  }));
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

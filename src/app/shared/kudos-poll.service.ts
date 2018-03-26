@@ -1,3 +1,5 @@
+import { Injectable } from '@angular/core';
+
 import KudosPollDefinition from '../../../build/contracts/KudosPoll.json';
 
 import { SmartContract } from './smart-contract.abstract';
@@ -59,6 +61,7 @@ interface KudosPollEvents {
 }
 export type KudosPoll = KudosPollActions & KudosPollConstantsIteratiors & KudosPollConstants & KudosPollEvents;
 
+@Injectable()
 export class KudosPollService extends SmartContract<KudosPollConstants, KudosPollConstantsIteratiors, KudosPollActions, KudosPollEvents> {
 
   // Constants

@@ -5,6 +5,9 @@
 /tmp
 /bundles
 /sass
+coverage/
+coverage-ng/
+coverage-sol/
 
 # dependencies
 /node_modules
@@ -45,5 +48,5 @@ Thumbs.db
 # Truffle
 installed_contracts/*
 build/*
-
 coverage\.json
+

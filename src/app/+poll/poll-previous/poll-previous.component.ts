@@ -14,6 +14,7 @@ export class PollPreviousComponent implements OnInit {
 
   readonly pollContract$ = this.route.paramMap
     .map((params: ParamMap) => params.get('address'))
+    .filter(address => !!address)
     .map(address => this.kudosPollFactoryService.getKudosPollServiceAt(address))
     .mergeMap(kudosPollService => kudosPollService.onInitialized.startWith(undefined).map(() => kudosPollService))
     .shareReplay();
