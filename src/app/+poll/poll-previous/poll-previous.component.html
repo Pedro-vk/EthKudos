@@ -1,0 +1,20 @@
+<mat-card *ngIf="pollContract$ | async as pollContract" class="active-poll relative">
+  <mat-card-header>
+    <eth-kudos-blockie [address]="pollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
+    <mat-card-title>Closed poll</mat-card-title>
+    <mat-card-subtitle>
+      <div class="icon-block">
+        <mat-icon>person</mat-icon>
+        <span>
+          {{ pollContractMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}
+        </span>
+      </div>
+      <div class="icon-block">
+        <mat-icon>date_range</mat-icon>
+        <span>
+          at {{(pollContractCreation$ | async) * 1000 | date : 'short'}}
+        </span>
+      </div>
+    </mat-card-subtitle>
+  </mat-card-header>
+</mat-card>

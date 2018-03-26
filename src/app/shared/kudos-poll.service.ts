@@ -109,14 +109,19 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
   }
 
   initAt(address: string): void {
-    if (this.web3Service.status === ConnectionStatus.Total) {
-      const kudosPoll = this.getContract(KudosPollDefinition);
-      kudosPoll.at(address)
-        .then(contract => {
-          this.contract = contract;
-          this.initialized = true;
-        });
-    }
+    this.web3Service
+      .status$
+      .filter(status => status === ConnectionStatus.Total)
+      .first()
+      .subscribe(() => {
+        const kudosPoll = this.getContract(KudosPollDefinition);
+
+        kudosPoll.at(address)
+          .then(contract => {
+            this.contract = contract;
+            this.initialized = true;
+          });
+      });
   }
 
   async fromDecimals(value: number): Promise<number> {

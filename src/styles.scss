@@ -46,3 +46,96 @@ h2.heading {
   font-size: 24px;
   margin: 20px 0;
 }
+
+.ranking {
+  padding: 8px 0;
+  color: #333;
+
+  eth-kudos-blockie {
+    vertical-align: middle;
+    margin-right: 8px;
+    display: inline-block;
+  }
+
+  &__balance {
+    font-family: 'Roboto Mono';
+    color: #666666;
+    background: #dddddd;
+    padding: 2px 10px;
+    display: inline-block;
+    border-radius: 12.5px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+
+    code {
+      opacity: .6;
+      padding-left: 2px;
+      font-size: .7em;
+    }
+    &-wrapper {
+      min-width: 108px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 16px;
+    }
+  }
+  [data-n='1'] &__balance {
+    color: #ffffff;
+    background: #cfb53b;
+  }
+  [data-n='2'] &__balance {
+    color: #ffffff;
+    background: #b3ccea;
+  }
+  [data-n='3'] &__balance {
+    color: #ffffff;
+    background: #a58768;
+  }
+  &__name {
+    font-size: 20px;
+    font-weight: 400;
+    opacity: .8;
+    padding-top: 2px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  [data-n='1'] &__name,
+  [data-n='2'] &__name,
+  [data-n='3'] &__name {
+    opacity: 1;
+  }
+}
+
+.active-poll {
+  eth-kudos-blockie {
+    display: block;
+    margin-right: 12px;
+  }
+  mat-card-title {
+    position: relative;
+    top: 2px;
+  }
+  mat-card-subtitle {
+    margin-bottom: 0;
+    margin-left: -2px;
+  }
+}
+
+.icon-block {
+  display: inline-block;
+  vertical-align: middle;
+  padding-right: 20px;
+
+  * {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  mat-icon {
+    height: 17px;
+    line-height: 14px;
+  }
+  span {
+    position: relative;
+    top: 1px;
+    padding-left: 4px;
+  }
+}

@@ -54,7 +54,6 @@ export type KudosToken = KudosTokenActions & KudosTokenConstants & KudosTokenEve
 
 @Injectable()
 export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> {
-  private kudosPollInstances: {[address: string]: KudosPollService} = {};
 
   // Constants
   readonly version = () => this.generateConstant('version')();
@@ -160,9 +159,7 @@ export class KudosTokenService extends SmartContract<KudosTokenConstants, KudosT
   }
 
   getPollContractByAddress(address: string): KudosPollService {
-    if (+address !== 0) {
-      return this.kudosPollInstances[address] = this.kudosPollInstances[address] || this.kudosPollFactoryService.getKudosPollServiceAt(address);
-    }
+    return this.kudosPollFactoryService.getKudosPollServiceAt(address);
   }
   async getPollContract(index: number): Promise<KudosPollService> {
     const polls = await this.getPolls();

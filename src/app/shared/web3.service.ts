@@ -62,7 +62,8 @@ export class Web3Service {
       }
       return ConnectionStatus.Total;
     })
-    .distinctUntilChanged();
+    .distinctUntilChanged()
+    .shareReplay();
 
   get web3(): Web3 {
     return this._web3 || this.initWeb3();

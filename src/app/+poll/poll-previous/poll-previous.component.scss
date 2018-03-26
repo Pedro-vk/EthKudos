@@ -1,0 +1,36 @@
+:host {
+  max-width: 600px;
+  display: block;
+  margin: auto;
+}
+
+mat-form-field {
+  display: block;
+}
+mat-card,
+mat-accordion {
+  margin-bottom: 40px;
+  display: block;
+
+  &.relative {
+    position: relative;
+  }
+}
+mat-card-actions {
+  text-align: right;
+}
+
+.active-poll {
+  eth-kudos-blockie {
+    display: block;
+    margin-right: 12px;
+  }
+  mat-card-title {
+    position: relative;
+    top: 2px;
+  }
+  mat-card-subtitle {
+    margin-bottom: 0;
+    margin-left: -2px;
+  }
+}
