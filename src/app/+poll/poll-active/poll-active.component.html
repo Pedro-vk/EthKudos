@@ -18,7 +18,7 @@
     </mat-card-subtitle>
   </mat-card-header>
 
-  <div class="remaining-wrapper">
+  <div class="remaining-wrapper" *ngIf="imMember$ | async">
     Remaining
 
     <code class="remaining">
@@ -27,7 +27,7 @@
   </div>
 </mat-card>
 
-<form #rewardForm="ngForm" novalidate>
+<form #rewardForm="ngForm" novalidate *ngIf="imMember$ | async">
   <mat-card [attr.disabled]="reward.working" class="relative">
     <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 

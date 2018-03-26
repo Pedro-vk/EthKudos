@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Http } from '@angular/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { Web3Service, ConnectionStatus, KudosTokenService } from './shared';
@@ -47,7 +48,12 @@ export class AppComponent {
     return this.router.url;
   }
 
-  constructor(private web3Service: Web3Service, private kudosTokenService: KudosTokenService, private router:Router) { }
+  constructor(
+    private web3Service: Web3Service,
+    private kudosTokenService: KudosTokenService,
+    private http: Http,
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
     this.kudosTokenService
@@ -55,12 +61,27 @@ export class AppComponent {
       .subscribe(() => {
         this.setTokenInfo();
       });
-  }
 
+    this.web3Service.account$
+      .mergeMap(account =>
+        this.web3Service.getEthBalance()
+          .filter(balance => balance <= 1)
+          .map(() => account),
+      )
+      .subscribe(account => {
+        this.claimTestEtherOnRopsten(account);
+      });
+  }
   async setTokenInfo(): Promise<undefined> {
     this.token.name = await this.kudosTokenService.name();
     this.token.symbol = await this.kudosTokenService.symbol();
     return;
+  }
+
+  claimTestEtherOnRopsten(account: string): void {
+    console.log('Claim -> ', account);
+    this.http.post('https://faucet.metamask.io', account)
+      .subscribe(() => console.log('Claim done!'));
   }
 
   reload(): void {

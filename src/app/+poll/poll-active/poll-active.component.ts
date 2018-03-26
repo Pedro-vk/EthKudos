@@ -20,6 +20,7 @@ export class PollActiveComponent implements OnInit {
   token: {name: string, symbol: string} = <any>{};
   reward: {member: string, kudos: number, message: string, working: boolean} = <any>{};
 
+  readonly imMember$ = this.kudosTokenService.checkUpdates(_ => _.imMember());
   readonly getActivePollContract$ = this.kudosTokenService.checkUpdates(_ => _.getActivePollContract())
     .shareReplay(1);
   readonly getActivePollMembersNumber$ = this.getActivePollContract$

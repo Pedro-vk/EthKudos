@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpModule } from '@angular/http';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppCommonModule } from './app-common.module';
@@ -17,6 +18,7 @@ describe('AppComponent', () => {
       imports: [
         AppCommonModule,
         RouterTestingModule,
+        HttpModule,
         NoopAnimationsModule,
       ],
       declarations: [

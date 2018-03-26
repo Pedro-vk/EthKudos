@@ -7,7 +7,7 @@
     <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
     <mat-card-title>Active polling</mat-card-title>
     <mat-card-subtitle>
-      There are {{ getActivePollMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}  members in this polling.
+      There are {{ getActivePollMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }} in this polling.
     </mat-card-subtitle>
   </mat-card-header>
 
