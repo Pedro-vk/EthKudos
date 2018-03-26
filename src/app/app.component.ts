@@ -9,6 +9,16 @@ import { Web3Service, ConnectionStatus, KudosTokenService } from './shared';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   animations: [
+    trigger('easeInOut', [
+      transition(':enter', [
+        style({opacity: 0}),
+        animate('.3s ease-in-out', style({opacity: 1})),
+      ]),
+      transition(':leave', [
+        style({opacity: 1}),
+        animate('.3s ease-in-out', style({opacity: 0})),
+      ])
+    ]),
     trigger('buttonFade', [
       state('*', style({transform: 'scale(1)', width: '*', margin: '*'})),
       transition(':enter', [
@@ -23,7 +33,9 @@ import { Web3Service, ConnectionStatus, KudosTokenService } from './shared';
 })
 export class AppComponent {
   token: {name: string, symbol: string} = <any>{};
+  clickedInstallMetaMask: boolean;
 
+  readonly status$ = this.web3Service.status$;
   readonly account$ = this.web3Service.account$;
   readonly balance$ = this.web3Service.checkUpdates(_ => _.getEthBalance());
   readonly kudosBalance$ = this.kudosTokenService.checkUpdates(async _ => _.fromInt(await _.myBalance()));
@@ -49,5 +61,9 @@ export class AppComponent {
     this.token.name = await this.kudosTokenService.name();
     this.token.symbol = await this.kudosTokenService.symbol();
     return;
+  }
+
+  reload(): void {
+    window.location.reload();
   }
 }

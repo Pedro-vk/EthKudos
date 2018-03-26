@@ -127,3 +127,48 @@ $header--secondary---height: 48px !default;
     opacity: .6;
   }
 }
+
+.warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  z-index: 10;
+  display: flex;
+  text-align: center;
+
+  &__header {
+    font-size: 46px;
+    padding-bottom: 30px;
+  }
+  &__message {
+    font-size: 18px;
+    line-height: 1.4em;
+  }
+
+  &-wrapper {
+    margin: auto;
+  }
+
+  button {
+    margin: 30px 0;
+  }
+
+  iframe {
+    margin-top: 40px;
+    max-width: 480px;
+    display: block;
+    margin: auto;
+    border: 0;
+  }
+
+  img {
+    margin-top: 40px;
+    order: 1px solid rgba(0, 0, 0, 0.15);
+    padding-top: 2px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+  }
+}
