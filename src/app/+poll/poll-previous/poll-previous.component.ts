@@ -34,6 +34,15 @@ export class PollPreviousComponent implements OnInit {
     )
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
     .shareReplay();
+  readonly pollContractResults$ = this.pollContract$
+    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.getPollResults()))
+    .map(results => results.sort((a, b) => b.kudos - a.kudos))
+    .map(results => results.map(async _ => ({
+      ..._,
+      name: await this.kudosTokenService.getContact(_.member),
+      kudos: await this.kudosTokenService.fromInt(_.kudos),
+    })))
+    .mergeMap(_ => Observable.fromPromise(Promise.all(_)));
 
   constructor(private route: ActivatedRoute, private kudosTokenService: KudosTokenService, private kudosPollFactoryService: KudosPollFactoryService) { }
 

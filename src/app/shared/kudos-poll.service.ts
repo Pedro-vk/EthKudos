@@ -11,7 +11,7 @@ export interface Gratitude {
 
 export interface Result {
   kudos: number;
-  member: number;
+  member: string;
 }
 
 interface KudosPollConstants {
