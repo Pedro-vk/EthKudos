@@ -193,6 +193,23 @@ contract('KudosPoll', accounts => {
       assert.equal((args || {}).kudos, 30, `30 wasn\'t the kudos`);
       assert.equal((args || {}).message, 'Test message', `'Test message' wasn\'t the message`);
     });
+
+    it('should know the number of Kudos sent from a member to other member', async () => {
+      const kudos = await instance.getKudosSentFromTo.call(accounts[1], accounts[5]);
+
+      assert.equal(+kudos, 175, `1.75 wasn\'t the total of kudos`);
+    });
+
+    it('should prevent to reward with more kudos than max. defined on different rewards', async () => {
+      let failed = false;
+
+      try {
+        await instance.reward(accounts[5], 100, 'Test message', {from: accounts[1]});
+      } catch (e) {
+        failed = true;
+      }
+      assert.ok(failed, 'Must throw an error when send more kudos than max.');
+    });
   });
 
   // Results

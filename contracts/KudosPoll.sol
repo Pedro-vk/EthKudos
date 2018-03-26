@@ -141,6 +141,7 @@ contract KudosPoll is BasicToken, Ownable {
     require(balanceOf(msg.sender) >= _kudos);
     require(_kudos > 0);
     require(_kudos <= maxKudosToMember);
+    require((getKudosSentFromTo(msg.sender, _to) + _kudos) <= maxKudosToMember);
     require(bytes(_message).length > 0);
 
     burn(_kudos);
@@ -180,6 +181,18 @@ contract KudosPoll is BasicToken, Ownable {
     for (uint i = 0; i < gs.length; i++) {
       KudosStructs.Gratitude memory g = gs[i];
       kudos += g.kudos;
+    }
+    return kudos;
+  }
+
+  function getKudosSentFromTo(address _from, address _to) public constant returns (uint256 kudos) {
+    KudosStructs.Gratitude[] memory gs = getGratitudesOf(_to);
+    kudos = 0;
+    for (uint i = 0; i < gs.length; i++) {
+      KudosStructs.Gratitude memory g = gs[i];
+      if (g.from == _from) {
+        kudos += g.kudos;
+      }
     }
     return kudos;
   }
