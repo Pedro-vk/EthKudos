@@ -23,6 +23,17 @@ export class PollPreviousComponent implements OnInit {
   readonly pollContractCreation$ = this.pollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.creation()))
     .shareReplay();
+  readonly pollContractMyGratitudes$ = this.pollContract$
+    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.myGratitudes()))
+    .map(gratitudes => gratitudes
+      .map(async _ => ({
+        ..._,
+        kudos: await this.kudosTokenService.fromInt(_.kudos),
+        fromName: await this.kudosTokenService.getContact(_.from),
+      }))
+    )
+    .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
+    .shareReplay();
 
   constructor(private route: ActivatedRoute, private kudosTokenService: KudosTokenService, private kudosPollFactoryService: KudosPollFactoryService) { }
 
@@ -38,5 +49,9 @@ export class PollPreviousComponent implements OnInit {
     this.token.name = await this.kudosTokenService.name();
     this.token.symbol = await this.kudosTokenService.symbol();
     return;
+  }
+
+  trackGratitude(index: string): string {
+    return `${index}` || undefined;
   }
 }

@@ -1,4 +1,4 @@
-<mat-card *ngIf="pollContract$ | async as pollContract" class="active-poll relative">
+<mat-card *ngIf="pollContract$ | async as pollContract" class="active-poll">
   <mat-card-header>
     <eth-kudos-blockie [address]="pollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
     <mat-card-title>Closed poll</mat-card-title>
@@ -17,4 +17,17 @@
       </div>
     </mat-card-subtitle>
   </mat-card-header>
+</mat-card>
+
+<h2 class="heading" *ngIf="(pollContractMyGratitudes$ | async)?.length">Gratitudes received</h2>
+
+<mat-card class="half-margin gratitude" *ngFor="let gratitude of pollContractMyGratitudes$ | async; trackBy: trackGratitude">
+  <mat-card-header>
+    <mat-card-title>{{gratitude.fromName}} <span>sent:</span></mat-card-title>
+    <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>
+  </mat-card-header>
+
+  <span class="gratitude__kudos">
+    {{gratitude.kudos}}<span>{{token.symbol}}</span>
+  </span>
 </mat-card>

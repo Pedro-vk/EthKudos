@@ -6,7 +6,7 @@ import { Web3Service, ConnectionStatus } from './web3.service';
 export interface Gratitude {
   kudos: number;
   message: string;
-  from: number;
+  from: string;
 }
 
 export interface Result {

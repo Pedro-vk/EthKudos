@@ -15,6 +15,9 @@ mat-accordion {
   &.relative {
     position: relative;
   }
+  &.half-margin {
+    margin-bottom: 20px;
+  }
 }
 mat-card-actions {
   text-align: right;
@@ -32,5 +35,38 @@ mat-card-actions {
   mat-card-subtitle {
     margin-bottom: 0;
     margin-left: -2px;
+  }
+}
+
+.gratitude {
+  position: relative;
+
+  mat-card-title {
+    span {
+      opacity: .6;
+    }
+  }
+  mat-card-subtitle {
+    margin-bottom: 0;
+  }
+
+  &__kudos {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    transform: translateY(-50%);
+    font-family: 'Roboto Mono';
+    color: #666666;
+    background: #dddddd;
+    padding: 2px 10px;
+    display: inline-block;
+    border-radius: 12.5px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+
+    span {
+      opacity: .6;
+      padding-left: 2px;
+      font-size: .7em;
+    }
   }
 }
