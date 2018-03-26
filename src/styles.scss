@@ -97,6 +97,13 @@ h2.heading {
     padding-top: 2px;
     display: inline-block;
     vertical-align: middle;
+
+    &--address {
+      font-family: "Roboto Mono";
+      font-size: 14px;
+      padding-top: 1px;
+      opacity: .6 !important;
+    }
   }
   [data-n='1'] &__name,
   [data-n='2'] &__name,

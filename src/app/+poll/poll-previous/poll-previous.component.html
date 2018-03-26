@@ -27,7 +27,14 @@
   class="gratitude">
 
   <mat-card-header>
-    <mat-card-title>{{gratitude.fromName}} <span>sent:</span></mat-card-title>
+    <mat-card-title *ngIf="gratitude.fromName">
+      {{gratitude.fromName}}
+      <span>sent:</span>
+    </mat-card-title>
+    <mat-card-title *ngIf="!gratitude.fromName">
+      <code>{{gratitude.from}}</code>
+      <span>sent:</span>
+    </mat-card-title>
     <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>
   </mat-card-header>
 
@@ -53,7 +60,7 @@
 
           <eth-kudos-blockie [address]="result.member"></eth-kudos-blockie>
 
-          <span class="ranking__name">{{result.name}}</span>
+          <span class="ranking__name" [class.ranking__name--address]="!result.name">{{result.name || result.member}}</span>
         </div>
       </mat-panel-title>
     </mat-expansion-panel-header>
