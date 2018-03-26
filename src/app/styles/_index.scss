@@ -1,3 +1,38 @@
 @mixin transition() {
   transition: all .26s ease;
 }
+
+@mixin host($columns: false) {
+  display: block;
+  margin: auto;
+  padding: 0 20px;
+  width: 100%;
+  max-width: 600px;
+
+  @if($columns) {
+
+    .side {
+      width: 100%;
+      max-width: 600px;
+
+    }
+
+    @media (min-width: #{(600px * 2) + (40px * 3)}) {
+      display: flex;
+      justify-content: center;
+      padding: 0;
+      max-width: 100%;
+
+      & > .side {
+        margin: 0 20px;
+      }
+    }
+  }
+
+  mat-card,
+  mat-accordion {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

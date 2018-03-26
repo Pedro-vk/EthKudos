@@ -8,7 +8,7 @@
   "scripts": {
     "postinstall": "truffle install",
     "start": "ng serve",
-    "build": "ng build -prod --aot",
+    "build": "npm run clean:sol:build && ng build -prod --aot",
     "lint": "npm run lint:sol && npm run lint:ng",
     "lint:ng": "ng lint",
     "lint:sol": "solium -d contracts/",

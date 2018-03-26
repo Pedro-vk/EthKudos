@@ -1,15 +1,15 @@
 @import '~@angular/material/theming';
+@import '../styles/index';
 
 :host {
-  max-width: 600px;
-  display: block;
-  margin: auto;
+  @include host(true);
 }
 
 mat-form-field {
   display: block;
 }
-mat-card {
+mat-card,
+mat-accordion {
   margin-bottom: 40px;
 }
 mat-card-actions {

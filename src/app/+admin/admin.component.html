@@ -1,219 +1,224 @@
-<form #newPollForm="ngForm" novalidate *ngIf="(isActivePoll$ | async) === false">
-  <mat-card [attr.disabled]="newPoll.working">
-    <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
-
-    <mat-card-header>
-      <mat-card-title>New Poll</mat-card-title>
-      <mat-card-subtitle>
-        Is necessary to define how much kudos is going to have each member.
-        <br>
-        If the member doesn't use them, the remaining kudos will be frozen.
-      </mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-form-field>
-      <input
-        matInput
-        [(ngModel)]="newPoll.kudosByMember"
-        type="number"
-        [min]="0"
-        name="newPollKudosByMember"
-        placeholder="Kudos to each member"
-        required>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input
-        matInput
-        [(ngModel)]="newPoll.maxKudosToMember"
-        type="number"
-        [max]="newPoll.kudosByMember"
-        [min]="0"
-        name="newPollMaxKudosToMember"
-        placeholder="Max. number of kudos on each gratitude"
-        required>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input
-        matInput
-        [(ngModel)]="newPoll.minDurationInMinutes"
-        type="number"
-        [min]="0"
-        name="newPollMinDurationInMinutes"
-        placeholder="Min. duration of the polling (minutes)"
-        required>
-      <mat-hint *ngIf="newPoll.minDurationInMinutes" align="end">
-        Closable at {{isGoingToFinishOn(newPoll.minDurationInMinutes) | date : 'short'}}
-      </mat-hint>
-    </mat-form-field>
-
-    <mat-card-actions>
-      <button mat-button (click)="newPollForm.reset()" type="button">Clear</button>
-      <button
-        mat-button
-        color="primary"
-        type="button"
-        [disabled]="!newPollForm.valid"
-        (click)="createPoll(newPollForm)">
-
-        Create poll
-      </button>
-    </mat-card-actions>
-  </mat-card>
-</form>
-
-<mat-card *ngIf="(isActivePoll$ | async) === true"  [attr.disabled]="closePollWorking">
-  <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
-
-  <mat-card-header>
-    <mat-card-title>Close the active polling</mat-card-title>
-    <mat-card-subtitle>
-      The remaining kudos not sent are going to be frozen.
-      <br>
-      The kudos sent as gratitudes will be converted to <code>{{token?.symbol}}</code>.
-    </mat-card-subtitle>
-  </mat-card-header>
-
-  <div class="transfered">
-    <div class="transfered__title">Kudos sent</div>
-    <code>
-      <span class="transfered__number transfered__number--left">
-        {{(kudosSentOnActivePoll$ | async) || 0}}<span class="transfered__symbol">{{token?.symbol}}</span>
-      </span>
-      <span class="transfered__of"></span>
-      <span class="transfered__number transfered__number--right">
-        {{((kudosSentOnActivePoll$ | async) + (totalSupplyOnActivePoll$ | async)) || 0}}<span class="transfered__symbol">{{token?.symbol}}</span>
-      </span>
-    </code>
-
-    <mat-progress-bar
-      mode="determinate"
-      [value]="(percentageKudosSentOnActivePoll$ | async) * 100">
-    </mat-progress-bar>
-  </div>
-
-  <mat-card-actions class="actions-with-warn">
-    <span class="action-warn" *ngIf="!(activePollCanBeClosed$ | async)">
-      <mat-icon>warning</mat-icon>
-      Closable at {{activePollMinDeadline$ | async | date : 'short'}}
-    </span>
-    <button
-      mat-button
-      color="warn"
-      class="align"
-      type="button"
-      [disabled]="!(activePollCanBeClosed$ | async)"
-      (click)="closePoll()">
-
-      Close polling
-    </button>
-  </mat-card-actions>
-</mat-card>
-
-<form #newMemberForm="ngForm" novalidate>
-  <mat-card [attr.disabled]="newMember.working">
-    <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
-
-    <mat-card-header>
-      <mat-card-title>Add a new member</mat-card-title>
-      <mat-card-subtitle>
-        The new members will be added to the active polling.
-      </mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-form-field class="input-address">
-      <eth-kudos-blockie matPrefix [address]="newMember.member" variant="prefix"></eth-kudos-blockie>
-      <input
-        matInput
-        [(ngModel)]="newMember.member"
-        type="text"
-        #newMemberMember="ngModel"
-        name="newMemberMember"
-        placeholder="New member address (0x...)"
-        pattern="^0x[0-9a-fA-F]{40}$"
-        required>
-      <mat-error align="end" *ngIf="newMemberMember.errors?.pattern">
-        Is not a valid Ethereum address.
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input
-        matInput
-        [(ngModel)]="newMember.contact"
-        type="text"
-        name="newMemberContact"
-        placeholder="Member name"
-        required>
-    </mat-form-field>
-
-    <mat-card-actions>
-      <button mat-button (click)="newMemberForm.reset()" type="button">Clear</button>
-      <button
-        mat-button
-        color="primary"
-        type="button"
-        [disabled]="!newMemberForm.valid"
-        (click)="addMember(newMemberForm)">
-
-        Add member
-      </button>
-    </mat-card-actions>
-  </mat-card>
-</form>
-
-<h2 class="heading" *ngIf="(getContacts$ | async)?.length as length">{{ length | i18nPlural : {'=1': 'Member', 'other': 'Members'} }}</h2>
-<mat-accordion>
-  <mat-expansion-panel
-    *ngFor="let contact of getContacts$ | async; trackBy: trackMember"
-    [hideToggle]="true"
-    [attr.disabled]="memberWorking[contact.member]">
-
-    <mat-expansion-panel-header>
+<div class="side">
+  <form #newPollForm="ngForm" novalidate *ngIf="(isActivePoll$ | async) === false">
+    <mat-card [attr.disabled]="newPoll.working">
       <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 
-      <mat-panel-title>
-        <div class="contact-header">
-          <eth-kudos-blockie [address]="contact.member"></eth-kudos-blockie>
-          <div class="contact-headeraccount">
-            <span class="contact-header__row contact-header__row--name">{{(contact.name)}}</span>
-            <span class="contact-header__row contact-header__row--address">{{contact.member}}</span>
-          </div>
-        </div>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
+      <mat-card-header>
+        <mat-card-title>New Poll</mat-card-title>
+        <mat-card-subtitle>
+          Is necessary to define how much kudos is going to have each member.
+          <br>
+          If the member doesn't use them, the remaining kudos will be frozen.
+        </mat-card-subtitle>
+      </mat-card-header>
 
-    <mat-form-field>
-      <input
-        matInput
-        [(ngModel)]="memberName[contact.member]"
-        type="text"
-        placeholder="Edit name"
-        required>
-    </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="newPoll.kudosByMember"
+          type="number"
+          [min]="0"
+          name="newPollKudosByMember"
+          placeholder="Kudos to each member"
+          required>
+      </mat-form-field>
 
-    <mat-action-row>
-      <span class="action-warn">
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="newPoll.maxKudosToMember"
+          type="number"
+          [max]="newPoll.kudosByMember"
+          [min]="0"
+          name="newPollMaxKudosToMember"
+          placeholder="Max. number of kudos on each gratitude"
+          required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="newPoll.minDurationInMinutes"
+          type="number"
+          [min]="0"
+          name="newPollMinDurationInMinutes"
+          placeholder="Min. duration of the polling (minutes)"
+          required>
+        <mat-hint *ngIf="newPoll.minDurationInMinutes" align="end">
+          Closable at {{isGoingToFinishOn(newPoll.minDurationInMinutes) | date : 'short'}}
+        </mat-hint>
+      </mat-form-field>
+
+      <mat-card-actions>
+        <button mat-button (click)="newPollForm.reset()" type="button">Clear</button>
+        <button
+          mat-button
+          color="primary"
+          type="button"
+          [disabled]="!newPollForm.valid"
+          (click)="createPoll(newPollForm)">
+
+          Create poll
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+
+  <mat-card *ngIf="(isActivePoll$ | async) === true"  [attr.disabled]="closePollWorking">
+    <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
+
+    <mat-card-header>
+      <mat-card-title>Close the active polling</mat-card-title>
+      <mat-card-subtitle>
+        The remaining kudos not sent are going to be frozen.
+        <br>
+        The kudos sent as gratitudes will be converted to <code>{{token?.symbol}}</code>.
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <div class="transfered">
+      <div class="transfered__title">Kudos sent</div>
+      <code>
+        <span class="transfered__number transfered__number--left">
+          {{(kudosSentOnActivePoll$ | async) || 0}}<span class="transfered__symbol">{{token?.symbol}}</span>
+        </span>
+        <span class="transfered__of"></span>
+        <span class="transfered__number transfered__number--right">
+          {{((kudosSentOnActivePoll$ | async) + (totalSupplyOnActivePoll$ | async)) || 0}}<span class="transfered__symbol">{{token?.symbol}}</span>
+        </span>
+      </code>
+
+      <mat-progress-bar
+        mode="determinate"
+        [value]="(percentageKudosSentOnActivePoll$ | async) * 100">
+      </mat-progress-bar>
+    </div>
+
+    <mat-card-actions class="actions-with-warn">
+      <span class="action-warn" *ngIf="!(activePollCanBeClosed$ | async)">
         <mat-icon>warning</mat-icon>
-        The member won't be removed from active polling
+        Closable at {{activePollMinDeadline$ | async | date : 'short'}}
       </span>
-      <button mat-button
+      <button
+        mat-button
         color="warn"
-        (click)="removeMember(contact.member)"
-        type="button">
+        class="align"
+        type="button"
+        [disabled]="!(activePollCanBeClosed$ | async)"
+        (click)="closePoll()">
 
-        Remove member
+        Close polling
       </button>
-      <button mat-button
-        color="primary"
-        (click)="editContact(contact.member, memberName[contact.member])"
-        [disabled]="memberName[contact.member] === contact.name"
-        type="button">
+    </mat-card-actions>
+  </mat-card>
 
-        Edit
-      </button>
-    </mat-action-row>
+  <form #newMemberForm="ngForm" novalidate>
+    <mat-card [attr.disabled]="newMember.working">
+      <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 
-  </mat-expansion-panel>
-</mat-accordion>
+      <mat-card-header>
+        <mat-card-title>Add a new member</mat-card-title>
+        <mat-card-subtitle>
+          The new members will be added to the active polling.
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-form-field class="input-address">
+        <eth-kudos-blockie matPrefix [address]="newMember.member" variant="prefix"></eth-kudos-blockie>
+        <input
+          matInput
+          [(ngModel)]="newMember.member"
+          type="text"
+          #newMemberMember="ngModel"
+          name="newMemberMember"
+          placeholder="New member address (0x...)"
+          pattern="^0x[0-9a-fA-F]{40}$"
+          required>
+        <mat-error align="end" *ngIf="newMemberMember.errors?.pattern">
+          Is not a valid Ethereum address.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="newMember.contact"
+          type="text"
+          name="newMemberContact"
+          placeholder="Member name"
+          required>
+      </mat-form-field>
+
+      <mat-card-actions>
+        <button mat-button (click)="newMemberForm.reset()" type="button">Clear</button>
+        <button
+          mat-button
+          color="primary"
+          type="button"
+          [disabled]="!newMemberForm.valid"
+          (click)="addMember(newMemberForm)">
+
+          Add member
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
+
+<div class="side">
+  <h2 class="heading" *ngIf="(getContacts$ | async)?.length as length">{{ length | i18nPlural : {'=1': 'Member', 'other': 'Members'} }}</h2>
+
+  <mat-accordion>
+    <mat-expansion-panel
+      *ngFor="let contact of getContacts$ | async; trackBy: trackMember"
+      [hideToggle]="true"
+      [attr.disabled]="memberWorking[contact.member]">
+
+      <mat-expansion-panel-header>
+        <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
+
+        <mat-panel-title>
+          <div class="contact-header">
+            <eth-kudos-blockie [address]="contact.member"></eth-kudos-blockie>
+            <div class="contact-headeraccount">
+              <span class="contact-header__row contact-header__row--name">{{(contact.name)}}</span>
+              <span class="contact-header__row contact-header__row--address">{{contact.member}}</span>
+            </div>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="memberName[contact.member]"
+          type="text"
+          placeholder="Edit name"
+          required>
+      </mat-form-field>
+
+      <mat-action-row>
+        <span class="action-warn">
+          <mat-icon>warning</mat-icon>
+          The member won't be removed from active polling
+        </span>
+        <button mat-button
+          color="warn"
+          (click)="removeMember(contact.member)"
+          type="button">
+
+          Remove member
+        </button>
+        <button mat-button
+          color="primary"
+          (click)="editContact(contact.member, memberName[contact.member])"
+          [disabled]="memberName[contact.member] === contact.name"
+          type="button">
+
+          Edit
+        </button>
+      </mat-action-row>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

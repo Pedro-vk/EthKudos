@@ -1,7 +1,7 @@
+@import '../../styles/index';
+
 :host {
-  max-width: 600px;
-  display: block;
-  margin: auto;
+  @include host(false);
 }
 
 mat-form-field {

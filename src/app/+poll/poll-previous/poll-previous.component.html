@@ -1,68 +1,72 @@
-<mat-card *ngIf="pollContract$ | async as pollContract" class="active-poll">
-  <mat-card-header>
-    <eth-kudos-blockie [address]="pollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
-    <mat-card-title>Closed poll</mat-card-title>
-    <mat-card-subtitle>
-      <div class="icon-block">
-        <mat-icon>person</mat-icon>
-        <span>
-          {{ pollContractMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}
-        </span>
-      </div>
-      <div class="icon-block">
-        <mat-icon>date_range</mat-icon>
-        <span>
-          at {{(pollContractCreation$ | async) * 1000 | date : 'short'}}
-        </span>
-      </div>
-    </mat-card-subtitle>
-  </mat-card-header>
-</mat-card>
-
-<h2 class="heading" *ngIf="(pollContractMyGratitudes$ | async)?.length">Gratitudes received</h2>
-
-<mat-card
-  *ngFor="let gratitude of pollContractMyGratitudes$ | async; let last = last; trackBy: trackGratitude"
-  [class.half-margin]="!last"
-  class="gratitude">
-
-  <mat-card-header>
-    <mat-card-title *ngIf="gratitude.fromName">
-      {{gratitude.fromName}}
-      <span>sent:</span>
-    </mat-card-title>
-    <mat-card-title *ngIf="!gratitude.fromName">
-      <code>{{gratitude.from}}</code>
-      <span>sent:</span>
-    </mat-card-title>
-    <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>
-  </mat-card-header>
-
-  <span class="gratitude__kudos">
-    {{gratitude.kudos}}<span>{{token.symbol}}</span>
-  </span>
-</mat-card>
-
-<h2 class="heading" *ngIf="(pollContractResults$ | async)?.length">Most awarded</h2>
-
-<mat-accordion>
-  <mat-expansion-panel
-    *ngFor="let result of pollContractResults$ | async; let i = index; trackBy: trackMember"
-    [hideToggle]="true"
-    [disabled]="true">
-
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <div class="ranking" [attr.data-n]="i + 1">
-          <span class="ranking__balance-wrapper">
-            <span class="ranking__balance">{{result.kudos}}<code>{{token.symbol}}</code></span>
+<div class="side">
+  <mat-card *ngIf="pollContract$ | async as pollContract" class="active-poll">
+    <mat-card-header>
+      <eth-kudos-blockie [address]="pollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
+      <mat-card-title>Closed poll</mat-card-title>
+      <mat-card-subtitle>
+        <div class="icon-block">
+          <mat-icon>person</mat-icon>
+          <span>
+            {{ pollContractMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}
           </span>
-
-          <eth-kudos-blockie [address]="result.member"></eth-kudos-blockie>
-
-          <span class="ranking__name" [class.ranking__name--address]="!result.name">{{result.name || result.member}}</span>
         </div>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-  </mat-expansion-panel>
-</mat-accordion>
+        <div class="icon-block">
+          <mat-icon>date_range</mat-icon>
+          <span>
+            at {{(pollContractCreation$ | async) * 1000 | date : 'short'}}
+          </span>
+        </div>
+      </mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <h2 class="heading" *ngIf="(pollContractMyGratitudes$ | async)?.length">Gratitudes received</h2>
+
+  <mat-card
+    *ngFor="let gratitude of pollContractMyGratitudes$ | async; let last = last; trackBy: trackGratitude"
+    [class.half-margin]="!last"
+    class="gratitude">
+
+    <mat-card-header>
+      <mat-card-title *ngIf="gratitude.fromName">
+        {{gratitude.fromName}}
+        <span>sent:</span>
+      </mat-card-title>
+      <mat-card-title *ngIf="!gratitude.fromName">
+        <code>{{gratitude.from}}</code>
+        <span>sent:</span>
+      </mat-card-title>
+      <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>
+    </mat-card-header>
+
+    <span class="gratitude__kudos">
+      {{gratitude.kudos}}<span>{{token.symbol}}</span>
+    </span>
+  </mat-card>
+</div>
+
+<div *ngIf="(pollContractResults$ | async)?.length !== 0">
+  <h2 class="heading">Most awarded</h2>
+
+  <mat-accordion>
+    <mat-expansion-panel
+      *ngFor="let result of pollContractResults$ | async; let i = index; trackBy: trackMember"
+      [hideToggle]="true"
+      [disabled]="true">
+
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <div class="ranking" [attr.data-n]="i + 1">
+            <span class="ranking__balance-wrapper">
+              <span class="ranking__balance">{{result.kudos}}<code>{{token.symbol}}</code></span>
+            </span>
+
+            <eth-kudos-blockie [address]="result.member"></eth-kudos-blockie>
+
+            <span class="ranking__name" [class.ranking__name--address]="!result.name">{{result.name || result.member}}</span>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
