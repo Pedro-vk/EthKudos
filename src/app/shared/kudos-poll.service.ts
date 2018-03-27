@@ -61,6 +61,8 @@ interface KudosPollEvents {
 }
 export type KudosPoll = KudosPollActions & KudosPollConstantsIteratiors & KudosPollConstants & KudosPollEvents;
 
+Web3Service.addABI(KudosPollDefinition.abi);
+
 @Injectable()
 export class KudosPollService extends SmartContract<KudosPollConstants, KudosPollConstantsIteratiors, KudosPollActions, KudosPollEvents> {
 

@@ -52,6 +52,8 @@ interface KudosTokenEvents {
 }
 export type KudosToken = KudosTokenActions & KudosTokenConstants & KudosTokenEvents;
 
+Web3Service.addABI(KudosTokenDefinition.abi);
+
 @Injectable()
 export class KudosTokenService
   extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> {

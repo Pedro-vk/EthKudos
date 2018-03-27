@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
+import { Transaction, ABIDataTypes } from 'web3/types';
+import abiDecoder from 'abi-decoder';
 import contract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
@@ -25,10 +27,23 @@ export enum ConnectionStatus {
   NoNetwork = 'no-network',
 }
 
+export interface FullTransaction extends Transaction {
+  method: string;
+  methodName: string;
+  params: {
+    name: string;
+    value: string;
+    type: ABIDataTypes,
+  }[];
+}
+
+export type networkType = 'main' | 'morden'| 'ropsten'| 'rinkeby'| 'kovan'| 'unknown';
+
 @Injectable()
 export class Web3Service {
   status: ConnectionStatus;
   account: string;
+  networkType: networkType;
   private _web3: Web3;
   private existInNetwork: boolean;
 
@@ -64,6 +79,28 @@ export class Web3Service {
     })
     .distinctUntilChanged()
     .shareReplay();
+  readonly pendingTransactions$: Observable<FullTransaction[]> = Observable
+    .interval(1000 / 3)
+    .startWith(undefined)
+    .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending')))
+    .distinctUntilChanged((a, b) => a.size === b.size)
+    .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending', true)))
+    .combineLatest(this.account$)
+    .map(([{transactions}, account]) => transactions.filter(transaction => transaction.from.toLowerCase() === account.toLowerCase()))
+    .distinctUntilChanged((a, b) => a.map(_ => _.hash).join('|') === b.map(_ => _.hash).join('|'))
+    .map(transactions =>
+      transactions
+        .map(transaction => {
+          const {name, params} = abiDecoder.decodeMethod(transaction.input) || {};
+          return {
+            ...transaction,
+            method: name,
+            methodName: name.replace(/([A-Z])/g, ' $1').toLowerCase(),
+            params,
+          };
+        }),
+    )
+    .shareReplay();
 
   get web3(): Web3 {
     return this._web3 || this.initWeb3();
@@ -73,6 +110,7 @@ export class Web3Service {
     this.checkContractInNetwork();
     this.status$.subscribe(status => this.status = status);
     this.account$.subscribe(account => this.account = account);
+    this.getNetworkType().subscribe(networkType => this.networkType = networkType);
   }
 
   private initWeb3(): Web3 {
@@ -122,5 +160,28 @@ export class Web3Service {
     return this.changes$
       .mergeMap(() => checkObservable(this))
       .distinctUntilChanged();
+  }
+
+  getNetworkId(): Observable<number> {
+    return Observable.fromPromise(this.web3.eth.net.getId())
+      .map(_ => (+_) || undefined);
+  }
+
+  getNetworkType(): Observable<networkType> {
+    return this.getNetworkId()
+      .map(id => {
+        switch (id) {
+          case 1: return 'main';
+          case 2: return 'morden';
+          case 3: return 'ropsten';
+          case 4: return 'rinkeby';
+          case 42: return 'kovan';
+          default: return 'unknown';
+        }
+      });
+  }
+
+  static addABI(abi: any): void {
+    abiDecoder.addABI(abi);
   }
 }
