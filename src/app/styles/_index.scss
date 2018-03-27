@@ -6,7 +6,6 @@
   display: block;
   margin: auto;
   padding: 0 20px;
-  width: 100%;
   max-width: 600px;
 
   @if($columns) {
@@ -26,13 +25,49 @@
       & > .side {
         margin: 0 20px;
       }
+      mat-card,
+      mat-accordion {
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 
-  mat-card,
-  mat-accordion {
-    &:last-child {
-      margin-bottom: 0;
+  @if(not $columns) {
+    mat-card,
+    mat-accordion {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  h2.heading {
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 24px;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 540px) {
+    mat-card,
+    mat-accordion {
+      &,
+      &:last-child {
+        margin-bottom: 20px;
+      }
+    }
+    .side:last-child {
+      mat-card,
+      mat-accordion {
+        &:last-child {
+          margin-bottom: 0px;
+        }
+      }
+    }
+    h2.heading {
+      margin: 10px 0;
     }
   }
 }

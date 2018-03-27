@@ -10,7 +10,7 @@
             {{ pollContractMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}
           </span>
         </div>
-        <div class="icon-block">
+        <div class="icon-block bp-l">
           <mat-icon>date_range</mat-icon>
           <span>
             at {{(pollContractCreation$ | async) * 1000 | date : 'short'}}
@@ -55,7 +55,7 @@
       [disabled]="true">
 
       <mat-expansion-panel-header>
-        <mat-panel-title>
+        <mat-panel-title class="ranking-wrapper">
           <div class="ranking" [attr.data-n]="i + 1">
             <span class="ranking__balance-wrapper">
               <span class="ranking__balance">{{result.kudos}}<code>{{token.symbol}}</code></span>

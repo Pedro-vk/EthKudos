@@ -40,20 +40,16 @@ mat-form-field.input-address input {
   cursor: pointer;
 }
 
-h2.heading {
-  font-family: 'Roboto';
-  font-weight: 400;
-  font-size: 24px;
-  margin: 20px 0;
-}
-
 .ranking {
   padding: 8px 0;
   color: #333;
+  display: flex;
+  align-items: center;
+  width: 100%;
 
   eth-kudos-blockie {
     vertical-align: middle;
-    margin-right: 8px;
+    margin-right: 10px;
     display: inline-block;
   }
 
@@ -75,8 +71,13 @@ h2.heading {
       min-width: 108px;
       display: inline-block;
       text-align: right;
-      margin-right: 16px;
+      margin-right: 18px;
       vertical-align: middle;
+
+      @media (max-width: 400px) {
+        min-width: 80px;
+        font-size: 12px;
+      }
     }
   }
   [data-n='1'] &__balance {
@@ -98,6 +99,9 @@ h2.heading {
     padding-top: 2px;
     display: inline-block;
     vertical-align: middle;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 
     &--address {
       font-family: "Roboto Mono";
@@ -105,11 +109,24 @@ h2.heading {
       padding-top: 1px;
       opacity: .6 !important;
     }
+
+    @media (max-width: 400px) {
+      font-size: 16px;
+
+      &--address {
+        font-size: 12px;
+      }
+    }
   }
   [data-n='1'] &__name,
   [data-n='2'] &__name,
   [data-n='3'] &__name {
     opacity: 1;
+  }
+
+  &-wrapper {
+    margin: 0 !important;
+    width: 100%;
   }
 }
 
@@ -145,5 +162,16 @@ h2.heading {
     position: relative;
     top: 1px;
     padding-left: 4px;
+  }
+}
+
+@media (max-width: 540px) {
+  .bp-l {
+    display: none !important;
+  }
+}
+@media (min-width: 541px) {
+  .bp-s {
+    display: none !important;
   }
 }

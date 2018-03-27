@@ -9,7 +9,7 @@
           {{ getActivePollMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}
         </span>
       </div>
-      <div class="icon-block">
+      <div class="icon-block bp-l">
         <mat-icon>date_range</mat-icon>
         <span>
           at {{(getActivePollCreation$ | async) * 1000 | date : 'short'}}

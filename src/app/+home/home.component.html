@@ -7,8 +7,11 @@
     <mat-card-header>
       <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
       <mat-card-title>Active polling</mat-card-title>
-      <mat-card-subtitle>
+      <mat-card-subtitle class="bp-l">
         There are {{ getActivePollMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }} in this polling.
+      </mat-card-subtitle>
+      <mat-card-subtitle class="bp-s">
+        {{ getActivePollMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}
       </mat-card-subtitle>
     </mat-card-header>
 
@@ -44,9 +47,9 @@
 
             <span class="previous__number">#{{poll.i + 1 | number : '2.0-0'}}</span>
 
-            <mat-icon>date_range</mat-icon>
+            <mat-icon class="bp-l">date_range</mat-icon>
 
-            <span class="previous__date">at {{poll.creation | date : 'short'}}</span>
+            <span class="previous__date bp-l">at {{poll.creation | date : 'short'}}</span>
 
             <div class="previous__right" *ngIf="poll.kudos">
               Gratified
@@ -72,7 +75,7 @@
       [disabled]="true">
 
       <mat-expansion-panel-header>
-        <mat-panel-title>
+        <mat-panel-title class="ranking-wrapper">
           <div class="ranking" [attr.data-n]="i + 1">
             <span class="ranking__balance-wrapper">
               <span class="ranking__balance">{{balance.balance}}<code>{{token.symbol}}</code></span>

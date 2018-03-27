@@ -91,7 +91,7 @@ export class Web3Service {
     .map(transactions =>
       transactions
         .map(transaction => {
-          const {name, params} = abiDecoder.decodeMethod(transaction.input) || {};
+          const {name, params} = abiDecoder.decodeMethod(transaction.input) || <any>{name: '', params: []};
           return {
             ...transaction,
             method: name,

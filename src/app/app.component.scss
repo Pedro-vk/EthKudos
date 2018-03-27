@@ -23,18 +23,12 @@ $header--secondary---height: 48px !default;
   z-index: 1;
   padding: 40px 20px;
 
+  @media (max-width: 540px) {
+    padding: 20px 0;
+  }
+
   &--footer {
     bottom: $header--secondary---height;
-  }
-}
-
-.title {
-  [mat-icon-button] {
-    margin-right: 4px;
-  }
-  span {
-    display: inline-block;
-    vertical-align: middle;
   }
 }
 
@@ -44,6 +38,35 @@ $header--secondary---height: 48px !default;
   position: fixed;
   width: 100%;
   top: 0;
+
+  svg,
+  svg path {
+    fill: #ffffff;
+  }
+  .title {
+
+    [mat-icon-button] {
+      margin-right: 4px;
+    }
+    span {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 460px) {
+      font-size: 16px;
+
+      mat-icon {
+        font-size: 20px;
+      }
+
+      button {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+      }
+    }
+  }
 
   &--primary {
     z-index: 3;
