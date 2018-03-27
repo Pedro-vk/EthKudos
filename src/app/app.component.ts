@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -9,6 +9,7 @@ import { Web3Service, ConnectionStatus, KudosTokenService } from './shared';
   selector: 'eth-kudos-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('easeInOut', [
       transition(':enter', [
@@ -109,5 +110,10 @@ export class AppComponent implements OnInit {
 
   reload(): void {
     window.location.reload();
+  }
+
+  trackTransaction(index: string, transaction: {hash: string}): string {
+    console.log(transaction.hash)
+    return transaction.hash || undefined;
   }
 }

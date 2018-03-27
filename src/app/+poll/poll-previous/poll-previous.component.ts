@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
@@ -7,7 +7,8 @@ import { KudosTokenService, KudosPollFactoryService } from '../../shared';
 @Component({
   selector: 'eth-kudos-poll-previous',
   templateUrl: './poll-previous.component.html',
-  styleUrls: ['./poll-previous.component.scss']
+  styleUrls: ['./poll-previous.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PollPreviousComponent implements OnInit {
   token: {name: string, symbol: string} = <any>{};

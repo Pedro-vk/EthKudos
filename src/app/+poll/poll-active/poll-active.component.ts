@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -14,7 +14,8 @@ import { Web3Service, KudosTokenService } from '../../shared';
 @Component({
   selector: 'eth-kudos-poll-active',
   templateUrl: './poll-active.component.html',
-  styleUrls: ['./poll-active.component.scss']
+  styleUrls: ['./poll-active.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PollActiveComponent implements OnInit {
   token: {name: string, symbol: string} = <any>{};

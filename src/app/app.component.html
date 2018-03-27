@@ -56,11 +56,11 @@
     <mat-chip
       class="tx"
       (click)="goToEtherscan(transaction.hash)"
-      *ngFor="let transaction of pendingTransactions$ | async">
+      *ngFor="let transaction of pendingTransactions$ | async; trackBy: trackTransaction">
 
       <mat-icon>open_in_new</mat-icon>
       <span class="tx__hash">{{transaction.hash}}</span>
-      <span class="tx__info">
+      <span class="tx__info" *ngIf="transaction.methodName">
         {{transaction.methodName | titlecase}}
       </span>
     </mat-chip>
