@@ -5,6 +5,7 @@ $header---height: 64px !default;
 $header--secondary---height: 48px !default;
 
 .header,
+.footer,
 .container {
   &:not(.visible) {
     display: none;
@@ -21,6 +22,10 @@ $header--secondary---height: 48px !default;
   overflow: auto;
   z-index: 1;
   padding: 40px 20px;
+
+  &--footer {
+    bottom: $header--secondary---height;
+  }
 }
 
 .title {
@@ -114,6 +119,79 @@ $header--secondary---height: 48px !default;
       .symbol {
         opacity: .6;
       }
+    }
+  }
+}
+
+.footer {
+  @include transition;
+
+  background: #fafafa;
+  display: block;
+  position: fixed;
+  height: $header--secondary---height;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  right: 0;
+  box-shadow: 0 0 12px rgba(0, 0, 0, .3);
+  z-index: 2;
+  display: flex;
+
+  &:not(.visible) {
+    display: block;
+    bottom: -$header--secondary---height;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 400;
+    padding-right: 20px;
+  }
+
+  mat-chip-list {
+    flex: 1;
+    overflow: hidden;
+
+    /deep/ .mat-chip-list-wrapper {
+      display: flex;
+    }
+    /deep/ .mat-chip:not(.mat-basic-chip)+.mat-chip:not(.mat-basic-chip) {
+      margin-left: 15px;
+    }
+  }
+
+  .tx {
+    font-family: 'Roboto Mono';
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    max-width: 300px;
+    font-size: 14px;
+    align-items: center;
+    color: #444444;
+    padding: 4px 5px;
+    padding-left: 12px;
+    box-shadow: none;
+    cursor: pointer;
+
+    mat-icon {
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+      margin-right: 8px;
+      opacity: .6;
+    }
+    &__hash {
+      overflow: hidden;
+      padding-right: 10px;
+      text-overflow: ellipsis;
+    }
+    &__info {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .6);
     }
   }
 }

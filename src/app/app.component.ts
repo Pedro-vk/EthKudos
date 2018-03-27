@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
 
   readonly status$ = this.web3Service.status$;
   readonly account$ = this.web3Service.account$;
+  readonly pendingTransactions$ = this.web3Service.pendingTransactions$;
   readonly balance$ = this.web3Service.checkUpdates(_ => _.getEthBalance());
   readonly kudosBalance$ = this.kudosTokenService.checkUpdates(async _ => _.fromInt(await _.myBalance()));
   readonly imOwner$ = this.kudosTokenService.checkUpdates(_ => _.imOnwer());
@@ -72,6 +73,7 @@ export class AppComponent implements OnInit {
         this.claimTestEtherOnRopsten(account);
       });
   }
+
   async setTokenInfo(): Promise<undefined> {
     this.token.name = await this.kudosTokenService.name();
     this.token.symbol = await this.kudosTokenService.symbol();
@@ -82,6 +84,27 @@ export class AppComponent implements OnInit {
     console.log('Claim -> ', account);
     this.http.post('https://faucet.metamask.io', account)
       .subscribe(() => console.log('Claim done!'));
+  }
+
+  goToEtherscan(tx: string): void {
+    const network = this.web3Service.networkType;
+    let url;
+
+    switch (network) {
+      case 'main':
+        url = `https://etherscan.io/tx/${tx}`;
+        break;
+      case 'ropsten':
+      case 'rinkeby':
+      case 'kovan':
+        url = `https://${network}.etherscan.io/tx/${tx}`;
+        break;
+      default: break;
+    }
+    if (url) {
+      const etherscan = window.open(url, '_blank');
+      etherscan.focus();
+    }
   }
 
   reload(): void {

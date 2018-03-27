@@ -35,7 +35,34 @@
   </div>
 </mat-toolbar>
 
-<div class="container" [class.visible]="(status$ | async) === 'total'">
+<mat-toolbar
+  class="footer"
+  color="accent"
+  [class.visible]="(status$ | async) === 'total' && (pendingTransactions$ | async)?.length !== 0">
+
+  <div class="title">
+    Pending transactions:
+  </div>
+  <mat-chip-list>
+    <mat-chip
+      class="tx"
+      (click)="goToEtherscan(transaction.hash)"
+      *ngFor="let transaction of pendingTransactions$ | async">
+
+      <mat-icon>open_in_new</mat-icon>
+      <span class="tx__hash">{{transaction.hash}}</span>
+      <span class="tx__info">
+        {{transaction.methodName | titlecase}}
+      </span>
+    </mat-chip>
+  </mat-chip-list>
+</mat-toolbar>
+
+<div
+  class="container"
+  [class.container--footer]="(pendingTransactions$ | async)?.length !== 0"
+  [class.visible]="(status$ | async) === 'total'">
+
   <router-outlet></router-outlet>
 </div>
 
