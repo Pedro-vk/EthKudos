@@ -177,10 +177,10 @@
       <mat-expansion-panel-header>
         <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 
-        <mat-panel-title>
+        <mat-panel-title class="contact-header-wrapper">
           <div class="contact-header">
             <eth-kudos-blockie [address]="contact.member"></eth-kudos-blockie>
-            <div class="contact-headeraccount">
+            <div class="contact-header-rows">
               <span class="contact-header__row contact-header__row--name">{{(contact.name)}}</span>
               <span class="contact-header__row contact-header__row--address">{{contact.member}}</span>
             </div>

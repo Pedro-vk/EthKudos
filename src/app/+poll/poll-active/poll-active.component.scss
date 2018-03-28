@@ -68,6 +68,7 @@ mat-card-actions {
   &__info {
     line-height: 18px;
     padding-left: 2px;
+    overflow: hidden;
   }
   &__name {
     font-size: 14px;
@@ -80,5 +81,11 @@ mat-card-actions {
     &:before {
       content: attr(data-address);
     }
+  }
+  &__name,
+  &__account {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }

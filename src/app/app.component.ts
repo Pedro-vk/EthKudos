@@ -113,7 +113,6 @@ export class AppComponent implements OnInit {
   }
 
   trackTransaction(index: string, transaction: {hash: string}): string {
-    console.log(transaction.hash)
     return transaction.hash || undefined;
   }
 }

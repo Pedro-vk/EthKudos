@@ -112,14 +112,21 @@ mat-expansion-panel-header {
   padding-bottom: 6px;
 }
 .contact-header {
-  display: flex;
   align-items: center;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
 
   eth-kudos-blockie {
     margin-right: 16px;
     height: 26px;
   }
-
+  &-wrapper {
+    width: 100%;
+  }
+  &-rows {
+    overflow: hidden;
+  }
   &__row {
     font-size: 16px;
     height: 18px;
@@ -133,6 +140,9 @@ mat-expansion-panel-header {
       font-size: 14px;
       padding-top: 1px;
       opacity: .5;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 }

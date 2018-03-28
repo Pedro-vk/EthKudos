@@ -33,7 +33,7 @@ export interface FullTransaction extends Transaction {
   params: {
     name: string;
     value: string;
-    type: ABIDataTypes,
+    type: ABIDataTypes;
   }[];
 }
 
@@ -110,7 +110,11 @@ export class Web3Service {
     this.checkContractInNetwork();
     this.status$.subscribe(status => this.status = status);
     this.account$.subscribe(account => this.account = account);
-    this.getNetworkType().subscribe(networkType => this.networkType = networkType);
+    this.getNetworkType().subscribe(type => this.networkType = type);
+  }
+
+  static addABI(abi: any): void {
+    abiDecoder.addABI(abi);
   }
 
   private initWeb3(): Web3 {
@@ -179,9 +183,5 @@ export class Web3Service {
           default: return 'unknown';
         }
       });
-  }
-
-  static addABI(abi: any): void {
-    abiDecoder.addABI(abi);
   }
 }
