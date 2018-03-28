@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "zeppelin/contracts/token/BasicToken.sol";
+import "zeppelin/contracts/token/BurnableToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
 import "./Kudos.structs.sol";
 
@@ -30,7 +30,7 @@ contract KudosPollFactory {
 }
 
 
-contract KudosPoll is BasicToken, Ownable {
+contract KudosPoll is BurnableToken, Ownable {
   string public version = "0.0.1";
 
   string public name;
@@ -90,6 +90,15 @@ contract KudosPoll is BasicToken, Ownable {
   function close() onlyActive onlyOwner public returns (bool) {
     require (canBeClosed());
     active = false;
+
+    for (uint i = 0; i < members.length; i++) {
+      Transfer(members[i], address(0), balances[members[i]]);
+      Burn(members[i], balances[members[i]]);
+      balances[members[i]] = 0;
+    }
+
+    totalSupply = 0;
+
     Close();
     return true;
   }
@@ -102,6 +111,7 @@ contract KudosPoll is BasicToken, Ownable {
     balances[_member] = kudosByMember;
     totalSupply += kudosByMember;
 
+    Transfer(address(0), _member, kudosByMember);
     AddMember(_member);
 
     return true;
@@ -153,6 +163,9 @@ contract KudosPoll is BasicToken, Ownable {
 
     balances[msg.sender] -= _value;
     totalSupply -= _value;
+
+    Burn(msg.sender, _value);
+    Transfer(msg.sender, address(0), _value);
   }
 
   // Kudos

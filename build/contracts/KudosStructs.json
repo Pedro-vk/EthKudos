@@ -8,6 +8,12 @@
     "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {},
+      "links": {},
+      "address": "0x9e616f15eb1a538739d86b09d754aab7d1868ffc",
+      "transactionHash": "0x7b2ffd6eb79f9eaddbc4260041ea200816a2ab92c870a73c3847b7b76c5e946d"
+    },
     "5777": {
       "events": {},
       "links": {},
@@ -16,5 +22,5 @@
     }
   },
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-03-28T13:07:36.610Z"
+  "updatedAt": "2018-03-28T17:08:21.528Z"
 }

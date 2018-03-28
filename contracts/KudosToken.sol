@@ -87,7 +87,11 @@ contract KudosToken is BasicToken, Ownable {
 
     for (uint i = 0; i < currentPoll.getPollResultsSize(); i++) {
       var (member, kudos) = currentPoll.getPollResult(i);
-      addKudos(member, kudos);
+      if (kudos > 0) {
+        balances[member] += kudos;
+        totalSupply += kudos;
+        Transfer(address(0), member, kudos);
+      }
     }
 
     return true;
@@ -206,12 +210,5 @@ contract KudosToken is BasicToken, Ownable {
       i /= 10;
     }
     return string(bstr);
-  }
-
-  // Kudos balances
-  function addKudos(address _member, uint256 _kudos) onlyOwner private returns (bool) {
-    balances[_member] += _kudos;
-    totalSupply += _kudos;
-    return true;
   }
 }
