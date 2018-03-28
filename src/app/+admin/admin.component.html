@@ -1,5 +1,5 @@
 <div class="side">
-  <form #newPollForm="ngForm" novalidate *ngIf="(isActivePoll$ | async) === false">
+  <form #newPollForm="ngForm" novalidate *ngIf="(isActivePoll$ | async) === false" class="block-separation">
     <mat-card [attr.disabled]="newPoll.working">
       <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 

@@ -8,6 +8,11 @@
   padding: 0 20px;
   max-width: 600px;
 
+  .block-separation {
+    display: block;
+    margin-bottom: 40px;
+  }
+
   @if($columns) {
 
     .side {
@@ -26,7 +31,8 @@
         margin: 0 20px;
       }
       mat-card,
-      mat-accordion {
+      mat-accordion,
+      .block-separation {
         &:last-child {
           margin-bottom: 0;
         }
@@ -36,7 +42,8 @@
 
   @if(not $columns) {
     mat-card,
-    mat-accordion {
+    mat-accordion,
+    .block-separation {
       &:last-child {
         margin-bottom: 0;
       }
@@ -52,7 +59,8 @@
 
   @media (max-width: 540px) {
     mat-card,
-    mat-accordion {
+    mat-accordion,
+    .block-separation {
       &,
       &:last-child {
         margin-bottom: 20px;
@@ -60,7 +68,8 @@
     }
     .side:last-child {
       mat-card,
-      mat-accordion {
+      mat-accordion,
+      .block-separation {
         &:last-child {
           margin-bottom: 0px;
         }

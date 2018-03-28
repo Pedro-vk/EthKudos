@@ -1,5 +1,6 @@
-const KudosToken = artifacts.require('./KudosToken.sol');
-const KudosPoll = artifacts.require('./KudosPoll.sol');
+const KudosToken = artifacts.require('KudosToken');
+const KudosPollFactory = artifacts.require('KudosPollFactory');
+const KudosPoll = artifacts.require('KudosPoll');
 
 contract('KudosToken', accounts => {
   const decimals = 2;
@@ -9,7 +10,9 @@ contract('KudosToken', accounts => {
   before(async function() {
     this.timeout(10 * 60 * 1000);
 
-    instance = await KudosToken.new('KudosToken', 'KKT', decimals);
+    await KudosPollFactory.new();
+
+    instance = await KudosToken.new('KudosToken', 'KKT', decimals, KudosPollFactory.address);
   });
 
   // Lifecycle - Init

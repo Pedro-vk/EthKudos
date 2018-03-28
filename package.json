@@ -22,6 +22,7 @@
     "test:sol": "solidity-coverage && mv coverage coverage-sol",
     "test:sol:dev": "truffle test --network dev",
     "test:sol:live": "truffle test --network ropsten",
+    "merge:sol:build": "npx sol-merger \"./contracts/*.sol\" ./build/merged",
     "clean:sol:build": "for i in build/contracts/*.json; do npx jq '{contractName, abi, bytecode, deployedBytecode, compiler, networks, schemaVersion, updatedAt}' \"$i\" > \"$i.tmp\" && mv \"$i.tmp\" \"$i\"; done"
   },
   "dependencies": {
@@ -40,6 +41,7 @@
     "blockies": "0.0.2",
     "core-js": "^2.4.1",
     "rxjs": "^5.5.2",
+    "sol-merger": "^0.1.2",
     "truffle-contract": "^3.0.4",
     "web3": "^1.0.0-beta.33",
     "zone.js": "^0.8.14"

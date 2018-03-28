@@ -49,3 +49,5 @@ Thumbs.db
 installed_contracts/*
 coverage\.json
 
+
+build/merged/

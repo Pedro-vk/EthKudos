@@ -1,14 +1,36 @@
 pragma solidity ^0.4.18;
 
-import "zeppelin/contracts/math/SafeMath.sol";
 import "zeppelin/contracts/token/BasicToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
 import "./Kudos.structs.sol";
 
 
-contract KudosPoll is BasicToken, Ownable {
-  using SafeMath for uint256;
+contract KudosPollFactory {
+  function KudosPollFactory() public { }
 
+  function newKudosPoll(
+    string _tokenName,
+    string _tokenSymbol,
+    uint8 _decimalUnits,
+    uint256 _kudosByMember,
+    uint256 _maxKudosToMember,
+    uint256 _minDurationInMinutes
+  ) public returns (address kudosPollAddress) {
+    address kudosPoll = new KudosPoll(
+      _tokenName,
+      _tokenSymbol,
+      _decimalUnits,
+      _kudosByMember,
+      _maxKudosToMember,
+      _minDurationInMinutes
+    );
+    KudosPoll(kudosPoll).transferOwnership(msg.sender);
+    return kudosPoll;
+  }
+}
+
+
+contract KudosPoll is BasicToken, Ownable {
   string public version = "0.0.1";
 
   string public name;

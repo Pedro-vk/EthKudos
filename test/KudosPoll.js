@@ -1,4 +1,4 @@
-const KudosPoll = artifacts.require('./KudosPoll.sol');
+const KudosPoll = artifacts.require('KudosPoll');
 
 contract('KudosPoll', accounts => {
   const decimals = 2;

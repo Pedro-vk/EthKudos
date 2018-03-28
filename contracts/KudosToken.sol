@@ -1,16 +1,13 @@
 pragma solidity ^0.4.18;
 
-import "zeppelin/contracts/math/SafeMath.sol";
 import "zeppelin/contracts/token/BasicToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
 import "./string-utils.sol";
 import "./Kudos.structs.sol";
-import "./KudosPoll.sol";
+import "./KudosPollFactory.sol";
 
 
 contract KudosToken is BasicToken, Ownable {
-  using SafeMath for uint256;
-
   string public version = "0.0.1";
 
   string public name;
@@ -27,6 +24,8 @@ contract KudosToken is BasicToken, Ownable {
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) allowed;
 
+  address private kudosPollFactoryAddress;
+
   event AddMember(address indexed member);
   event RemoveMember(address indexed member);
   event NewPoll(address indexed poll);
@@ -35,11 +34,14 @@ contract KudosToken is BasicToken, Ownable {
   function KudosToken(
     string _tokenName,
     string _tokenSymbol,
-    uint8 _decimalUnits
+    uint8 _decimalUnits,
+    address _kudosPollFactoryAddress
   ) public {
     name = _tokenName;
     symbol = _tokenSymbol;
     decimals = _decimalUnits;
+
+    kudosPollFactoryAddress = _kudosPollFactoryAddress;
   }
 
   // Polls
@@ -51,20 +53,23 @@ contract KudosToken is BasicToken, Ownable {
     require (!isActivePoll);
 
     string memory number = uint2str(polls.length + 1);
-    address newPollAddress = new KudosPoll(
-      StringUtils.strConcat(name, " - Poll #", number),
-      StringUtils.strConcat(symbol, "#", number),
-      decimals,
-      _kudosByMember,
-      _maxKudosToMember,
-      _minDurationInMinutes
-    );
+    address newPollAddress = KudosPollFactory(kudosPollFactoryAddress)
+      .newKudosPoll(
+        StringUtils.strConcat(name, " - Poll #", number),
+        StringUtils.strConcat(symbol, "#", number),
+        decimals,
+        _kudosByMember,
+        _maxKudosToMember,
+        _minDurationInMinutes
+      );
 
     polls.push(newPollAddress);
     isActivePoll = true;
 
-    KudosPoll poll = KudosPoll(newPollAddress);
-    poll.addMembers(members);
+    if (members.length > 0) {
+      KudosPoll poll = KudosPoll(newPollAddress);
+      poll.addMembers(members);
+    }
 
     NewPoll(newPollAddress);
 
