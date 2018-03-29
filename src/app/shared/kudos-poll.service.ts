@@ -109,7 +109,6 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
   readonly addMember = (member: string) => this.generateAction('addMember')(member);
   readonly addMembers = (members: string[]) => this.generateAction('addMembers')(members);
   readonly transfer = (to: string, value: number) => this.generateAction('transfer')(to, value);
-  readonly burn = (value: number) => this.generateAction('burn')(value);
   readonly reward = (to: string, kudos: number, message: string) => this.generateAction('reward')(to, kudos, message);
 
   constructor(protected web3Service: Web3Service) {

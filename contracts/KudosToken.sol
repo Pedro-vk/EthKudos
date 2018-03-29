@@ -2,12 +2,13 @@ pragma solidity ^0.4.18;
 
 import "zeppelin/contracts/token/BasicToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
+import "./InstanceOwnable.sol";
 import "./string-utils.sol";
 import "./Kudos.structs.sol";
 import "./KudosPollFactory.sol";
 
 
-contract KudosToken is BasicToken, Ownable {
+contract KudosToken is BasicToken, Ownable, InstanceOwnable {
   string public version = "0.0.1";
 
   string public name;
@@ -25,6 +26,7 @@ contract KudosToken is BasicToken, Ownable {
   mapping (address => mapping (address => uint256)) allowed;
 
   address private kudosPollFactoryAddress;
+  address private upgradedKudosPollFactoryAddress;
 
   event AddMember(address indexed member);
   event RemoveMember(address indexed member);
@@ -42,6 +44,19 @@ contract KudosToken is BasicToken, Ownable {
     decimals = _decimalUnits;
 
     kudosPollFactoryAddress = _kudosPollFactoryAddress;
+  }
+
+  // Upgrades
+  function upgradeKudosPollFactory() onlyOwner public {
+    require(canBeUpgraded());
+  }
+
+  function canBeUpgraded() public constant returns (bool) {
+    return upgradedKudosPollFactoryAddress != address(0) && upgradedKudosPollFactoryAddress != kudosPollFactoryAddress;
+  }
+
+  function newUpgradeKudosPollFactory(address factory) onlyInstanceOwner public {
+    upgradedKudosPollFactoryAddress = factory;
   }
 
   // Polls

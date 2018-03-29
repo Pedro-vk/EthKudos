@@ -111,7 +111,7 @@ contract('KudosPoll', accounts => {
 
     it('should emit a AddMember event', async () => {
       const transaction = await instance.addMember(accounts[7]);
-      const {event, args} = transaction.logs[0] || {};
+      const {event, args} = transaction.logs.filter(_ => _.event === 'AddMember')[0] || {};
 
       assert.equal(event, 'AddMember', 'AddMember wasn\'t the event sent');
       assert.equal((args || {}).member, accounts[7], `${accounts[7]} wasn\'t the member`);
@@ -185,7 +185,7 @@ contract('KudosPoll', accounts => {
 
     it('should emit a Reward event', async () => {
       const transaction = await instance.reward(accounts[0], 30, 'Test message', {from: accounts[1]});
-      const {event, args} = transaction.logs[0] || {};
+      const {event, args} = transaction.logs.filter(_ => _.event === 'Reward')[0] || {};
 
       assert.equal(event, 'Reward', 'Reward wasn\'t the event sent');
       assert.equal((args || {}).sender, accounts[1], `${accounts[1]} wasn\'t the sender`);
@@ -265,7 +265,7 @@ contract('KudosPoll', accounts => {
 
     it('should be able to close the poll and send a Close event', async () => {
       const transaction = await instance.close();
-      const {event} = transaction.logs[0] || {};
+      const {event} = transaction.logs.filter(_ => _.event === 'Close')[0] || {};
 
       assert.equal(event, 'Close', 'Close wasn\'t the event sent');
     });

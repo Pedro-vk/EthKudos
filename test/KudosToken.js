@@ -96,7 +96,7 @@ contract('KudosToken', accounts => {
 
     it('should emit a AddMember event', async () => {
       const transaction = await instance.addMember(accounts[7], 'Test member 7');
-      const {event, args} = transaction.logs[0] || {};
+      const {event, args} = transaction.logs.filter(_ => _.event === 'AddMember')[0] || {};
 
       assert.equal(event, 'AddMember', 'AddMember wasn\'t the event sent');
       assert.equal((args || {}).member, accounts[7], `${accounts[7]} wasn\'t the member`);
@@ -115,7 +115,7 @@ contract('KudosToken', accounts => {
     it('should emit a RemoveMember event', async () => {
       await instance.addMember(accounts[3], 'Test member 3');
       const transaction = await instance.removeMember(accounts[3]);
-      const {event, args} = transaction.logs[0] || {};
+      const {event, args} = transaction.logs.filter(_ => _.event === 'RemoveMember')[0] || {};
 
       assert.equal(event, 'RemoveMember', 'RemoveMember wasn\'t the event sent');
       assert.equal((args || {}).member, accounts[3], `${accounts[3]} wasn\'t the member`);
