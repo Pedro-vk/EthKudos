@@ -2,14 +2,14 @@ pragma solidity ^0.4.18;
 
 import "zeppelin/contracts/token/BasicToken.sol";
 import "zeppelin/contracts/ownership/Ownable.sol";
-import "./InstanceOwnable.sol";
 import "./string-utils.sol";
+import "./KudosRouter.sol";
 import "./Kudos.structs.sol";
 import "./KudosPollFactory.sol";
 
 
-contract KudosToken is BasicToken, Ownable, InstanceOwnable {
-  string public version = "0.0.1";
+contract KudosToken is BasicToken, Ownable {
+  string public version = "0.1";
 
   string public name;
   string public symbol;
@@ -25,8 +25,7 @@ contract KudosToken is BasicToken, Ownable, InstanceOwnable {
   mapping (address => uint256) balances;
   mapping (address => mapping (address => uint256)) allowed;
 
-  address private kudosPollFactoryAddress;
-  address private upgradedKudosPollFactoryAddress;
+  address private routerAddress;
 
   event AddMember(address indexed member);
   event RemoveMember(address indexed member);
@@ -37,26 +36,13 @@ contract KudosToken is BasicToken, Ownable, InstanceOwnable {
     string _tokenName,
     string _tokenSymbol,
     uint8 _decimalUnits,
-    address _kudosPollFactoryAddress
+    address _routerAddress
   ) public {
     name = _tokenName;
     symbol = _tokenSymbol;
     decimals = _decimalUnits;
 
-    kudosPollFactoryAddress = _kudosPollFactoryAddress;
-  }
-
-  // Upgrades
-  function upgradeKudosPollFactory() onlyOwner public {
-    require(canBeUpgraded());
-  }
-
-  function canBeUpgraded() public constant returns (bool) {
-    return upgradedKudosPollFactoryAddress != address(0) && upgradedKudosPollFactoryAddress != kudosPollFactoryAddress;
-  }
-
-  function newUpgradeKudosPollFactory(address factory) onlyInstanceOwner public {
-    upgradedKudosPollFactoryAddress = factory;
+    routerAddress = _routerAddress;
   }
 
   // Polls
@@ -68,7 +54,7 @@ contract KudosToken is BasicToken, Ownable, InstanceOwnable {
     require (!isActivePoll);
 
     string memory number = uint2str(polls.length + 1);
-    address newPollAddress = KudosPollFactory(kudosPollFactoryAddress)
+    address newPollAddress = KudosPollFactory(KudosRouter(routerAddress).getResourceAddress("KudosPollFactory"))
       .newKudosPoll(
         StringUtils.strConcat(name, " - Poll #", number),
         StringUtils.strConcat(symbol, "#", number),

@@ -1,13 +1,13 @@
-const KudosUpdateCenter = artifacts.require('KudosUpdateCenter');
+const KudosRouter = artifacts.require('KudosRouter');
 
-contract('KudosUpdateCenter', accounts => {
+contract('KudosRouter', accounts => {
   let instance;
   let deadline;
 
   before(async function() {
     this.timeout(10 * 60 * 1000);
 
-    instance = await KudosUpdateCenter.new();
+    instance = await KudosRouter.new();
   });
 
   // Resources

@@ -1,4 +1,5 @@
 const KudosToken = artifacts.require('KudosToken');
+const KudosRouter = artifacts.require('KudosRouter');
 const KudosPollFactory = artifacts.require('KudosPollFactory');
 const KudosPoll = artifacts.require('KudosPoll');
 
@@ -6,13 +7,18 @@ contract('KudosToken', accounts => {
   const decimals = 2;
 
   let instance;
+  let kudosRouterInstance;
+  let kudosPollFactory;
 
   before(async function() {
     this.timeout(10 * 60 * 1000);
 
-    await KudosPollFactory.new();
+    kudosPollFactory = (await KudosPollFactory.new()).address;
 
-    instance = await KudosToken.new('KudosToken', 'KKT', decimals, KudosPollFactory.address);
+    kudosRouterInstance = await KudosRouter.new();
+    await kudosRouterInstance.setResource('KudosPollFactory', '0.0-test.1', kudosPollFactory)
+
+    instance = await KudosToken.new('KudosToken', 'KKT', decimals, kudosRouterInstance.address);
   });
 
   // Lifecycle - Init

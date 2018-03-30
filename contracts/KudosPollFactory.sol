@@ -6,6 +6,8 @@ import "./Kudos.structs.sol";
 
 
 contract KudosPollFactory {
+  string public version = "0.1";
+
   function KudosPollFactory() public { }
 
   function newKudosPoll(
@@ -31,7 +33,7 @@ contract KudosPollFactory {
 
 
 contract KudosPoll is BurnableToken, Ownable {
-  string public version = "0.0.1";
+  string public version = "0.1";
 
   string public name;
   string public symbol;
