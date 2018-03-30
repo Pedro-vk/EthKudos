@@ -27,5 +27,5 @@ module.exports = async function(deployer) {
   await kudosRouter.setResource('KudosPollFactory', await kudosPollFactory.version(), KudosPollFactory.address);
   await kudosRouter.setResource('KudosTokenFactory', await kudosTokenFactory.version(), KudosTokenFactory.address);
 
-  await deployer.deploy(KudosOrganisations);
+  await deployer.deploy(KudosOrganisations, KudosRouter.address);
 };
