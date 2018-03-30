@@ -2,7 +2,6 @@ const KudosRouter = artifacts.require('KudosRouter');
 
 contract('KudosRouter', accounts => {
   let instance;
-  let deadline;
 
   before(async function() {
     this.timeout(10 * 60 * 1000);

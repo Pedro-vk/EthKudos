@@ -8,6 +8,29 @@ import "./Kudos.structs.sol";
 import "./KudosPollFactory.sol";
 
 
+contract KudosTokenFactory {
+  string public version = "0.1";
+
+  function KudosTokenFactory() public { }
+
+  function newKudosToken(
+    string _tokenName,
+    string _tokenSymbol,
+    uint8 _decimalUnits,
+    address _routerAddress
+  ) public returns (address kudosTokenAddress) {
+    address kudosToken = new KudosToken(
+      _tokenName,
+      _tokenSymbol,
+      _decimalUnits,
+      _routerAddress
+    );
+    KudosToken(kudosToken).transferOwnership(msg.sender);
+    return kudosToken;
+  }
+}
+
+
 contract KudosToken is BasicToken, Ownable {
   string public version = "0.1";
 
