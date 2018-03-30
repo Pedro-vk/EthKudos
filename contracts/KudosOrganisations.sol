@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "zeppelin/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./KudosRouter.sol";
 import "./KudosTokenFactory.sol";
 

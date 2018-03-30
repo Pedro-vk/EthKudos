@@ -6,7 +6,6 @@
   "license": "ISC",
   "private": true,
   "scripts": {
-    "postinstall": "truffle install",
     "start": "ng serve",
     "build": "npm run clean:sol:build && ng build -prod --aot",
     "deploy:dev": "truffle deploy --network dev && npm run clean:sol:build",
@@ -44,6 +43,7 @@
     "sol-merger": "^0.1.2",
     "truffle-contract": "^3.0.4",
     "web3": "^1.0.0-beta.33",
+    "zeppelin-solidity": "1.8.0",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {

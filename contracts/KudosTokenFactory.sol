@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
-import "zeppelin/contracts/token/BasicToken.sol";
-import "zeppelin/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/token/ERC20/BasicToken.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./string-utils.sol";
 import "./KudosRouter.sol";
 import "./Kudos.structs.sol";
