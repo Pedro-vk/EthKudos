@@ -106,13 +106,17 @@ export class KudosTokenService
 
   constructor(protected web3Service: Web3Service, private kudosPollFactoryService: KudosPollFactoryService) {
     super(web3Service);
+  }
+
+  initAt(address: string): void {
     this.web3Service
       .status$
       .filter(status => status === ConnectionStatus.Total)
       .first()
       .subscribe(() => {
         const kudosToken = this.getContract(KudosTokenDefinition);
-        kudosToken.deployed()
+
+        kudosToken.at(address)
           .then(contract => {
             this.contract = contract;
             this.initialized = true;

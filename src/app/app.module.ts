@@ -7,7 +7,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppCommonModule } from './app-common.module';
 
 import { AppWrapperComponent } from './app-wrapper.component';
-console.log({AppWrapperComponent})
 import { AppComponent } from './app.component';
 
 import { PROVIDERS } from './shared';

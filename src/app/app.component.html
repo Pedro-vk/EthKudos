@@ -6,7 +6,7 @@
  --><button @buttonFade mat-icon-button routerLink="./admin" *ngIf="(imOwner$ | async) && !routeIs('/admin')">
       <mat-icon>settings</mat-icon>
     </button><!--
- --><span>{{token?.name}}</span>
+ --><span>{{(token$ | async)?.name}}</span>
   </div>
   <span>
     <a href="https://github.com/Pedro-vk/EthKudos" target="_blank" tabindex="-1">
@@ -39,7 +39,7 @@
     </div>
     <div class="header__balance-row">
       <span class="bp-l">Kudos received:</span><!--
-   --><code> {{((kudosBalance$ | async) || 0) | number : '.0-2'}} <span class="symbol">{{token?.symbol}}</span></code>
+   --><code> {{((kudosBalance$ | async) || 0) | number : '.0-2'}} <span class="symbol">{{(token$ | async)?.symbol}}</span></code>
     </div>
   </div>
 </mat-toolbar>

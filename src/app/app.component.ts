@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
-import { Web3Service, ConnectionStatus, KudosTokenService } from './shared';
+import { Web3Service, ConnectionStatus, KudosTokenFactoryService } from './shared';
 
 @Component({
   selector: 'eth-kudos-app',
@@ -34,34 +34,31 @@ import { Web3Service, ConnectionStatus, KudosTokenService } from './shared';
   ],
 })
 export class AppComponent implements OnInit {
-  token: {name: string, symbol: string} = <any>{};
   clickedInstallMetaMask: boolean;
 
   readonly status$ = this.web3Service.status$;
   readonly account$ = this.web3Service.account$;
   readonly pendingTransactions$ = this.web3Service.pendingTransactions$;
   readonly balance$ = this.web3Service.checkUpdates(_ => _.getEthBalance());
-  readonly kudosBalance$ = this.kudosTokenService.checkUpdates(async _ => _.fromInt(await _.myBalance()));
-  readonly imOwner$ = this.kudosTokenService.checkUpdates(_ => _.imOnwer());
-  readonly imMember$ = this.kudosTokenService.checkUpdates(_ => _.imMember());
-  readonly myContact$ = this.kudosTokenService.checkUpdates(_ => _.myContact());
+
+  readonly kudosTokenService$ = this.activatedRoute.params
+    .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
+    .shareReplay();
+  readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());;
+  readonly kudosBalance$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(async _ => _.fromInt(await _.myBalance())));
+  readonly imOwner$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imOnwer()));
+  readonly imMember$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imMember()));
+  readonly myContact$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.myContact()));
 
   constructor(
     private web3Service: Web3Service,
-    private kudosTokenService: KudosTokenService,
+    private kudosTokenFactoryService: KudosTokenFactoryService,
     private http: HttpClient,
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-    console.log(this.activatedRoute)
-    this.kudosTokenService
-      .onInitialized
-      .subscribe(() => {
-        this.setTokenInfo();
-      });
-
     this.web3Service.account$
       .mergeMap(account =>
         this.web3Service.getEthBalance()
@@ -71,12 +68,6 @@ export class AppComponent implements OnInit {
       .subscribe(account => {
         this.claimTestEtherOnRopsten(account);
       });
-  }
-
-  async setTokenInfo(): Promise<undefined> {
-    this.token.name = await this.kudosTokenService.name();
-    this.token.symbol = await this.kudosTokenService.symbol();
-    return;
   }
 
   claimTestEtherOnRopsten(account: string): void {

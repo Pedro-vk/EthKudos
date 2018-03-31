@@ -46,6 +46,18 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
       .share();
   }
 
+  getTokenInfo(): Observable<{name?: string, symbol?: string, decimals?: number}> {
+    const emptyPromise = () => new Promise(resolve => resolve(undefined));
+    return this
+      .checkUpdates(async contract => ({
+        name: await ((<any>contract).name || emptyPromise)(),
+        symbol: await ((<any>contract).symbol || emptyPromise)(),
+        decimals: await ((<any>contract).decimals || emptyPromise)(),
+      }))
+      .distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+      .share();
+  }
+
   protected getContract(smartContractDescriptor: any): Contract<TruffleContract<C, CI, A, E>> {
     const contractLoader = contract(smartContractDescriptor);
     contractLoader.setProvider(this.web3Service.web3.currentProvider);
