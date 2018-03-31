@@ -11,10 +11,15 @@ contract KudosRouter is Ownable {
 
   mapping (string => Resource) resources;
 
+  event ResourceUpdate(string resource);
+
   function KudosRouter() public { }
 
   function setResource(string _resource, string _version, address _at) onlyOwner public returns (bool) {
     resources[_resource] = Resource({version: _version, at: _at});
+
+    ResourceUpdate(_resource);
+
     return true;
   }
 
