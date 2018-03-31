@@ -1,7 +1,7 @@
 <div class="side">
   <mat-card
     *ngIf="getActivePollContract$ | async as activePollContract"
-    routerLink="/active"
+    routerLink="./active"
     class="active-poll relative pointer">
 
     <mat-card-header>
@@ -35,7 +35,7 @@
     <mat-expansion-panel
       class="pointer"
       *ngFor="let poll of previousPollsContracts; trackBy: trackContracts"
-      [routerLink]="['/closed', poll.address]"
+      [routerLink]="['./closed', poll.address]"
       [hideToggle]="true"
       [disabled]="true">
 
@@ -65,7 +65,7 @@
   </mat-accordion>
 </div>
 
-<div class="side" *ngIf="(getBalances$ | async)?.length !== 0">
+<div class="side" *ngIf="(getBalances$ | async) && (getBalances$ | async)?.length !== 0">
   <h2 class="heading">Most awarded</h2>
 
   <mat-accordion>

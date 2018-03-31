@@ -1,12 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { Web3Service, ConnectionStatus, KudosTokenService } from './shared';
 
 @Component({
-  selector: 'eth-kudos-root',
+  selector: 'eth-kudos-app',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,18 +46,16 @@ export class AppComponent implements OnInit {
   readonly imMember$ = this.kudosTokenService.checkUpdates(_ => _.imMember());
   readonly myContact$ = this.kudosTokenService.checkUpdates(_ => _.myContact());
 
-  get currentUrl(): string {
-    return this.router.url;
-  }
-
   constructor(
     private web3Service: Web3Service,
     private kudosTokenService: KudosTokenService,
     private http: HttpClient,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
+    console.log(this.activatedRoute)
     this.kudosTokenService
       .onInitialized
       .subscribe(() => {
@@ -106,6 +104,10 @@ export class AppComponent implements OnInit {
       const etherscan = window.open(url, '_blank');
       etherscan.focus();
     }
+  }
+
+  routeIs(url: string): boolean {
+    return this.router.url.split('/').slice(2).join('/') === url.replace(/^\//, '');
   }
 
   reload(): void {

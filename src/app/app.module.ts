@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppCommonModule } from './app-common.module';
 
+import { AppWrapperComponent } from './app-wrapper.component';
+console.log({AppWrapperComponent})
 import { AppComponent } from './app.component';
 
 import { PROVIDERS } from './shared';
@@ -18,6 +20,7 @@ import { POLL_COMPONENTS } from './+poll';
 
 @NgModule({
   declarations: [
+    AppWrapperComponent,
     AppComponent,
     ...COMPONENTS,
     ...HOME_COMPONENTS,
@@ -35,6 +38,6 @@ import { POLL_COMPONENTS } from './+poll';
   providers: [
     ...PROVIDERS,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppWrapperComponent]
 })
 export class AppModule { }
