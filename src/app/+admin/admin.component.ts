@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/observable/fromPromise';
@@ -11,7 +11,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 
-import { Web3Service, KudosTokenService } from '../shared';
+import { Web3Service, KudosTokenFactoryService } from '../shared';
 
 @Component({
   selector: 'eth-kudos-admin',
@@ -20,7 +20,6 @@ import { Web3Service, KudosTokenService } from '../shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminComponent implements OnInit {
-  token: {name: string, symbol: string} = <any>{};
   newPoll: {kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number, working: boolean} = <any>{};
   closePollWorking: boolean;
   newMember: {member: string, contact: string, working: boolean} = <any>{};
@@ -28,12 +27,17 @@ export class AdminComponent implements OnInit {
   memberName: {[address: string]: string} = {};
   memberWorking: {[address: string]: boolean} = {};
 
-  readonly isActivePoll$ = this.kudosTokenService.checkUpdates(_ => _.isActivePoll());
-  readonly getContacts$ = this.kudosTokenService.checkUpdates(_ => _.getContacts());
+
+  readonly kudosTokenService$ = this.activatedRoute.parent.params
+    .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
+    .shareReplay();
+  readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
+  readonly isActivePoll$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.isActivePoll()));
+  readonly getContacts$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getContacts()));
 
   readonly activePollContract$ = this.web3Service.changes$
     .startWith(undefined)
-    .mergeMap(() => Observable.fromPromise(this.kudosTokenService.getActivePollContract()));
+    .mergeMap(() => this.kudosTokenService$.mergeMap(s => Observable.fromPromise(s.getActivePollContract())));
   readonly activePollCanBeClosed$ = this.activePollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.canBeClosed()))
     .catch(() => Observable.of(false))
@@ -69,20 +73,20 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private web3Service: Web3Service,
-    private kudosTokenService: KudosTokenService,
+    private kudosTokenFactoryService: KudosTokenFactoryService,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
-    this.kudosTokenService
-      .onInitialized
-      .subscribe(() => {
-        this.setTokenInfo();
-        this.kudosTokenService
+    this.kudosTokenService$
+      .subscribe(kudosTokenService => {
+        kudosTokenService
           .checkUpdates(_ => _.imOnwer())
           .filter(imOnwer => !imOnwer)
           .first()
-          .subscribe(() => this.router.navigate(['/']));
+          .subscribe(() => this.router.navigate(['../'], {relativeTo: this.activatedRoute}));
       });
 
     this.getContacts$
@@ -91,74 +95,94 @@ export class AdminComponent implements OnInit {
       });
   }
 
-  async setTokenInfo(): Promise<undefined> {
-    this.token.name = await this.kudosTokenService.name();
-    this.token.symbol = await this.kudosTokenService.symbol();
-    return;
-  }
-
   isGoingToFinishOn(minutes: number): number {
     const min = 60 * 1000;
     return Math.round(Date.now() / min) * min + (minutes * min);
   }
 
-  async createPoll(form?: NgForm) {
+  createPoll(form?: NgForm) {
     const done = (success?) => this.onActionFinished(success, this.newPoll, _ => this.newPoll = _, form);
 
     this.newPoll.working = true;
-    this.kudosTokenService
-      .newPoll(
-        await this.kudosTokenService.fromDecimals(this.newPoll.kudosByMember),
-        await this.kudosTokenService.fromDecimals(this.newPoll.maxKudosToMember),
-        this.newPoll.minDurationInMinutes,
-      )
-      .then(() => done(true))
-      .catch(() => done());
+    this.kudosTokenService$
+      .first()
+      .subscribe(async kudosTokenService => {
+        kudosTokenService
+          .newPoll(
+            await kudosTokenService.fromDecimals(this.newPoll.kudosByMember),
+            await kudosTokenService.fromDecimals(this.newPoll.maxKudosToMember),
+            this.newPoll.minDurationInMinutes,
+          )
+          .then(() => done(true))
+          .catch(err => console.warn(err) || done());
+      })
   }
 
   closePoll() {
     const done = (success?: boolean) => {
       this.closePollWorking = undefined;
+      this.changeDetectorRef.markForCheck();
     };
     this.closePollWorking = true;
-    this.kudosTokenService.closePoll()
-      .then(() => done(true))
-      .catch(() => done());
+    this.kudosTokenService$
+      .first()
+      .subscribe(kudosTokenService => {
+        kudosTokenService
+          .closePoll()
+          .then(() => done(true))
+          .catch(err => console.warn(err) || done());
+      });
   }
 
   addMember(form?: NgForm) {
     const done = (success?) => this.onActionFinished(success, this.newMember, _ => this.newMember = _, form);
 
     this.newMember.working = true;
-    this.kudosTokenService
-      .addMember(
-        this.newMember.member,
-        this.newMember.contact,
-      )
-      .then(() => done(true))
-      .catch(() => done());
+    this.kudosTokenService$
+      .first()
+      .subscribe(kudosTokenService => {
+        kudosTokenService
+          .addMember(
+            this.newMember.member,
+            this.newMember.contact,
+          )
+          .then(() => done(true))
+          .catch(err => console.warn(err) || done());
+      });
   }
 
   editContact(address: string, name: string) {
     const done = (success?: boolean) => {
       this.memberWorking[address] = undefined;
+      this.changeDetectorRef.markForCheck();
     };
     this.memberWorking[address] = true;
-    this.kudosTokenService.editContact(address, name)
-      .then(() => done(true))
-      .catch(() => done());
+    this.kudosTokenService$
+      .first()
+      .subscribe(kudosTokenService => {
+        kudosTokenService
+          .editContact(address, name)
+          .then(() => done(true))
+          .catch(err => console.warn(err) || done());
+      });
   }
 
   removeMember(address: string) {
     const done = (success?: boolean) => {
       if (!success) {
         this.memberWorking[address] = undefined;
+        this.changeDetectorRef.markForCheck();
       }
     };
     this.memberWorking[address] = true;
-    this.kudosTokenService.removeMember(address)
-      .then(() => done(true))
-      .catch(() => done());
+    this.kudosTokenService$
+      .first()
+      .subscribe(kudosTokenService => {
+        kudosTokenService
+          .removeMember(address)
+          .then(() => done(true))
+          .catch(err => console.warn(err) || done());
+      });
   }
 
   private onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {
@@ -170,6 +194,7 @@ export class AdminComponent implements OnInit {
     } else {
       setter({...<any>obj, working: undefined});
     }
+    this.changeDetectorRef.markForCheck();
   }
 
   trackMember(index: number, {member}: {member: string} & any): string {

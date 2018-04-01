@@ -5,16 +5,19 @@ import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/do';
 
-import { KudosTokenService } from './kudos-token.service';
+import { KudosTokenFactoryService } from './kudos-token-factory.service';
 
 @Injectable()
 export class IsOwnerGuard implements CanActivate {
 
-  constructor(private kudosTokenService: KudosTokenService) { }
+  constructor(private kudosTokenFactoryService: KudosTokenFactoryService) { }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.kudosTokenService
+    const tokenAddress = next.params.tokenAddress || next.parent.params.tokenAddress;
+    const kudosTokenService = this.kudosTokenFactoryService
+      .getKudosTokenServiceAt(tokenAddress);
+    return kudosTokenService
       .onInitialized
-      .mergeMap(() => Observable.fromPromise(this.kudosTokenService.imOnwer()));
+      .mergeMap(() => Observable.fromPromise(kudosTokenService.imOnwer()));
   }
 }

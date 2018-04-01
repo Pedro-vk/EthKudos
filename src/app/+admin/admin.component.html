@@ -72,7 +72,7 @@
       <mat-card-subtitle>
         The remaining kudos not sent are going to be frozen.
         <br>
-        The kudos sent as gratitudes will be converted to <code>{{token?.symbol}}</code>.
+        The kudos sent as gratitudes will be converted to <code>{{(token$ | async)?.symbol}}</code>.
       </mat-card-subtitle>
     </mat-card-header>
 
@@ -80,11 +80,11 @@
       <div class="transfered__title">Kudos sent</div>
       <code>
         <span class="transfered__number transfered__number--left">
-          {{(kudosSentOnActivePoll$ | async) || 0}}<span class="transfered__symbol">{{token?.symbol}}</span>
+          {{(kudosSentOnActivePoll$ | async) || 0}}<span class="transfered__symbol">{{(token$ | async)?.symbol}}</span>
         </span>
         <span class="transfered__of"></span>
         <span class="transfered__number transfered__number--right">
-          {{((kudosSentOnActivePoll$ | async) + (totalSupplyOnActivePoll$ | async)) || 0}}<span class="transfered__symbol">{{token?.symbol}}</span>
+          {{((kudosSentOnActivePoll$ | async) + (totalSupplyOnActivePoll$ | async)) || 0}}<span class="transfered__symbol">{{(token$ | async)?.symbol}}</span>
         </span>
       </code>
 

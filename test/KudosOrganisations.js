@@ -77,4 +77,35 @@ contract('KudosOrganisations', accounts => {
       assert.equal((await instance.getOrganisations()).length, 2, '2 wasn\'t the number of organisations');
     });
   });
+
+  // Token
+  describe('(Token)', function() {
+    this.timeout(10 * 60 * 1000);
+
+    let tokenInstance;
+
+    before(async () => {
+      const tx = await instance.newOrganisation('TestToken', 'TTK', 2, false);
+      const kudosTokenAddress = tx.logs.filter(_ => _.event === 'NewOrganisation').pop().args.kudosToken;
+      tokenInstance = await KudosToken.at(kudosTokenAddress);
+    });
+
+    it('should be able to create a poll', async () => {
+      assert.equal(+(await tokenInstance.getPollsSize()), 0, '0 wasn\'t in the number of polls');
+
+      await tokenInstance.newPoll(500, 200, 0);
+
+      assert.equal(+(await tokenInstance.getPollsSize()), 1, '1 wasn\'t in the number of polls');
+    });
+
+    it('should be able to close a poll', async () => {
+      assert.ok(await tokenInstance.isActivePoll(), `Must be active.`);
+
+      await new Promise(resolve => setTimeout(() => resolve(undefined), 2 * 1000));
+      await tokenInstance.closePoll();
+
+      assert.ok(!(await tokenInstance.isActivePoll()), `Mustn't be active.`);
+    });
+
+  });
 });

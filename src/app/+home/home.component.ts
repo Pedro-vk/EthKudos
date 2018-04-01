@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromPromise';
@@ -6,7 +7,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 
-import { KudosTokenService, KudosPollService } from '../shared';
+import { KudosTokenFactoryService, KudosPollService } from '../shared';
 
 @Component({
   selector: 'eth-kudos-home',
@@ -14,16 +15,21 @@ import { KudosTokenService, KudosPollService } from '../shared';
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent implements OnInit {
-  token: {name: string, symbol: string} = <any>{};
-
-  readonly getBalances$ = this.kudosTokenService
-    .checkUpdates(_ => _.getBalances())
-    .map(balances => balances.sort((a, b) => b.balance - a.balance))
-    .map(balances => balances.map(async _ => ({..._, balance: await this.kudosTokenService.fromInt(_.balance)})))
-    .mergeMap(_ => Observable.fromPromise(Promise.all(_)));
-  readonly getActivePollContract$ = this.kudosTokenService.checkUpdates(_ => _.getActivePollContract())
-    .shareReplay(1);
+export class HomeComponent {
+  readonly kudosTokenService$ = this.activatedRoute.parent.params
+    .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
+    .shareReplay();
+  readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
+  readonly getBalances$ = this.kudosTokenService$
+    .mergeMap(kudosTokenService =>
+      kudosTokenService
+        .checkUpdates(_ => _.getBalances())
+        .map(balances => balances.sort((a, b) => b.balance - a.balance))
+        .map(balances => balances.map(async _ => ({..._, balance: await kudosTokenService.fromInt(_.balance)})))
+        .mergeMap(_ => Observable.fromPromise(Promise.all(_))),
+    );
+  readonly getActivePollContract$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getActivePollContract()))
+    .shareReplay();
   readonly getActivePollMembersNumber$ = this.getActivePollContract$
     .filter(_ => !!_)
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.membersNumber()))
@@ -34,7 +40,7 @@ export class HomeComponent implements OnInit {
       return await _.fromInt(await _.remainingKudos());
     }))
     .share();
-  readonly getPreviousPollsContracts$ = this.kudosTokenService.checkUpdates(_ => _.getPreviousPollsContracts())
+  readonly getPreviousPollsContracts$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getPreviousPollsContracts()))
     .map(list =>
       list
         .map((kudosPollService, i) =>
@@ -54,21 +60,7 @@ export class HomeComponent implements OnInit {
     .mergeMap(list => Observable.combineLatest(list))
     .map(_ => _.reverse());
 
-  constructor(private kudosTokenService: KudosTokenService) { }
-
-  ngOnInit() {
-    this.kudosTokenService
-      .onInitialized
-      .subscribe(() => {
-        this.setTokenInfo();
-      });
-  }
-
-  async setTokenInfo(): Promise<undefined> {
-    this.token.name = await this.kudosTokenService.name();
-    this.token.symbol = await this.kudosTokenService.symbol();
-    return;
-  }
+  constructor(private kudosTokenFactoryService: KudosTokenFactoryService, private activatedRoute: ActivatedRoute) { }
 
   trackContracts(index: number, contract: KudosPollService): string {
     return contract.address;

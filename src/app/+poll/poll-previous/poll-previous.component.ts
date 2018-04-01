@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { KudosTokenService, KudosPollFactoryService } from '../../shared';
+import { KudosTokenFactoryService, KudosPollFactoryService } from '../../shared';
 
 @Component({
   selector: 'eth-kudos-poll-previous',
@@ -10,10 +10,13 @@ import { KudosTokenService, KudosPollFactoryService } from '../../shared';
   styleUrls: ['./poll-previous.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PollPreviousComponent implements OnInit {
-  token: {name: string, symbol: string} = <any>{};
+export class PollPreviousComponent {
+  readonly kudosTokenService$ = this.activatedRoute.parent.params
+    .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
+    .shareReplay();
+  readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
 
-  readonly pollContract$ = this.route.paramMap
+  readonly pollContract$ = this.activatedRoute.paramMap
     .map((params: ParamMap) => params.get('address'))
     .filter(address => !!address)
     .map(address => this.kudosPollFactoryService.getKudosPollServiceAt(address))
@@ -27,11 +30,12 @@ export class PollPreviousComponent implements OnInit {
     .shareReplay();
   readonly pollContractMyGratitudes$ = this.pollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.myGratitudes()))
-    .map(gratitudes => gratitudes
+    .combineLatest(this.kudosTokenService$)
+    .map(([gratitudes, kudosTokenService]) => gratitudes
       .map(async _ => ({
         ..._,
-        kudos: await this.kudosTokenService.fromInt(_.kudos),
-        fromName: await this.kudosTokenService.getContact(_.from),
+        kudos: await kudosTokenService.fromInt(_.kudos),
+        fromName: await kudosTokenService.getContact(_.from),
       }))
     )
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
@@ -39,32 +43,19 @@ export class PollPreviousComponent implements OnInit {
   readonly pollContractResults$ = this.pollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.getPollResults()))
     .map(results => results.sort((a, b) => b.kudos - a.kudos))
-    .map(results => results.map(async _ => ({
+    .combineLatest(this.kudosTokenService$)
+    .map(([results, kudosTokenService]) => results.map(async _ => ({
       ..._,
-      name: await this.kudosTokenService.getContact(_.member),
-      kudos: await this.kudosTokenService.fromInt(_.kudos),
+      name: await kudosTokenService.getContact(_.member),
+      kudos: await kudosTokenService.fromInt(_.kudos),
     })))
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)));
 
   constructor(
-    private route: ActivatedRoute,
-    private kudosTokenService: KudosTokenService,
+    private activatedRoute: ActivatedRoute,
+    private kudosTokenFactoryService: KudosTokenFactoryService,
     private kudosPollFactoryService: KudosPollFactoryService,
   ) { }
-
-  ngOnInit() {
-    this.kudosTokenService
-      .onInitialized
-      .subscribe(() => {
-        this.setTokenInfo();
-      });
-  }
-
-  async setTokenInfo(): Promise<undefined> {
-    this.token.name = await this.kudosTokenService.name();
-    this.token.symbol = await this.kudosTokenService.symbol();
-    return;
-  }
 
   trackGratitude(index: string): string {
     return `${index}` || undefined;

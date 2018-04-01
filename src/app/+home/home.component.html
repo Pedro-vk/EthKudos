@@ -19,7 +19,7 @@
       Remaining
 
       <code class="remaining">
-        {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{token?.symbol}}</span>
+        {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{(token$ | async)?.symbol}}</span>
       </code>
     </div>
   </mat-card>
@@ -55,7 +55,7 @@
               Gratified
               <code class="previous__my-kudos">
                 {{poll.kudos}}<!--
-             --><span class="previous__my-kudos-symbol">{{token?.symbol}}</span>
+             --><span class="previous__my-kudos-symbol">{{(token$ | async)?.symbol}}</span>
               </code>
             </div>
           </div>
@@ -78,7 +78,7 @@
         <mat-panel-title class="ranking-wrapper">
           <div class="ranking" [attr.data-n]="i + 1">
             <span class="ranking__balance-wrapper">
-              <span class="ranking__balance">{{balance.balance}}<code>{{token.symbol}}</code></span>
+              <span class="ranking__balance">{{balance.balance}}<code>{{(token$ | async)?.symbol}}</code></span>
             </span>
 
             <eth-kudos-blockie [address]="balance.member"></eth-kudos-blockie>

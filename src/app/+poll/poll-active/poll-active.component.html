@@ -22,7 +22,7 @@
     Remaining
 
     <code class="remaining">
-      {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{token?.symbol}}</span>
+      {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{(token$ | async)?.symbol}}</span>
     </code>
   </div>
 </mat-card>
@@ -34,7 +34,7 @@
     <mat-card-header>
       <mat-card-title>Send gratitudes</mat-card-title>
       <mat-card-subtitle>
-        Send {{token.symbol}} and a gratitude message to other members.
+        Send {{(token$ | async)?.symbol}} and a gratitude message to other members.
       </mat-card-subtitle>
     </mat-card-header>
 
@@ -73,9 +73,9 @@
         [max]="maxKudosToSend$ | async"
         [min]="0"
         name="rewardKudos"
-        placeholder="How many {{token.symbol}} do you want to send"
+        placeholder="How many {{(token$ | async)?.symbol}} do you want to send"
         required>
-      <span class="symbol-suffix" matSuffix>{{token.symbol}}</span>
+      <span class="symbol-suffix" matSuffix>{{(token$ | async)?.symbol}}</span>
     </mat-form-field>
 
     <mat-form-field>

@@ -79,7 +79,7 @@ contract KudosToken is BasicToken, Ownable {
     string memory number = uint2str(polls.length + 1);
     address newPollAddress = KudosPollFactory(KudosRouter(routerAddress).getResourceAddress("KudosPollFactory"))
       .newKudosPoll(
-        StringUtils.strConcat(name, " - Poll #", number),
+        StringUtils.strConcat(name, " - Polling #", number),
         StringUtils.strConcat(symbol, "#", number),
         decimals,
         _kudosByMember,
@@ -102,6 +102,7 @@ contract KudosToken is BasicToken, Ownable {
 
   function closePoll() onlyOwner public returns (bool) {
     require(isActivePoll);
+
 
     KudosPoll currentPoll = KudosPoll(activePoll());
     require(currentPoll.canBeClosed());

@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/combineLatest';
@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
 
-import { Web3Service, KudosTokenService } from '../../shared';
+import { Web3Service, KudosTokenFactoryService } from '../../shared';
 
 @Component({
   selector: 'eth-kudos-poll-active',
@@ -21,21 +21,24 @@ export class PollActiveComponent implements OnInit {
   token: {name: string, symbol: string} = <any>{};
   reward: {member: string, kudos: number, message: string, working: boolean} = <any>{};
 
-  readonly imMember$ = this.kudosTokenService.checkUpdates(_ => _.imMember());
-  readonly getActivePollContract$ = this.kudosTokenService.checkUpdates(_ => _.getActivePollContract())
-    .shareReplay(1);
-  readonly getActivePollMembersNumber$ = this.getActivePollContract$
+  readonly kudosTokenService$ = this.activatedRoute.parent.params
+    .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
+    .shareReplay();
+  readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
+
+  readonly imMember$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imMember()));
+  readonly getActivePollContract$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getActivePollContract()))
     .filter(_ => !!_)
+    .shareReplay();
+  readonly getActivePollMembersNumber$ = this.getActivePollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.membersNumber()))
     .share();
   readonly getActivePollRemainingKudos$ = this.getActivePollContract$
-    .filter(_ => !!_)
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(async _ => {
       return await _.fromInt(await _.remainingKudos());
     }))
     .share();
   readonly getActivePollCreation$ = this.getActivePollContract$
-    .filter(_ => !!_)
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.creation()))
     .share();
   readonly maxKudosToSend$ = this.getActivePollContract$
@@ -47,30 +50,24 @@ export class PollActiveComponent implements OnInit {
     .share();
   readonly getOtherMembers$ = this.getActivePollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.getMembers()))
-    .map(members => this.kudosTokenService.getContactsOf(members))
+    .mergeMap(members => this.kudosTokenService$.map(s => s.getContactsOf(members)))
     .mergeMap(_ => Observable.fromPromise(_))
     .combineLatest(this.web3Service.account$)
     .map(([contacts, account]) => contacts.filter(_ => (_.member || '').toLowerCase() !== (account || '').toLowerCase()))
     .share();
 
-  constructor(private web3Service: Web3Service, private kudosTokenService: KudosTokenService, private router: Router) { }
+  constructor(
+    private web3Service: Web3Service,
+    private router: Router,
+    private kudosTokenFactoryService: KudosTokenFactoryService,
+    private activatedRoute: ActivatedRoute,
+  ) { }
 
   ngOnInit() {
-    this.kudosTokenService
-      .onInitialized
-      .subscribe(() => {
-        this.setTokenInfo();
-      });
-    this.getActivePollContract$
+    this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getActivePollContract()))
       .filter(_ => !_)
       .first()
       .subscribe(() => this.router.navigate(['/']));
-  }
-
-  async setTokenInfo(): Promise<undefined> {
-    this.token.name = await this.kudosTokenService.name();
-    this.token.symbol = await this.kudosTokenService.symbol();
-    return;
   }
 
   sendReward(form?: NgForm) {
