@@ -50,7 +50,7 @@ interface KudosTokenEvents {
   OwnershipTransferred: {previousOwner: string, newOwner: string};
   Transfer: {from: string, to: string, value: number};
 }
-export type KudosToken = KudosTokenActions & KudosTokenConstants & KudosTokenEvents;
+export type KudosToken = KudosTokenActions & KudosTokenConstantsIteratiors & KudosTokenConstants & KudosTokenEvents;
 
 Web3Service.addABI(KudosTokenDefinition.abi);
 
