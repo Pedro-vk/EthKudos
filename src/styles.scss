@@ -11,6 +11,13 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
 @include angular-material-theme($app-theme);
 
+html,
+body,
+eth-kudos-root {
+  display: block;
+  height: 100%;
+}
+
 body {
   margin: 0;
   background: #fafafa;

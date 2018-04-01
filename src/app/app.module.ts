@@ -9,21 +9,24 @@ import { AppCommonModule } from './app-common.module';
 import { AppWrapperComponent } from './app-wrapper.component';
 import { AppComponent } from './app.component';
 
+import { environment } from '../environments/environment';
+
 import { PROVIDERS } from './shared';
 
-import { environment } from '../environments/environment';
+import { ADMIN_COMPONENTS } from './+admin';
 import { COMPONENTS } from './components';
 import { HOME_COMPONENTS } from './+home';
-import { ADMIN_COMPONENTS } from './+admin';
+import { LANDING_COMPONENTS } from './+landing';
 import { POLL_COMPONENTS } from './+poll';
 
 @NgModule({
   declarations: [
     AppWrapperComponent,
     AppComponent,
+    ...ADMIN_COMPONENTS,
     ...COMPONENTS,
     ...HOME_COMPONENTS,
-    ...ADMIN_COMPONENTS,
+    ...LANDING_COMPONENTS,
     ...POLL_COMPONENTS,
   ],
   imports: [
