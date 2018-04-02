@@ -6,26 +6,38 @@ const KudosStruct = artifacts.require("KudosStructs");
 const StringUtils = artifacts.require("StringUtils");
 
 module.exports = async function(deployer) {
-  await deployer.deploy(KudosStruct);
-  deployer.link(KudosStruct, [KudosTokenFactory, KudosPollFactory]);
-  await deployer.deploy(StringUtils);
-  deployer.link(StringUtils, KudosTokenFactory);
+  deployer.deploy(KudosStruct)
+    .then(() => {
+      deployer.link(KudosStruct, [KudosTokenFactory, KudosPollFactory]);
+      return deployer.deploy(StringUtils);
+    })
+    .then(() => {
+      deployer.link(StringUtils, KudosTokenFactory);
+      return deployer.deploy(KudosPollFactory);
+    })
+    .then(() => {
+      deployer.link(KudosPollFactory, KudosTokenFactory);
+      return deployer.deploy(KudosTokenFactory);
+    })
+    .then(() => {
+      deployer.link(KudosTokenFactory, KudosOrganisations);
+      return deployer.deploy(KudosRouter);
+    })
+    .then(() => {
+      deployer.link(KudosRouter, [KudosTokenFactory, KudosOrganisations]);
 
-  await deployer.deploy(KudosPollFactory);
-  deployer.link(KudosPollFactory, KudosTokenFactory);
-
-  await deployer.deploy(KudosTokenFactory);
-  deployer.link(KudosTokenFactory, KudosOrganisations);
-
-  await deployer.deploy(KudosRouter);
-  deployer.link(KudosRouter, [KudosTokenFactory, KudosOrganisations]);
-
-  const kudosPollFactory = await KudosPollFactory.deployed();
-  const kudosTokenFactory = await KudosTokenFactory.deployed();
-  const kudosRouter = await KudosRouter.deployed();
-
-  await kudosRouter.setResource('KudosPollFactory', await kudosPollFactory.version(), KudosPollFactory.address);
-  await kudosRouter.setResource('KudosTokenFactory', await kudosTokenFactory.version(), KudosTokenFactory.address);
-
-  await deployer.deploy(KudosOrganisations, KudosRouter.address);
+      return KudosPollFactory.deployed().then(kudosPollFactory => {
+        return KudosTokenFactory.deployed().then(kudosTokenFactory => {
+          return KudosRouter.deployed().then(kudosRouter => {
+            return kudosRouter.setResource('KudosPollFactory', '0.1', KudosPollFactory.address)
+              .then(() => {
+                return kudosRouter.setResource('KudosTokenFactory', '0.1', KudosTokenFactory.address);
+              })
+              .then(() => {
+                return deployer.deploy(KudosOrganisations, KudosRouter.address);
+              });
+          });
+        });
+      });
+    });
 };

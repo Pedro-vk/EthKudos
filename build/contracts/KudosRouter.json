@@ -140,7 +140,44 @@
     "name": "solc",
     "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {
+        "0x2145d4f266b84db4a01e2d3ca171857f3ab507b112928d587f99ff199d105bc5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "resource",
+              "type": "string"
+            }
+          ],
+          "name": "ResourceUpdate",
+          "type": "event"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x9c0ec373c6eec002029b830171c102d7b03eccf6",
+      "transactionHash": "0x92c6ddf41093f9fdf05229aeb191b96e6864195ea958d73ab79a965582fc884a"
+    }
+  },
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-03-31T00:22:59.707Z"
+  "updatedAt": "2018-04-02T23:23:34.815Z"
 }
