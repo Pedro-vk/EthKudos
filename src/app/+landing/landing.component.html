@@ -18,105 +18,132 @@
       </p>
     </div>
     <div class="main__card">
-      <mat-card @cardInOut *ngIf="!showCreateForm">
-        <h3>Join an organisation</h3>
+      <div *ngIf="!(newOrganisation$ | async)" @cardInOut>
+        <mat-card @cardInOut *ngIf="!showCreateForm">
+          <h3>Join an organisation</h3>
 
-        <mat-form-field class="input-address">
-          <eth-kudos-blockie matPrefix [address]="orgAddress" variant="prefix"></eth-kudos-blockie>
-          <input
-            matInput
-            [(ngModel)]="orgAddress"
-            (ngModelChange)="newOrgAddress.next($event)"
-            type="text"
-            #organisationAddress="ngModel"
-            name="organisationAddress"
-            placeholder="Organisation address (0x...)"
-            pattern="(^0x[0-9a-fA-F]{40}$)?"
-            [matAutocomplete]="orgs">
-          <mat-error align="end" *ngIf="organisationAddress.errors?.pattern">
-            Is not a valid Ethereum address.
-          </mat-error>
-          <mat-autocomplete #orgs="matAutocomplete">
-            <mat-option *ngFor="let org of organisations$ | async" [value]="org">
-              <eth-kudos-blockie class="autocomplete-option__blockie" [address]="org"></eth-kudos-blockie>
-              <span class="autocomplete-option__text">{{org}}</span>
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-
-        <div class="organisation" *ngIf="selectedOrganisation$ | async as org" @cardInOut>
-          <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
-          <div class="organisation__info">
-            <span class="organisation__name">{{org.name}}</span>
-            <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
-            <span class="organisation__not-member" *ngIf="!org.imMember">You are not member</span>
-          </div>
-          <button mat-button [routerLink]="['/', org.address]">open</button>
-        </div>
-      </mat-card>
-
-      <mat-card @cardInOut *ngIf="showCreateForm">
-        <h3>Create your organisation</h3>
-        <h4>
-          An organization is a
-          <a href="https://www.ethereum.org/token" target="_blank">Ethereum Token</a>
-          with a Kudos system
-        </h4>
-
-        <form #newOrgForm="ngForm" novalidate>
-
-          <mat-form-field>
+          <mat-form-field class="input-address">
+            <eth-kudos-blockie matPrefix [address]="orgAddress" variant="prefix"></eth-kudos-blockie>
             <input
               matInput
-              [(ngModel)]="newOrg.name"
+              [(ngModel)]="orgAddress"
+              (ngModelChange)="newOrgAddress.next($event)"
               type="text"
-              name="orgName"
-              placeholder="Token name"
-              required>
+              #organisationAddress="ngModel"
+              name="organisationAddress"
+              placeholder="Organisation address (0x...)"
+              pattern="(^0x[0-9a-fA-F]{40}$)?"
+              [matAutocomplete]="orgs">
+            <mat-error align="end" *ngIf="organisationAddress.errors?.pattern">
+              Is not a valid Ethereum address.
+            </mat-error>
+            <mat-autocomplete #orgs="matAutocomplete">
+              <mat-option *ngFor="let org of organisations$ | async" [value]="org">
+                <eth-kudos-blockie class="autocomplete-option__blockie" [address]="org"></eth-kudos-blockie>
+                <span class="autocomplete-option__text">{{org}}</span>
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
 
-          <mat-form-field>
-            <input
-              matInput
-              [(ngModel)]="newOrg.symbol"
-              type="text"
-              name="orgSymbol"
-              placeholder="Token symbol"
-              required>
-          </mat-form-field>
-
-          <mat-form-field>
-            <input
-              matInput
-              [(ngModel)]="newOrg.decimals"
-              type="number"
-              [min]="0"
-              [max]="8"
-              name="orgDecimals"
-              placeholder="Token decimals"
-              required>
-          </mat-form-field>
-
-          <div class="organisation" *ngIf="newOrg.name" @cardInOut>
-            <eth-kudos-blockie random variant="big"></eth-kudos-blockie>
+          <div class="organisation" *ngIf="selectedOrganisation$ | async as org" @cardInOut>
+            <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
             <div class="organisation__info">
-              <span class="organisation__name">{{newOrg.name}}</span>
-              <span class="organisation__balance">{{19.123456789 | number : '.0-' + (newOrg.decimals || 0)}}<span>{{newOrg.symbol}}</span></span>
+              <span class="organisation__name">{{org.name}}</span>
+              <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
+              <span class="organisation__not-member" *ngIf="!org.imMember">You are not member</span>
             </div>
-            <button mat-button [disabled]="!newOrgForm.valid">create</button>
+            <button mat-button color="primary" [routerLink]="['/', org.address]">open</button>
           </div>
+        </mat-card>
 
-        </form>
+        <mat-card @cardInOut *ngIf="showCreateForm" [attr.disabled]="newOrg.working">
+          <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 
-      </mat-card>
+          <h3>Create your organisation</h3>
+          <h4>
+            An organization is a
+            <a href="https://www.ethereum.org/token" target="_blank">Ethereum Token</a>
+            with a Kudos system
+          </h4>
 
-      <div class="or">or</div>
+          <form #newOrgForm="ngForm" novalidate>
 
-      <div class="new-organisation" @cardInOut *ngIf="showCreateForm">
-        <button mat-button color="primary" (click)="showCreateForm = !showCreateForm">Join an organisation</button>
+            <mat-form-field>
+              <input
+                matInput
+                [(ngModel)]="newOrg.name"
+                type="text"
+                name="orgName"
+                placeholder="Token name"
+                required>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input
+                matInput
+                [(ngModel)]="newOrg.symbol"
+                type="text"
+                name="orgSymbol"
+                placeholder="Token symbol"
+                required>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input
+                matInput
+                [(ngModel)]="newOrg.decimals"
+                type="number"
+                [min]="0"
+                [max]="8"
+                name="orgDecimals"
+                placeholder="Token decimals">
+            </mat-form-field>
+
+            <mat-checkbox
+              [(ngModel)]="newOrg.toDirectory"
+              name="orgToDirectory"
+              color="primary">
+
+              Add to the organisations directory
+            </mat-checkbox>
+
+            <div class="organisation organisation--margin" *ngIf="newOrg.name" @cardInOut>
+              <eth-kudos-blockie random variant="big"></eth-kudos-blockie>
+              <div class="organisation__info">
+                <span class="organisation__name">{{newOrg.name}}</span>
+                <span class="organisation__balance">{{(19 + getDecimals(newOrg.decimals)) | number : '.0-' + (newOrg.decimals || 0)}}<span>{{newOrg.symbol}}</span></span>
+              </div>
+              <button mat-button color="primary" [disabled]="!newOrgForm.valid" (click)="createOrganisation(newOrgForm)">create</button>
+            </div>
+
+          </form>
+
+        </mat-card>
+
+        <div class="or">or</div>
+
+        <div class="new-organisation" @cardInOut *ngIf="showCreateForm">
+          <button mat-button color="primary" (click)="showCreateForm = !showCreateForm">Join an organisation</button>
+        </div>
+        <div class="new-organisation" @cardInOut *ngIf="!showCreateForm">
+          <button mat-button color="primary" (click)="showCreateForm = !showCreateForm">Create a new organisation</button>
+        </div>
       </div>
-      <div class="new-organisation" @cardInOut *ngIf="!showCreateForm">
-        <button mat-button color="primary" (click)="showCreateForm = !showCreateForm">Create a new organisation</button>
+
+      <div *ngIf="newOrganisation$ | async as newOrganisation" @cardInOut>
+        <mat-card>
+          <h3>Organisation created</h3>
+
+          <div class="organisation">
+            <eth-kudos-blockie [address]="newOrganisation.address" variant="big"></eth-kudos-blockie>
+            <div class="organisation__info">
+              <span class="organisation__name">{{newOrganisation.name}}</span>
+              <span class="organisation__balance" *ngIf="newOrganisation.imMember">{{newOrganisation.myBalance}}<span>{{newOrganisation.symbol}}</span></span>
+              <span class="organisation__not-member" *ngIf="!newOrganisation.imMember">Let's start</span>
+            </div>
+            <button mat-button color="primary" [routerLink]="['/', newOrganisation.address]">open</button>
+          </div>
+        </mat-card>
       </div>
     </div>
 

@@ -100,13 +100,18 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
     );
   }
 
-  protected generateAction<P extends keyof TruffleContractActionMethods<A>>(action: P): (...args) => Promise<Tx> {
-    return (...args) => (<any>this.contract)[action](...args, {from: this.web3Service.account});
+  protected generateAction<P extends keyof TruffleContractActionMethods<A>>(action: P): ((...args) => Promise<Tx>) & {sync: (...args) => Promise<string>} {
+    const fn: any = (...args) => (<any>this.contract)[action](...args, {from: this.web3Service.account});
+    fn.sync = (...args) => (<any>this.contract)[action].sendTransaction(...args, {from: this.web3Service.account});
+    return fn;
   }
 
   protected generateEventObservable<P extends keyof TruffleContractEventMethods<E>>(event: P): Observable<E[P]> {
-    return Observable
-      .create(observer => (<any>this.contract)[event]().watch((e, _) => observer.next(_.args)))
-      .share();
+    return this.onInitialized
+      .mergeMap(() =>
+        Observable
+          .create(observer => (<any>this.contract)[event]().watch((e, _) => observer.next(_.args)))
+          .share(),
+      );
   }
 }

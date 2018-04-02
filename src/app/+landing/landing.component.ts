@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
@@ -29,8 +30,9 @@ import { Web3Service, KudosOrganisationsService, KudosTokenFactoryService } from
 })
 export class LandingComponent {
   orgAddress: string;
-  newOrg: {name: string, symbol: string, decimals} = <any>{};
+  newOrg: {name: string, symbol: string, decimals: number, toDirectory: boolean, working: boolean} = <any>{};
 
+  newKudosTokenAddress: Subject<string> = new Subject();
   newOrgAddress: Subject<string> = new Subject();
 
   readonly organisations$ = this.kudosOrganisationsService.checkUpdates(_ => _.getOrganisations())
@@ -47,27 +49,12 @@ export class LandingComponent {
       if (!address.match(/^0x[0-9a-fA-F]{40}$/)) {
         return Observable.of(undefined);
       }
-      const kudosTokenService = this.kudosTokenFactoryService.getKudosTokenServiceAt(address);
-      const selectedKudosTokenService = kudosTokenService
-        .onIsValid
-        .filter(_ => _)
-        .first()
-        .mergeMap(() => this.web3Service.account$)
-        .map(async () => ({
-          address: kudosTokenService.address,
-          name: await kudosTokenService.name(),
-          symbol: await kudosTokenService.symbol(),
-          decimals: await kudosTokenService.decimals(),
-          imMember: await kudosTokenService.imMember(),
-          myBalance: await kudosTokenService.myBalance() / (10 ** await kudosTokenService.decimals()),
-        }))
-        .mergeMap(_ => Observable.fromPromise(_))
-        .catch(() => Observable.of(undefined));
-      return Observable
-        .merge(
-          kudosTokenService.onIsValid.filter(_ => !_).map(() => undefined),
-          selectedKudosTokenService,
-        );
+      return this.getKudosTokenInfo(address);
+    })
+    .distinctUntilChanged();
+  readonly newOrganisation$ = this.newKudosTokenAddress
+    .mergeMap(address => {
+      return this.getKudosTokenInfo(address);
     })
     .distinctUntilChanged();
 
@@ -78,5 +65,66 @@ export class LandingComponent {
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
+
+  getDecimals(n: number = 0): number {
+    return n ? 1 / (2 ** n) : 0;
+  }
+
+  createOrganisation(form?: NgForm) {
+    const done = (success?) => this.onActionFinished(success, this.newOrg, _ => this.newOrg = _, form);
+
+    this.newOrg.working = true;
+    this.kudosOrganisationsService
+      .newOrganisation(
+        this.newOrg.name,
+        this.newOrg.symbol,
+        this.newOrg.decimals || 0,
+        this.newOrg.toDirectory || false,
+      )
+      .then((tx: any) => {
+        const newKudosTokenAddress = tx.logs.filter(_ => _.event === 'NewOrganisation').pop().args.kudosToken;
+        this.newKudosTokenAddress.next(newKudosTokenAddress);
+        done(true);
+      })
+      .catch(err => console.warn(err) || done());
+  }
+
+  private onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {
+    if (success) {
+      if (form) {
+        setter(<any>{});
+        form.reset();
+        form.resetForm();
+      }
+    } else {
+      setter({...<any>obj, working: undefined});
+    }
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private getKudosTokenInfo(address: string) {
+    const kudosTokenService = this.kudosTokenFactoryService.getKudosTokenServiceAt(address);
+    const selectedKudosTokenService = kudosTokenService
+      .onIsValid
+      .filter(_ => _)
+      .first()
+      .mergeMap(() => this.web3Service.account$)
+      .map(async () => ({
+        address: kudosTokenService.address,
+        name: await kudosTokenService.name(),
+        symbol: await kudosTokenService.symbol(),
+        decimals: await kudosTokenService.decimals(),
+        imMember: await kudosTokenService.imMember(),
+        myBalance: await kudosTokenService.myBalance() / (10 ** await kudosTokenService.decimals()),
+      }))
+      .mergeMap(_ => Observable.fromPromise(_))
+      .catch(() => Observable.of(undefined));
+    return Observable
+      .merge(
+        kudosTokenService.onIsValid.filter(_ => !_).map(() => undefined),
+        selectedKudosTokenService,
+      );
+  }
 }

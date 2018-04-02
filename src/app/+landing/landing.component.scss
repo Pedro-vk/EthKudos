@@ -15,6 +15,18 @@ $header-size: 70px;
   }
 }
 
+[disabled] {
+  position: relative;
+  overflow: hidden;
+
+  mat-progress-bar.on-disabled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
 .container {
   background: $content-background;
   max-width: 1800px;
@@ -110,6 +122,7 @@ header {
       font-size: 18px;
       font-weight: 400;
       color: #333333;
+      margin-top: 0;
     }
     h4 {
       font-weight: 300;
@@ -118,6 +131,10 @@ header {
     }
     mat-form-field {
       width: 100%;
+    }
+    mat-checkbox {
+      display: block;
+      margin-top: 6px;
     }
 
     .organisation {
@@ -132,6 +149,10 @@ header {
       max-width: 320px;
       margin: 4px auto 0;
       position: relative;
+
+      &--margin {
+        margin-top: 20px;
+      }
 
       &__info {
         padding: 0 12px;
@@ -164,6 +185,7 @@ header {
       }
       button {
         border-radius: #{36px / 2};
+        background: rgba(#ffffff, .6);
 
         & /deep/ .mat-button-ripple {
           border-radius: #{36px / 2};
@@ -174,7 +196,7 @@ header {
     .or {
       height: 1px;
       line-height: 1px;
-      margin: 30px 0;
+      margin: 38px 0 30px;
       text-align: center;
       color: #333333;
 
