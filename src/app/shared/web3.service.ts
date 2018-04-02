@@ -59,7 +59,7 @@ export class Web3Service {
   readonly account$: Observable<string> = this.interval$
     .mergeMap(() => this.getAccount())
     .distinctUntilChanged()
-    .shareReplay(1);
+    .shareReplay();
   readonly changes$: Observable<undefined> = Observable
     .merge(this.newBlock$, this.account$)
     .map(() => undefined)
@@ -87,7 +87,7 @@ export class Web3Service {
     .distinctUntilChanged((a, b) => a.size === b.size)
     .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending', true)))
     .combineLatest(this.account$)
-    .map(([{transactions}, account]) => transactions.filter(transaction => transaction.from.toLowerCase() === account.toLowerCase()))
+    .map(([{transactions}, account]) => transactions.filter(transaction => (transaction.from || '').toLowerCase() === account.toLowerCase()))
     .map(transactions => transactions.map(tx => tx.hash))
     .distinctUntilChanged((a, b) => a.join('|') === b.join('|'))
     .scan((acc, transactions) =>

@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -18,6 +19,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     BrowserModule,
     FormsModule,
 
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
@@ -33,6 +35,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     BrowserModule,
     FormsModule,
 
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatChipsModule,

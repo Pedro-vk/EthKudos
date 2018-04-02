@@ -88,12 +88,81 @@ header {
 
     mat-card {
       width: 100%;
-      max-width: 640px;
+      max-width: 488px;
       margin: auto;
     }
     h3 {
       font-size: 18px;
       font-weight: 400;
     }
+    mat-form-field {
+      width: 100%;
+    }
+
+    .organisation {
+      display: flex;
+      align-items: center;
+      padding: 4px 12px;
+      padding-right: 6px;
+      background: #dddddd;
+      border-radius: 24px;
+      height: 48px;
+      line-height: 17px;
+      max-width: 320px;
+      margin: auto;
+
+      &__info {
+        padding: 0 12px;
+        flex: 1;
+        overflow: hidden;
+      }
+      &__name,
+      &__balance,
+      &__not-member {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      &__name {
+        display: block;
+      }
+      &__balance {
+        display: block;
+        font-family: "Roboto Mono";
+
+        span {
+          opacity: .6;
+          padding-left: 2px;
+          font-size: .7em;
+        }
+      }
+      &__not-member {
+        display: block;
+        opacity: .6;
+      }
+      button {
+        border-radius: #{36px / 2};
+
+        & /deep/ .mat-button-ripple {
+          border-radius: #{36px / 2};
+        }
+      }
+    }
+  }
+}
+
+.autocomplete-option {
+  &__blockie {
+    height: 26px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  &__text {
+    display: inline-block;
+    vertical-align: middle;
+    font-family: "Roboto Mono";
+    padding-left: 10px;
+    color: #444444;
+    font-size: 14px;
   }
 }

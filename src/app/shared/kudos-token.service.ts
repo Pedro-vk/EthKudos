@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/toPromise';
@@ -57,6 +58,10 @@ Web3Service.addABI(KudosTokenDefinition.abi);
 @Injectable()
 export class KudosTokenService
   extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> {
+
+  isValid: boolean;
+  private readonly _onIsValid = new Subject<boolean>();
+  readonly onIsValid = this._onIsValid.shareReplay();
 
   // Events
   readonly AddMember$ = this.generateEventObservable('AddMember');
@@ -121,6 +126,12 @@ export class KudosTokenService
             this.contract = contract;
             this.initialized = true;
           });
+
+        this.checkIsValid()
+          .then(_ => this._onIsValid.next(this.isValid = _))
+          .catch(() => this._onIsValid.next(this.isValid = false));
+
+        setTimeout(() => this._onIsValid.next(this.isValid = this.isValid || false), 1000);
       });
   }
 
@@ -189,4 +200,25 @@ export class KudosTokenService
     return polls.map(address => this.getPollContractByAddress(address));
   }
 
+  private checkIsValid(): Promise<boolean> {
+    return this.onInitialized
+      .map(async () => {
+        try {
+          switch (false) {
+            case this.initialized: return false;
+            case !!(await this.version()).match(/^\d+\.\d+$/): return false;
+            case !!(await this.name()): return false;
+            case !!(await this.symbol()): return false;
+            case !isNaN(await this.decimals()): return false;
+            case !isNaN(await this.getPollsSize()): return false;
+            default: return true;
+          }
+        } catch(e) {
+          return false;
+        }
+      })
+      .mergeMap(_ => Observable.fromPromise(_))
+      .first()
+      .toPromise();
+  }
 }

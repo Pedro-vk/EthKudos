@@ -19,7 +19,41 @@
     </div>
     <div class="main__card">
       <mat-card>
-        <h3>Join an organization</h3>
+        <h3>Join an organisation</h3>
+
+        <mat-form-field class="input-address">
+          <eth-kudos-blockie matPrefix [address]="orgAddress" variant="prefix"></eth-kudos-blockie>
+          <input
+            matInput
+            [(ngModel)]="orgAddress"
+            (ngModelChange)="newOrgAddress.next($event)"
+            type="organisation"
+            #organisationAddress="ngModel"
+            name="organisationAddress"
+            placeholder="Organisation address (0x...)"
+            pattern="(^0x[0-9a-fA-F]{40}$)?"
+            [matAutocomplete]="orgs">
+          <mat-error align="end" *ngIf="organisationAddress.errors?.pattern">
+            Is not a valid Ethereum address.
+          </mat-error>
+          <mat-autocomplete #orgs="matAutocomplete">
+            <mat-option *ngFor="let org of organisations$ | async" [value]="org">
+              <eth-kudos-blockie class="autocomplete-option__blockie" [address]="org"></eth-kudos-blockie>
+              <span class="autocomplete-option__text">{{org}}</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <div class="organisation" *ngIf="selectedOrganisation$ | async as org">
+          <eth-kudos-blockie [address]="org.address" class="big"></eth-kudos-blockie>
+          <div class="organisation__info">
+            <span class="organisation__name">{{org.name}}</span>
+            <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
+            <span class="organisation__not-member" *ngIf="!org.imMember">You are not member</span>
+          </div>
+          <button mat-button [routerLink]="['/', org.address]">open</button>
+        </div>
+
       </mat-card>
     </div>
 

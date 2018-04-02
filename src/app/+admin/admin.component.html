@@ -165,8 +165,8 @@
   </form>
 </div>
 
-<div class="side">
-  <h2 class="heading" *ngIf="(getContacts$ | async)?.length as length">{{ length | i18nPlural : {'=1': 'Member', 'other': 'Members'} }}</h2>
+<div class="side" *ngIf="(getContacts$ | async)?.length as length">
+  <h2 class="heading">{{ length | i18nPlural : {'=1': 'Member', 'other': 'Members'} }}</h2>
 
   <mat-accordion>
     <mat-expansion-panel
