@@ -82,6 +82,12 @@ header {
     font-size: 16px;
     max-width: 640px;
 
+    @media (max-width: 1200px) {
+      br {
+        display: none;
+      }
+    }
+
     h2 {
       margin: 0;
       margin-bottom: 20px;
@@ -98,6 +104,15 @@ header {
 
     &-button {
       padding-top: 4px;
+    }
+
+    @media (max-width: 1060px) {
+      h2 {
+        font-size: 28px;
+      }
+      p {
+        font-size: 14px;
+      }
     }
   }
   mat-card {
@@ -120,8 +135,7 @@ header {
       }
     }
     mat-card {
-      width: 100%;
-      max-width: 488px;
+      width: 488px;
       margin: auto;
     }
     h3 {
@@ -310,4 +324,63 @@ header {
   position: fixed;
   top: -999999px;
   left: -999999px;
+}
+
+@media (max-width: 1000px) {
+  .main {
+    display: block;
+
+    &__text {
+      padding-top: 80px;
+
+      br {
+        display: block;
+      }
+    }
+    &__text,
+    &__card {
+      margin: auto;
+      width: 570px;
+    }
+  }
+}
+
+@media (max-width: 570px) {
+  .main {
+    display: block;
+
+    &__text {
+      padding-top: 80px;
+
+      br {
+        display: none;
+      }
+    }
+    &__text,
+    &__card {
+      margin: auto;
+      width: 100%;
+      max-width: 570px;
+      padding-right: 20px;
+      padding-left: 20px;
+    }
+    mat-card {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 430px) {
+  .metamask-image {
+    max-width: 100%;
+
+    &__circle {
+      &--n1 {
+        margin-left: -27%;
+      }
+      &--n2 {
+        display: none;
+      }
+    }
+  }
 }
