@@ -16,8 +16,12 @@
         <br>
         boosting team cooperation and appreciating the work of the members.
       </p>
+      <p class="main__text-button" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp" @cardInOut>
+        <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
+      </p>
     </div>
-    <div class="main__card">
+
+    <div class="main__card" *ngIf="(status$ | async) === 'total'">
       <div *ngIf="!(newOrganisation$ | async)" @cardInOut>
         <mat-card @cardInOut *ngIf="!showCreateForm">
           <h3>Join an organisation</h3>
@@ -147,5 +151,47 @@
       </div>
     </div>
 
+    <div class="main__card" *ngIf="(status$ | async) !== 'total' && showHelp">
+
+      <mat-card *ngIf="(status$ | async) === 'no-provider'" @cardInOut>
+        <h3>Start using EthKudos using Metamask</h3>
+        <h4>EthKudos works on Ethereum network, Metamask is a bridge between Ethereum and dapps like EthKudos</h4>
+
+        <div class="metamask-logo-wrapper">
+          <div class="metamask-logo" #metamaskLogo></div>
+
+          <a
+            [href]="metamaskInstallationLink"
+            target="_blank"
+            (click)="metamaskInstallationClicked = true"
+            *ngIf="!metamaskInstallationClicked">
+
+            <button mat-raised-button color="primary">Install MetaMask</button>
+          </a>
+
+          <button mat-raised-button color="primary" *ngIf="metamaskInstallationClicked" (click)="reload()">I've installed MetaMask</button>
+        </div>
+      </mat-card>
+
+      <mat-card *ngIf="(status$ | async) === 'no-account'" @cardInOut>
+        <h3>Your MetaMask is locked</h3>
+        <h4>Simply open MetaMask and follow the instructions to unlock it</h4>
+      </mat-card>
+
+      <mat-card *ngIf="(status$ | async) === 'no-network'" @cardInOut>
+        <h3>Oops, you’re on the wrong network</h3>
+        <h4>Simply open MetaMask and switch <br> over to the <strong>Ropsten Ethereum Network</strong>.</h4>
+
+        <div class="metamask-image-wrapper">
+          <img class="metamask-image" src="assets/metamask-network.png">
+          <div class="metamask-image__circle metamask-image__circle--n1"></div>
+          <div class="metamask-image__circle metamask-image__circle--n2"></div>
+        </div>
+      </mat-card>
+
+    </div>
+
   </section>
 </div>
+
+<img class="preload" src="assets/metamask-network.png">

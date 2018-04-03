@@ -69,6 +69,8 @@ header {
   justify-content: space-between;
   align-items: center;
   padding-top: $header-size;
+  max-width: 1480px;
+  margin: auto;
 
   &__text,
   &__card {
@@ -92,6 +94,10 @@ header {
       &:last-child {
         margin-bottom: 0;
       }
+    }
+
+    &-button {
+      padding-top: 4px;
     }
   }
   mat-card {
@@ -128,6 +134,11 @@ header {
       font-weight: 300;
       margin-top: -10px;
       color: #666666;
+
+      strong {
+        font-weight: 400;
+        color: #555555;
+      }
     }
     mat-form-field {
       width: 100%;
@@ -217,6 +228,66 @@ header {
   }
 }
 
+.metamask-logo {
+  &-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 300px;
+    margin: auto;
+  }
+}
+
+.metamask-image {
+  display: block;
+  margin: auto;
+  order: 1px solid rgba(0, 0, 0, .15);
+  padding-top: 2px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+
+  &-wrapper {
+    position: relative;
+    margin-top: 30px;
+  }
+
+  &__circle {
+    position: absolute;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    border: 5px solid rgba(234, 234, 234, 0.6);
+    box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    opacity: 0;
+    animation: circle-animation infinite 6s linear;
+
+    &--n1 {
+      top: 20px;
+      margin-left: -92px;
+    }
+    &--n2 {
+      top: 120px;
+      margin-left: 0px;
+      animation-delay: 2s;
+    }
+  }
+}
+
+@keyframes circle-animation {
+  0%,
+  25%,
+  100% {
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(0.8);
+  }
+  12.5% {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) scale(1.2);
+  }
+}
+
 .autocomplete-option {
   &__blockie {
     height: 26px;
@@ -231,4 +302,12 @@ header {
     color: #444444;
     font-size: 14px;
   }
+}
+
+.preload {
+  height: 0;
+  width: 0;
+  position: fixed;
+  top: -999999px;
+  left: -999999px;
 }

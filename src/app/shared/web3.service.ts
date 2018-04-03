@@ -3,6 +3,7 @@ import Web3 from 'web3';
 import { Transaction, ABIDataTypes } from 'web3/types';
 import abiDecoder from 'abi-decoder';
 import contract from 'truffle-contract';
+import { detect } from 'detect-browser';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
@@ -50,8 +51,8 @@ export class Web3Service {
 
   private readonly interval$: Observable<any> = Observable
     .interval(100)
-    .startWith(undefined)
-    .share();
+    .share()
+    .startWith(undefined);
   readonly newBlock$: Observable<number> = this.interval$
     .mergeMap(() => this.getBlockNumber())
     .distinctUntilChanged()
@@ -66,6 +67,7 @@ export class Web3Service {
     .share();
   readonly status$: Observable<ConnectionStatus> = this.interval$
     .mergeMap(() => this.getAccount())
+    .filter(() => this.existInNetwork !== undefined)
     .map((account): ConnectionStatus => {
       if (!this.web3) {
         return ConnectionStatus.NoProvider;
@@ -96,7 +98,7 @@ export class Web3Service {
     , [])
     .map(transactions => transactions.map(async tx => await this.web3.eth.getTransaction(tx)))
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
-    .map(transactions => transactions.filter(tx => !tx.blockNumber))
+    .map(transactions => transactions.filter(tx => tx && !tx.blockNumber))
     .distinctUntilChanged((a, b) => a.map(_ => _.hash).join('|') === b.map(_ => _.hash).join('|'))
     .map(transactions =>
       transactions
@@ -141,6 +143,8 @@ export class Web3Service {
         .deployed()
         .then(() => this.existInNetwork = true)
         .catch(() => this.existInNetwork = false);
+    } else {
+      this.existInNetwork = false;
     }
   }
 
@@ -177,6 +181,9 @@ export class Web3Service {
   }
 
   getNetworkId(): Observable<number> {
+    if (!this.web3) {
+      return Observable.empty();
+    }
     return Observable.fromPromise(this.web3.eth.net.getId())
       .map(_ => (+_) || undefined);
   }
@@ -193,5 +200,14 @@ export class Web3Service {
           default: return 'unknown';
         }
       });
+  }
+
+  getMetamaskInstallationLink(): string {
+    switch (detect().name) {
+      case 'chrome': return 'https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn'
+      case 'firefox': return 'https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/'
+      case 'opera': return 'https://addons.opera.com/en/extensions/details/metamask/'
+      default: return 'https://metamask.io/';
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -7,6 +7,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/retry';
+import MetamaskLogo from 'metamask-logo';
 
 import { Web3Service, KudosOrganisationsService, KudosTokenFactoryService } from '../shared';
 
@@ -28,22 +29,27 @@ import { Web3Service, KudosOrganisationsService, KudosTokenFactoryService } from
     ]),
   ]
 })
-export class LandingComponent {
+export class LandingComponent implements AfterViewChecked {
   orgAddress: string;
+  showHelp: boolean;
   newOrg: {name: string, symbol: string, decimals: number, toDirectory: boolean, working: boolean} = <any>{};
 
   newKudosTokenAddress: Subject<string> = new Subject();
   newOrgAddress: Subject<string> = new Subject();
 
+  metamaskInstallationClicked: boolean;
+  metamaskInstallationLink: string = this.web3Service.getMetamaskInstallationLink();
+  @ViewChild('metamaskLogo') metamaskLogo: ElementRef;
+  private metamaskLogoViewer: any;
+
+  readonly status$ = this.web3Service.status$;
   readonly organisations$ = this.kudosOrganisationsService.checkUpdates(_ => _.getOrganisations())
     .combineLatest(this.newOrgAddress.startWith(undefined))
     .map(([organisations, search]) =>
-      !search ?
-        [] :
+      !search ? [] :
         organisations
           .filter(_ => _.indexOf(search) === 0),
     );
-
   readonly selectedOrganisation$ = this.newOrgAddress
     .mergeMap(address => {
       if (!address.match(/^0x[0-9a-fA-F]{40}$/)) {
@@ -53,9 +59,7 @@ export class LandingComponent {
     })
     .distinctUntilChanged();
   readonly newOrganisation$ = this.newKudosTokenAddress
-    .mergeMap(address => {
-      return this.getKudosTokenInfo(address);
-    })
+    .mergeMap(address => this.getKudosTokenInfo(address))
     .distinctUntilChanged();
 
 
@@ -68,8 +72,38 @@ export class LandingComponent {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
+  ngAfterViewChecked() {
+    if (this.metamaskLogo && this.metamaskLogo.nativeElement.offsetParent) {
+      if (!this.metamaskLogoViewer) {
+        this.metamaskLogoViewer = MetamaskLogo({
+          pxNotRatio: true,
+          width: 80,
+          height: 80,
+          followMouse: false,
+          slowDrift: false,
+        });
+        const changeView = () => {
+          const maxDistance = 60;
+          const getRandom = (offset = 0.5) => (offset - Math.random()) * maxDistance * 2
+          const {x, y, width, height} = this.metamaskLogoViewer.container.getBoundingClientRect();
+
+          this.metamaskLogoViewer.lookAt({
+            x: x + (width / 2) + getRandom(),
+            y: y + (height / 2) + (getRandom(0.7) * 0.8),
+          });
+        };
+        setInterval(() => changeView(), 5000);
+      }
+      this.metamaskLogo.nativeElement.appendChild(this.metamaskLogoViewer.container);
+    }
+  }
+
   getDecimals(n: number = 0): number {
     return n ? 1 / (2 ** n) : 0;
+  }
+
+  reload(): void {
+    window.location.reload();
   }
 
   createOrganisation(form?: NgForm) {
