@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" id="let's-start">
 
   <header>
     <h1>Eth<span>Kudos</span></h1>
@@ -191,6 +191,49 @@
 
     </div>
 
+  </section>
+
+  <section class="block block--members">
+    <div class="block__content">
+      <div class="block__grow block--members__ranking">
+        <mat-accordion>
+          <mat-expansion-panel
+            *ngFor="let balance of ranking; let i = index; trackBy: trackMember"
+            [hideToggle]="true"
+            [disabled]="true">
+
+            <mat-expansion-panel-header>
+              <mat-panel-title class="ranking-wrapper">
+                <div class="ranking" [attr.data-n]="i + 1">
+                  <span class="ranking__balance-wrapper">
+                    <span class="ranking__balance">{{balance.balance}}<code>KUDOS</code></span>
+                  </span>
+
+                  <eth-kudos-blockie [address]="balance.member"></eth-kudos-blockie>
+
+                  <span class="ranking__name">{{balance.name}}</span>
+                </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="block__text">
+        <h2>Your organisation or team, your token</h2>
+        <h3>The members are going to hold kudos, that's prestige</h3>
+        <p>
+          Each member will have some kudos to award other coworkers,
+          sending a message that will be seen by the receivers.
+        </p>
+        <p>
+          The sending is limited by each receiver, that's going to ensure that all
+          the members respect the rules and promotes to send gratitude to more members.
+        </p>
+        <a href="#let's-start">
+          <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
+        </a>
+      </div>
+    </div>
   </section>
 </div>
 

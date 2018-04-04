@@ -29,7 +29,7 @@ $header-size: 70px;
 
 .container {
   background: $content-background;
-  max-width: 1800px;
+  // max-width: 1800px;
   width: 100%;
   margin: auto;
   height: 100%;
@@ -43,7 +43,7 @@ header {
   line-height: $header-size;
   padding: 0 40px;
   width: 100%;
-  max-width: 1800px;
+  // max-width: 1800px;
   top: 0;
   left: 50%;
   border-bottom: 1px solid rgba(0,0,0, .08);
@@ -71,6 +71,7 @@ header {
   padding-top: $header-size;
   max-width: 1480px;
   margin: auto;
+  min-height: 700px;
 
   &__text,
   &__card {
@@ -318,6 +319,69 @@ header {
   }
 }
 
+.block {
+  padding: 40px;
+
+  &__content {
+    display: flex;
+    max-width: 1480px;
+  }
+
+  &__text {
+    padding: 20px;
+    max-width: 640px;
+    color: #333333;
+
+    h2 {
+      font-size: 32px;
+      font-weight: 300;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    h3 {
+      font-size: 24px;
+      margin-top: 20px;
+      font-weight: 300;
+      color: #555555;
+    }
+    p {
+      margin: 14px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    &--right {
+      text-align: right;
+    }
+  }
+  &__grow {
+    flex: 1;
+  }
+
+  &--members {
+    background: url('/assets/bg-colorful.png');
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-left: 0;
+    border-right: 0;
+
+    &__ranking {
+      padding: 0px 20px;
+
+      mat-accordion {
+        max-width: 500px;
+        margin: auto;
+        display: block;
+      }
+    }
+  }
+  &--members &__content {
+    align-items: center;
+    min-height: 460px;
+  }
+}
+
 .preload {
   height: 0;
   width: 0;
@@ -348,6 +412,7 @@ header {
 @media (max-width: 570px) {
   .main {
     display: block;
+    min-height: auto;
 
     &__text {
       padding-top: 80px;

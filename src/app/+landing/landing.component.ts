@@ -42,6 +42,16 @@ export class LandingComponent implements AfterViewChecked {
   @ViewChild('metamaskLogo') metamaskLogo: ElementRef;
   private metamaskLogoViewer: any;
 
+  readonly ranking: {name: string, member: string, balance: number}[] = [
+    {balance: 21.75, name: 'Ifan Colon', member: 'RANDOM #####Ifan Colon#####'},
+    {balance: 18.8, name: 'Phoenix Mclean', member: 'RANDOM #####Phoenix Mclean##### 1'},
+    {balance: 16, name: 'Carlie Lim', member: 'RANDOM #####Carlie Lim##### 1'},
+    {balance: 13.2, name: 'Luci Haynes', member: 'RANDOM #####Luci Haynes##### @892'},
+    {balance: 12.25, name: 'Jaya Lovell', member: 'RANDOM #####Jaya Lovell#####'},
+    {balance: 10, name: 'Larry Pineda', member: 'RANDOM #####Larry Pineda#####'},
+    {balance: 6, name: 'Robbie Shepherd', member: 'RANDOM #####Robbie Shepherd##### 2'},
+  ];
+
   readonly status$ = this.web3Service.status$;
   readonly organisations$ = this.kudosOrganisationsService.checkUpdates(_ => _.getOrganisations())
     .combineLatest(this.newOrgAddress.startWith(undefined))
@@ -104,6 +114,10 @@ export class LandingComponent implements AfterViewChecked {
 
   reload(): void {
     window.location.reload();
+  }
+
+  trackMember(index: number, {member}: {member: string} & any): string {
+    return member || undefined;
   }
 
   createOrganisation(form?: NgForm) {

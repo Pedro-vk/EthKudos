@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -33,7 +33,7 @@ import { Web3Service, ConnectionStatus, KudosTokenFactoryService } from './share
     ]),
   ],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   clickedInstallMetaMask: boolean;
 
   readonly status$ = this.web3Service.status$;
@@ -57,24 +57,6 @@ export class AppComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) { }
-
-  ngOnInit(): void {
-    this.web3Service.account$
-      .mergeMap(account =>
-        this.web3Service.getEthBalance()
-          .filter(balance => balance <= 1)
-          .map(() => account),
-      )
-      .subscribe(account => {
-        this.claimTestEtherOnRopsten(account);
-      });
-  }
-
-  claimTestEtherOnRopsten(account: string): void {
-    console.log('Claim -> ', account);
-    this.http.post('https://faucet.metamask.io', account)
-      .subscribe(() => console.log('Claim done!'));
-  }
 
   goToEtherscan(tx: string): void {
     const network = this.web3Service.networkType;
