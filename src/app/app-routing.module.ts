@@ -16,7 +16,7 @@ const routes: Routes = [
     {path: 'active', component: PollActiveComponent},
     {path: 'closed/:address', component: PollPreviousComponent, canActivate: [IsPollGuard]},
   ]},
-  {path: '**', redirectTo: '/'}, // Temporal path
+  {path: '**', redirectTo: '/'},
 ];
 
 @NgModule({

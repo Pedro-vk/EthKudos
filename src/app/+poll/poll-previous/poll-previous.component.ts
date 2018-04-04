@@ -16,10 +16,9 @@ export class PollPreviousComponent {
     .shareReplay();
   readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
 
-  readonly pollContract$ = this.activatedRoute.paramMap
-    .map((params: ParamMap) => params.get('address'))
-    .filter(address => !!address)
-    .map(address => this.kudosPollFactoryService.getKudosPollServiceAt(address))
+  readonly pollContract$ = this.activatedRoute.params
+    .filter(({address}) => !!address)
+    .map(({address}) => this.kudosPollFactoryService.getKudosPollServiceAt(address))
     .mergeMap(kudosPollService => kudosPollService.onInitialized.startWith(undefined).map(() => kudosPollService))
     .shareReplay();
   readonly pollContractMembersNumber$ = this.pollContract$

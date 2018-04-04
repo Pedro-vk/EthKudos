@@ -27,7 +27,6 @@ export class AdminComponent implements OnInit {
   memberName: {[address: string]: string} = {};
   memberWorking: {[address: string]: boolean} = {};
 
-
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
     .shareReplay();

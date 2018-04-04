@@ -22,8 +22,10 @@ export class PollActiveComponent implements OnInit {
   reward: {member: string, kudos: number, message: string, working: boolean} = <any>{};
 
   readonly kudosTokenService$ = this.activatedRoute.parent.params
+    .filter(({tokenAddress}) => !!tokenAddress)
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
-    .shareReplay();
+    .shareReplay()
+    .filter(_ => !!_);
   readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
 
   readonly imMember$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imMember()));
@@ -67,6 +69,7 @@ export class PollActiveComponent implements OnInit {
     this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getActivePollContract()))
       .filter(_ => !_)
       .first()
+      .catch(() => Observable.empty())
       .subscribe(() => this.router.navigate(['/']));
   }
 
