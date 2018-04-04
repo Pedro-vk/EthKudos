@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -33,7 +33,7 @@ import { Web3Service, ConnectionStatus, KudosTokenFactoryService } from './share
     ]),
   ],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   clickedInstallMetaMask: boolean;
 
   readonly status$ = this.web3Service.status$;
@@ -57,6 +57,16 @@ export class AppComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) { }
+
+  ngOnInit() {
+    this.kudosTokenService$
+      .mergeMap(kudosTokenService => kudosTokenService.onInitialized.map(() => kudosTokenService))
+      .subscribe(kudosTokenService => {
+        if (localStorage && kudosTokenService.address) {
+          localStorage.setItem('kudos-address', kudosTokenService.address);
+        }
+      });
+  }
 
   goToEtherscan(tx: string): void {
     const network = this.web3Service.networkType;

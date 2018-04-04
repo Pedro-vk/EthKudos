@@ -2,6 +2,16 @@
 
   <header>
     <h1>Eth<span>Kudos</span></h1>
+
+    <div class="organisation" *ngIf="previousOrganisation$ | async as org" @cardInOut>
+      <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
+      <div class="organisation__info">
+        <span class="organisation__name">{{org.name}}</span>
+        <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
+        <span class="organisation__not-member" *ngIf="!org.imMember">You are not member</span>
+      </div>
+      <button mat-button color="primary" [routerLink]="['/', org.address]">open again</button>
+    </div>
   </header>
 
   <section class="main">

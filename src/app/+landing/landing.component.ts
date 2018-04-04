@@ -71,6 +71,10 @@ export class LandingComponent implements AfterViewChecked {
   readonly newOrganisation$ = this.newKudosTokenAddress
     .mergeMap(address => this.getKudosTokenInfo(address))
     .distinctUntilChanged();
+  readonly previousOrganisation$ = Observable.of(localStorage ? localStorage.getItem('kudos-address') : undefined)
+    .filter(_ => !!_)
+    .mergeMap(address => this.getKudosTokenInfo(address))
+    .distinctUntilChanged();
 
 
   constructor(

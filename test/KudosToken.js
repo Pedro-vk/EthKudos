@@ -195,8 +195,8 @@ contract('KudosToken', accounts => {
 
       assert.equal(
         await kudosPoll.name(),
-        'KudosToken - Poll #1',
-        `'KudosToken - Poll #1' wasn't in the number of members`,
+        'KudosToken - Polling #1',
+        `'KudosToken - Polling #1' wasn't in the number of members`,
       );
       assert.equal(
         await kudosPoll.symbol(),
