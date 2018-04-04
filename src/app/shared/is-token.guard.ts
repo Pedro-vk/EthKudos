@@ -8,7 +8,7 @@ import 'rxjs/add/operator/do';
 import { KudosTokenFactoryService } from './kudos-token-factory.service';
 
 @Injectable()
-export class IsOwnerGuard implements CanActivate {
+export class IsTokenGuard implements CanActivate {
 
   constructor(private kudosTokenFactoryService: KudosTokenFactoryService, private router: Router) { }
 
@@ -17,11 +17,10 @@ export class IsOwnerGuard implements CanActivate {
     const kudosTokenService = this.kudosTokenFactoryService
       .getKudosTokenServiceAt(tokenAddress);
     return kudosTokenService
-      .onInitialized
-      .mergeMap(() => Observable.fromPromise(kudosTokenService.imOnwer()))
-      .do(imOwner => {
-        if (!imOwner) {
-          this.router.navigate([state.url.split('/').slice(0, -1).join('/')]);
+      .onIsValid
+      .do(isValid => {
+        if (!isValid) {
+          this.router.navigate(['/']);
         }
       });
   }

@@ -119,19 +119,24 @@ export class KudosTokenService
       .filter(status => status === ConnectionStatus.Total)
       .first()
       .subscribe(() => {
+        if (!this.web3Service.web3.utils.isAddress(address)) {
+          this._onIsValid.next(this.isValid = false);
+          return;
+        }
         const kudosToken = this.getContract(KudosTokenDefinition);
 
         kudosToken.at(address)
           .then(contract => {
             this.contract = contract;
             this.initialized = true;
-          });
+          })
+          .catch(() => this._onIsValid.next(this.isValid = false));
 
         this.checkIsValid()
           .then(_ => this._onIsValid.next(this.isValid = _))
           .catch(() => this._onIsValid.next(this.isValid = false));
 
-        setTimeout(() => this._onIsValid.next(this.isValid = this.isValid || false), 1000);
+        setTimeout(() => this._onIsValid.next(this.isValid = this.isValid || false), 2000);
       });
   }
 

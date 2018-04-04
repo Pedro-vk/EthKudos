@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { IsOwnerGuard } from './shared';
+import { IsOwnerGuard, IsTokenGuard } from './shared';
 import { AppComponent } from './app.component';
 import { LandingComponent } from './+landing';
 import { HomeComponent } from './+home';
@@ -10,7 +10,7 @@ import { PollActiveComponent, PollPreviousComponent } from './+poll';
 
 const routes: Routes = [
   {path: '', component: LandingComponent},
-  {path: ':tokenAddress', component: AppComponent, children: [
+  {path: ':tokenAddress', component: AppComponent, canActivate: [IsTokenGuard], children: [
     {path: '', component: HomeComponent},
     {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},
     {path: 'active', component: PollActiveComponent},
