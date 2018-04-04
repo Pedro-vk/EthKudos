@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
+import * as Web3Module from 'web3';
 import { Transaction, ABIDataTypes } from 'web3/types';
-import abiDecoder from 'abi-decoder';
-import contract from 'truffle-contract';
+import * as abiDecoder from 'abi-decoder';
+import * as contract from 'truffle-contract';
 import { detect } from 'detect-browser';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
@@ -20,7 +21,7 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
 
-import Migrations from '../../../build/contracts/Migrations.json';
+import * as Migrations from '../../../build/contracts/Migrations.json';
 
 export enum ConnectionStatus {
   Total = 'total',
@@ -134,7 +135,7 @@ export class Web3Service {
 
   private initWeb3(): Web3 {
     if ((<any>window).web3) {
-      return this._web3 = new Web3((<any>window).web3.currentProvider);
+      return this._web3 = new (<any>Web3Module)((<any>window).web3.currentProvider);
     }
   }
 

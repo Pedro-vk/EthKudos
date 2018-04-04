@@ -4,7 +4,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/toPromise';
 
-import KudosOrganisationsDefinition from '../../../build/contracts/KudosOrganisations.json';
+import * as KudosOrganisationsDefinition from '../../../build/contracts/KudosOrganisations.json';
 
 import { SmartContract } from './smart-contract.abstract';
 import { Contract } from './truffle.interface';

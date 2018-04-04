@@ -1,6 +1,6 @@
-import Web3 from 'web3';
+import * as Web3Module from 'web3';
 import { Tx } from 'web3/types';
-import contract from 'truffle-contract';
+import * as contract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/fromPromise';
@@ -19,7 +19,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   protected readonly _onInitialized: BehaviorSubject<any> = new BehaviorSubject(undefined);
   readonly onInitialized: Observable<any> = this._onInitialized.filter(_ => !!_);
   protected contract: TruffleContract<C, CI, A, E>;
-  private readonly isBigNumber = (new Web3()).utils.isBigNumber;
+  private readonly isBigNumber = (new (<any>Web3Module)()).utils.isBigNumber;
 
   get initialized(): boolean {
     return !!this.contract;

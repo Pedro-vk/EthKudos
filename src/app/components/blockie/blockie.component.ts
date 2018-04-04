@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-import blockies from 'blockies';
+import * as blockies from 'blockies';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/shareReplay';
 

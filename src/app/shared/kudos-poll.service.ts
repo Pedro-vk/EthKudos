@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import KudosPollDefinition from '../../../build/contracts/KudosPoll.json';
+import * as KudosPollDefinition from '../../../build/contracts/KudosPoll.json';
 
 import { SmartContract } from './smart-contract.abstract';
 import { Web3Service, ConnectionStatus } from './web3.service';
