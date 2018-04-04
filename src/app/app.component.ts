@@ -36,6 +36,8 @@ import { Web3Service, ConnectionStatus, KudosTokenFactoryService } from './share
 export class AppComponent implements OnInit {
   clickedInstallMetaMask: boolean;
 
+  readonly canBeShared: boolean = !!(navigator as any).share;
+
   readonly status$ = this.web3Service.status$;
   readonly account$ = this.web3Service.account$;
   readonly pendingTransactions$ = this.web3Service.pendingTransactions$;
@@ -87,6 +89,24 @@ export class AppComponent implements OnInit {
       const etherscan = window.open(url, '_blank');
       etherscan.focus();
     }
+  }
+
+  share() {
+    this.kudosTokenService$
+      .mergeMap(kudosTokenService => kudosTokenService.onInitialized.map(() => kudosTokenService))
+      .map(async kudosTokenService => {
+        if ((navigator as any).share) {
+          (navigator as any)
+            .share({
+              title: `Join ${await kudosTokenService.name()}`,
+              url: `{document.location.origin}/${kudosTokenService.address}`,
+            })
+            .then(() => {})
+            .catch(() => {});
+        }
+        return;
+      })
+      .subscribe(proimise => proimise.then(() => {}));
   }
 
   routeIs(url: string): boolean {
