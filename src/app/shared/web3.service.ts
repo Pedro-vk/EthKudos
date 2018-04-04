@@ -85,6 +85,7 @@ export class Web3Service {
   readonly pendingTransactions$: Observable<FullTransaction[]> = Observable
     .interval(1000 / 3)
     .startWith(undefined)
+    .filter(() => !!this.web3)
     .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending')))
     .distinctUntilChanged((a, b) => a.size === b.size)
     .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending', true)))
