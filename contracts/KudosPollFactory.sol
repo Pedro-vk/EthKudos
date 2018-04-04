@@ -1,5 +1,5 @@
 pragma solidity ^0.4.18;
-pragma experimental ABIEncoderV2;
+pragma experimental "ABIEncoderV2";
 
 import "zeppelin-solidity/contracts/token/ERC20/BurnableToken.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
