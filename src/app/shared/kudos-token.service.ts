@@ -204,6 +204,13 @@ export class KudosTokenService
     }
     return polls.map(address => this.getPollContractByAddress(address));
   }
+  async getPreviousPolls(): Promise<string[]> {
+    const polls = await this.getPolls();
+    if (await this.isActivePoll()) {
+      polls.pop();
+    }
+    return polls;
+  }
 
   private checkIsValid(): Promise<boolean> {
     return this.onInitialized

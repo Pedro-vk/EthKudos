@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { IsOwnerGuard, IsTokenGuard } from './shared';
+import { IsOwnerGuard, IsTokenGuard, IsPollGuard } from './shared';
 import { AppComponent } from './app.component';
 import { LandingComponent } from './+landing';
 import { HomeComponent } from './+home';
@@ -14,7 +14,7 @@ const routes: Routes = [
     {path: '', component: HomeComponent},
     {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},
     {path: 'active', component: PollActiveComponent},
-    {path: 'closed/:address', component: PollPreviousComponent},
+    {path: 'closed/:address', component: PollPreviousComponent, canActivate: [IsPollGuard]},
   ]},
   {path: '**', redirectTo: '/'}, // Temporal path
 ];
