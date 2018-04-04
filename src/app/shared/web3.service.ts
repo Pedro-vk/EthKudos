@@ -82,36 +82,38 @@ export class Web3Service {
     })
     .distinctUntilChanged()
     .shareReplay();
-  readonly pendingTransactions$: Observable<FullTransaction[]> = Observable
-    .interval(1000 / 3)
-    .startWith(undefined)
-    .filter(() => !!this.web3)
-    .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending')))
-    .distinctUntilChanged((a, b) => a.size === b.size)
-    .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending', true)))
-    .combineLatest(this.account$)
-    .map(([{transactions}, account]) => transactions.filter(transaction => (transaction.from || '').toLowerCase() === account.toLowerCase()))
-    .map(transactions => transactions.map(tx => tx.hash))
-    .distinctUntilChanged((a, b) => a.join('|') === b.join('|'))
-    .scan((acc, transactions) =>
-      [...acc, ...transactions]
-        .filter((tx, i, list) => list.indexOf(tx) === i)
-    , [])
-    .map(transactions => transactions.map(async tx => await this.web3.eth.getTransaction(tx)))
-    .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
-    .map(transactions => transactions.filter(tx => tx && !tx.blockNumber))
-    .distinctUntilChanged((a, b) => a.map(_ => _.hash).join('|') === b.map(_ => _.hash).join('|'))
-    .map(transactions =>
-      transactions
-        .map(transaction => {
-          const {name, params} = abiDecoder.decodeMethod(transaction.input) || <any>{name: '', params: []};
-          return {
-            ...transaction,
-            method: name,
-            methodName: name.replace(/([A-Z])/g, ' $1').toLowerCase(),
-            params,
-          };
-        }),
+  readonly pendingTransactions$: Observable<FullTransaction[]> = this.account$
+    .mergeMap(account =>
+      Observable
+        .interval(1000 / 3)
+        .startWith(undefined)
+        .filter(() => !!this.web3)
+        .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending')))
+        .distinctUntilChanged((a, b) => a.size === b.size)
+        .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending', true)))
+        .map(({transactions}) => transactions.filter(transaction => (transaction.from || '').toLowerCase() === account.toLowerCase()))
+        .map(transactions => transactions.map(tx => tx.hash))
+        .distinctUntilChanged((a, b) => a.join('|') === b.join('|'))
+        .scan((acc, transactions) =>
+          [...acc, ...transactions]
+            .filter((tx, i, list) => list.indexOf(tx) === i)
+        , [])
+        .map(transactions => transactions.map(async tx => await this.web3.eth.getTransaction(tx)))
+        .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
+        .map(transactions => transactions.filter(tx => tx && !tx.blockNumber))
+        .distinctUntilChanged((a, b) => a.map(_ => _.hash).join('|') === b.map(_ => _.hash).join('|'))
+        .map(transactions =>
+          transactions
+            .map(transaction => {
+              const {name, params} = abiDecoder.decodeMethod(transaction.input) || <any>{name: '', params: []};
+              return {
+                ...transaction,
+                method: name,
+                methodName: name.replace(/([A-Z])/g, ' $1').toLowerCase(),
+                params,
+              };
+            }),
+        ),
     )
     .shareReplay();
 
