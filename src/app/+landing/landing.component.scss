@@ -66,9 +66,32 @@ header {
     margin: 0;
     font-size: 32px;
     flex: 1;
+    padding-right: 40px;
 
     span {
       font-weight: 400;
+    }
+  }
+  .organisation {
+    overflow: hidden;
+  }
+
+  @media (max-width: 540px) {
+    padding: 0 20px;
+
+    h1 {
+      padding-right: 20px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .organisation {
+      eth-kudos-blockie {
+        margin-right: 20px;
+      }
+      &__info {
+        display: none;
+      }
     }
   }
 }
