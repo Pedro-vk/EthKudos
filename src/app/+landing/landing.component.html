@@ -219,8 +219,8 @@
         </mat-accordion>
       </div>
       <div class="block__text">
-        <h2>Your organisation or team, your token</h2>
-        <h3>The members are going to hold kudos, that's prestige</h3>
+        <h2><span>Your organisation or</span> <span>team, your token</span></h2>
+        <h3><span>The members are going to</span> <span>hold kudos, that's prestige</span></h3>
         <p>
           Each member will have some kudos to award other coworkers,
           sending a message that will be seen by the receivers.
@@ -229,12 +229,14 @@
           The sending is limited by each receiver, that's going to ensure that all
           the members respect the rules and promotes to send gratitude to more members.
         </p>
-        <a href="#let's-start">
+        <a href="#let's-start" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp">
           <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
         </a>
       </div>
     </div>
   </section>
+
+  <div class="container__extra"></div>
 </div>
 
 <img class="preload" src="assets/metamask-network.png">
