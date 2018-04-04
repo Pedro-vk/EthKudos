@@ -115,7 +115,7 @@ export class AdminComponent implements OnInit {
           )
           .then(() => done(true))
           .catch(err => console.warn(err) || done());
-      })
+      });
   }
 
   closePoll() {

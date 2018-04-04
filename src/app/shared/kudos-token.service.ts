@@ -225,7 +225,7 @@ export class KudosTokenService
             case !isNaN(await this.getPollsSize()): return false;
             default: return true;
           }
-        } catch(e) {
+        } catch (e) {
           return false;
         }
       })

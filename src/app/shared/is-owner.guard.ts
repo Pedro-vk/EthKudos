@@ -18,6 +18,7 @@ export class IsOwnerGuard implements CanActivate {
       .getKudosTokenServiceAt(tokenAddress);
     return kudosTokenService
       .onInitialized
+      .first()
       .mergeMap(() => Observable.fromPromise(kudosTokenService.imOnwer()))
       .do(imOwner => {
         if (!imOwner) {

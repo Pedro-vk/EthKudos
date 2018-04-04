@@ -1,6 +1,6 @@
 import * as Web3Module from 'web3';
 import { Tx } from 'web3/types';
-import * as contract from 'truffle-contract';
+import * as truffleContract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/fromPromise';
@@ -59,7 +59,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   }
 
   protected getContract(smartContractDescriptor: any): Contract<TruffleContract<C, CI, A, E>> {
-    const contractLoader = contract(smartContractDescriptor);
+    const contractLoader = truffleContract(smartContractDescriptor);
     contractLoader.setProvider(this.web3Service.web3.currentProvider);
     return contractLoader;
   }
@@ -100,7 +100,10 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
     );
   }
 
-  protected generateAction<P extends keyof TruffleContractActionMethods<A>>(action: P): ((...args) => Promise<Tx>) & {sync: (...args) => Promise<string>} {
+  protected generateAction<P extends keyof TruffleContractActionMethods<A>>(
+    action: P,
+  ): ((...args) => Promise<Tx>) & {sync: (...args) => Promise<string>} {
+
     const fn: any = (...args) => (<any>this.contract)[action](...args, {from: this.web3Service.account});
     fn.sync = (...args) => (<any>this.contract)[action].sendTransaction(...args, {from: this.web3Service.account});
     return fn;

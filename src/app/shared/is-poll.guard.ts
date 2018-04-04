@@ -19,6 +19,7 @@ export class IsPollGuard implements CanActivate {
       .getKudosTokenServiceAt(tokenAddress);
     return kudosTokenService
       .onInitialized
+      .first()
       .mergeMap(() => Observable.fromPromise(kudosTokenService.getPreviousPolls()))
       .map(polls => polls.indexOf(pollAddress) !== -1)
       .do(imOwner => {

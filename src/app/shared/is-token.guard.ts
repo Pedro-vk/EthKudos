@@ -18,6 +18,7 @@ export class IsTokenGuard implements CanActivate {
       .getKudosTokenServiceAt(tokenAddress);
     return kudosTokenService
       .onIsValid
+      .first()
       .do(isValid => {
         if (!isValid) {
           this.router.navigate(['/']);

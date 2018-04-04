@@ -11,7 +11,7 @@ export * from './web3.service';
 import { IsOwnerGuard } from './is-owner.guard';
 import { IsPollGuard } from './is-poll.guard';
 import { IsTokenGuard } from './is-token.guard';
-import { KudosOrganisationsService } from './kudos-organisations.service'
+import { KudosOrganisationsService } from './kudos-organisations.service';
 import { KudosPollFactoryService } from './kudos-poll-factory.service';
 import { KudosTokenFactoryService } from './kudos-token-factory.service';
 import { Web3Service } from './web3.service';

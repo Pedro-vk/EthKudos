@@ -98,7 +98,7 @@ export class LandingComponent implements AfterViewChecked {
         });
         const changeView = () => {
           const maxDistance = 60;
-          const getRandom = (offset = 0.5) => (offset - Math.random()) * maxDistance * 2
+          const getRandom = (offset = 0.5) => (offset - Math.random()) * maxDistance * 2;
           const {x, y, width, height} = this.metamaskLogoViewer.container.getBoundingClientRect();
 
           this.metamaskLogoViewer.lookAt({
