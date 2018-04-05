@@ -140,7 +140,7 @@ export class KudosTokenService
           .then(_ => this._onIsValid.next(this.isValid = _))
           .catch(() => this._onIsValid.next(this.isValid = false));
 
-        setTimeout(() => this._onIsValid.next(this.isValid = this.isValid || false), 2000);
+        setTimeout(() => this._onIsValid.next(this.isValid = this.isValid || false), 20 * 1000);
       });
   }
 

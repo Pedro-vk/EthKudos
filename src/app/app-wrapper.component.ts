@@ -1,13 +1,15 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 
 import { environment } from '../environments/environment';
 
-import { Web3Service } from './shared';
+import { Web3Service, KudosTokenFactoryService } from './shared';
 
 @Component({
   selector: 'eth-kudos-root',
@@ -15,7 +17,13 @@ import { Web3Service } from './shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppWrapperComponent implements OnInit {
-  constructor(private web3Service: Web3Service, private http: HttpClient, private router: Router) { }
+  constructor(
+    private web3Service: Web3Service,
+    private kudosTokenFactoryService: KudosTokenFactoryService,
+    private http: HttpClient,
+    private router: Router,
+    private title: Title,
+  ) { }
 
   ngOnInit(): void {
     this.web3Service.account$
@@ -28,14 +36,48 @@ export class AppWrapperComponent implements OnInit {
         this.claimTestEtherOnRopsten(account);
       });
 
-    if (environment.production) {
-      this.router.events.subscribe(event => {
+    this.router.events
+      .subscribe(event => {
         if (event instanceof NavigationEnd) {
-          (<any>window).ga('set', 'page', event.urlAfterRedirects);
-          (<any>window).ga('send', 'pageview');
+          this.setTitleByUrl(event.urlAfterRedirects)
+            .then(() => {
+              if (environment.production) {
+                (<any>window).ga('set', 'page', event.urlAfterRedirects);
+                (<any>window).ga('send', 'pageview');
+              }
+            });
         }
       });
-    }
+  }
+
+  async setTitleByUrl(url: string) {
+    const segmenets = [...url.split('/').slice(1), undefined, undefined, undefined];
+    const base = 'EthKudos - ';
+    const title = <string>await (async () => {
+      switch (true) {
+        case !!segmenets[0].match(/^0x[0-9a-fA-F]{40}$/): {
+          const kudosTokenService = this.kudosTokenFactoryService.getKudosTokenServiceAt(segmenets[0]);
+          const orgName = await kudosTokenService.onIsValid
+            .mergeMap(() => Observable.fromPromise(kudosTokenService.name()))
+            .first()
+            .catch(() => Observable.empty())
+            .toPromise();
+
+          switch (true) {
+            case segmenets[1] === 'admin': return `${orgName} - Admin`;
+            case segmenets[1] === 'active': return `${orgName} - Active polling`;
+            case segmenets[1] === 'closed': {
+              const pollingNumber = (await kudosTokenService.getPreviousPolls()).indexOf(segmenets[2]);
+              return `${orgName} - Polling #${pollingNumber + 1}`;
+            };
+            default: return orgName;
+          }
+        }
+        default: return `Let's thank`;
+      }
+    })();
+
+    this.title.setTitle(base + title);
   }
 
   claimTestEtherOnRopsten(account: string): void {
