@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
 
 import * as KudosPollDefinition from '../../../build/contracts/KudosPoll.json';
 

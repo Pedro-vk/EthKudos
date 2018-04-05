@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/mergeMap';
 
 import { KudosTokenFactoryService } from './kudos-token-factory.service';
 

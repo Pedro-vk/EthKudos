@@ -3,10 +3,13 @@ import { Tx } from 'web3/types';
 import * as truffleContract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
 
 import { Web3Service } from './web3.service';

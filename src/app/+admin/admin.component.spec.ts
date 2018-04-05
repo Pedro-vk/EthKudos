@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/empty';
 
 import { AppCommonModule } from '../app-common.module';
 import { COMPONENTS } from '../components';
