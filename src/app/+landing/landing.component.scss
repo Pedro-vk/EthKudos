@@ -517,7 +517,7 @@ header {
     border: 1px solid rgba(0, 0, 0, .08);
     border-left: 0;
     border-right: 0;
-    box-shadow: inset 0 0 0 9999px rgba(0, 0, 0, 0.04);
+    box-shadow: inset 0 0 0 9999px rgba(#dddddd, 0.3);
 
     &__ranking {
       padding: 0px 20px;
@@ -545,6 +545,7 @@ header {
   }
   &--members &__text {
     margin-left: 40px;
+    text-shadow: 0 1px 2px #ffffff;
 
     @media (max-width: 1060px) {
       margin-left: 20px;
