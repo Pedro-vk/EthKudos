@@ -13,6 +13,9 @@ before_install:
  - sleep 3 # give xvfb some time to start
 after_success:
 - npm run build
+- npm run lint
+- npx lcov-result-merger "coverage-*/lcov.info" lcov.info
+- cat ./lcov.info | node_modules/coveralls/bin/coveralls.js
 env:
   global:
   - GIT_NAME="Pedro Gutiérrez"
