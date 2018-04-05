@@ -47,6 +47,7 @@ header {
   position: fixed;
   z-index: 10;
   line-height: $header-size;
+  height: $header-size;
   padding: 0 40px;
   width: 100%;
   // max-width: 1800px;
@@ -65,22 +66,49 @@ header {
     font-weight: 300;
     margin: 0;
     font-size: 32px;
-    flex: 1;
-    padding-right: 40px;
+    margin-right: 40px;
+    cursor: default;
+    white-space: nowrap;
 
     span {
+      line-height: $header-size - 2px;
+      height: $header-size;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    span.extra {
+      @include transition();
+
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      width: 0;
+
+      &:before {
+        content: 'ereum';
+      }
+      @media (max-width: 680px) {
+        display: none;
+      }
+    }
+    &:hover span.extra {
+      width: 89.47px;
+    }
+    span.slim {
       font-weight: 400;
     }
   }
   .organisation {
     overflow: hidden;
+    margin: 0;
   }
 
   @media (max-width: 540px) {
     padding: 0 20px;
 
     h1 {
-      padding-right: 20px;
+      margin-right: 20px;
     }
   }
 
@@ -489,6 +517,7 @@ header {
     border: 1px solid rgba(0, 0, 0, .08);
     border-left: 0;
     border-right: 0;
+    box-shadow: inset 0 0 0 9999px rgba(0, 0, 0, 0.04);
 
     &__ranking {
       padding: 0px 20px;
