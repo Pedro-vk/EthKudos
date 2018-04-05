@@ -61,6 +61,7 @@
     "@angular/cli": "1.7.3",
     "@angular/compiler-cli": "^5.2.9",
     "@angular/language-service": "^5.0.0",
+    "@types/google.analytics": "0.0.39",
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "^9.6.2",

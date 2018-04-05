@@ -1,8 +1,11 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router, NavigationEnd } from '@angular/router';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
+
+import { environment } from '../environments/environment';
 
 import { Web3Service } from './shared';
 
@@ -12,7 +15,7 @@ import { Web3Service } from './shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppWrapperComponent implements OnInit {
-  constructor(private web3Service: Web3Service, private http: HttpClient) { }
+  constructor(private web3Service: Web3Service, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     this.web3Service.account$
@@ -24,6 +27,15 @@ export class AppWrapperComponent implements OnInit {
       .subscribe(account => {
         this.claimTestEtherOnRopsten(account);
       });
+
+    if (environment.production) {
+      this.router.events.subscribe(event => {
+        if (event instanceof NavigationEnd) {
+          (<any>window).ga('set', 'page', event.urlAfterRedirects);
+          (<any>window).ga('send', 'pageview');
+        }
+      });
+    }
   }
 
   claimTestEtherOnRopsten(account: string): void {
