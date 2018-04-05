@@ -15,9 +15,9 @@ import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/startWith';
-import MetamaskLogo from 'metamask-logo';
+import * as MetamaskLogo from 'metamask-logo';
 
-import { Web3Service, KudosOrganisationsService, KudosTokenFactoryService } from '../shared';
+import { Web3Service, ConnectionStatus, KudosOrganisationsService, KudosTokenFactoryService } from '../shared';
 
 @Component({
   selector: 'eth-kudos-landing',
@@ -33,7 +33,17 @@ import { Web3Service, KudosOrganisationsService, KudosTokenFactoryService } from
       transition(':leave', [
         style({opacity: 1, top: 0, height: '*', 'padding-top': '*', 'padding-bottom': '*'}),
         animate('.3s ease-in-out', style({opacity: 0, top: '40px', height: 0, 'padding-top': 0, 'padding-bottom': 0})),
-      ])
+      ]),
+    ]),
+    trigger('warning', [
+      transition(':enter', [
+        style({height: 0, padding: 0}),
+        animate('.3s ease', style({height: '*', padding: '*'})),
+      ]),
+      transition(':leave', [
+        style({height: '*', padding: '*'}),
+        animate('.3s ease', style({height: 0, padding: 0})),
+      ]),
     ]),
   ]
 })
@@ -49,6 +59,11 @@ export class LandingComponent implements AfterViewChecked {
   metamaskInstallationLink: string = this.web3Service.getMetamaskInstallationLink();
   @ViewChild('metamaskLogo') metamaskLogo: ElementRef;
   private metamaskLogoViewer: any;
+
+  readonly hasError$: Observable<ConnectionStatus> = this.activatedRoute.params
+    .map(({errorMessage}) => errorMessage)
+    .filter(_ => !!_)
+    .shareReplay();
 
   readonly ranking: {name: string, member: string, balance: number}[] = [
     {balance: 21.75, name: 'Ifan Colon', member: 'RANDOM #####Ifan Colon#####'},

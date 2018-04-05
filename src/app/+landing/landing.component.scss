@@ -33,11 +33,36 @@ $header-size: 70px;
   width: 100%;
   margin: auto;
   height: 100%;
+  padding-top: $header-size;
 
 
   // TODO - Remove it
   &__extra {
     height: 100px;
+  }
+}
+
+.warning {
+  overflow: hidden;
+  padding: 6px 40px 4px;
+  background: #FFE082;
+  box-shadow:
+    inset 0  1px 0px  #ffcf3d,
+    inset 0 -1px 0px  #ffcf3d;
+  border-width: 1px 0;
+  color: rgba(#000000, .7);
+  text-align: center;
+
+  mat-icon {
+    font-size: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 2px;
+    color: #856404;
+  }
+  button {
+    margin-left: 12px;
+    color: #856404;
   }
 }
 
@@ -130,7 +155,6 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-top: $header-size;
   max-width: 1480px;
   margin: auto;
   min-height: 700px;

@@ -18,11 +18,10 @@ export class IsConnectedGuard implements CanActivate, CanActivateChild {
       .status$
       .first()
       .map(status => {
-        const connected = status === ConnectionStatus.Total;
+        const connected = this.web3Service.status === ConnectionStatus.Total;
         if (!connected) {
           this.router.navigate(['/error', status]);
         }
-        console.log({connected})
         return connected;
       });
   }

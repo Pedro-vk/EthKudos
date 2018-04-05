@@ -14,6 +14,15 @@
     </div>
   </header>
 
+  <nav *ngIf="!showHelp && (hasError$ | async) as error" class="warning" @warning>
+    <mat-icon>warning</mat-icon>
+    <span *ngIf="error === 'no-provider'">You have not installed MetaMask.</span>
+    <span *ngIf="error === 'no-network'">You are not in the correct network.</span>
+    <span *ngIf="error === 'no-account'">Your MetaMask is locked.</span>
+
+    <button mat-button (click)="showHelp = true">Solve the error</button>
+  </nav>
+
   <section class="main">
 
     <div class="main__text">

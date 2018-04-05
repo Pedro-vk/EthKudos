@@ -82,7 +82,7 @@ export class Web3Service {
       return ConnectionStatus.Total;
     })
     .distinctUntilChanged()
-    .shareReplay();
+    .shareReplay(1);
   readonly pendingTransactions$: Observable<FullTransaction[]> = this.account$
     .mergeMap(account =>
       Observable
