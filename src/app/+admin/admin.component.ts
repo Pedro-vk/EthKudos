@@ -97,6 +97,19 @@ export class AdminComponent implements OnInit {
       .subscribe(contacts => {
         contacts.forEach(({member, name}) => this.memberName[member] = this.memberName[member] || name);
       });
+
+    this.activatedRoute.params
+      .first()
+      .catch(() => Observable.empty())
+      .subscribe(({address, name}: any) => {
+        if (address) {
+          this.newMember.member = address;
+        }
+        if (name) {
+          this.newMember.contact = name;
+        }
+        this.newMember = {...this.newMember};
+      });
   }
 
   isGoingToFinishOn(minutes: number): number {
