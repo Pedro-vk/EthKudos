@@ -10,7 +10,7 @@
         "/favicon.png",
         "/index.html",
         "/inline.318b50c57b4eba3d437b.bundle.js",
-        "/main.a4d8b81ef42057e05ec0.bundle.js",
+        "/main.c12ea8f5dc922b8fcb89.bundle.js",
         "/polyfills.f54959103d6118bd56c0.bundle.js",
         "/styles.dfab9db5e0d8b1813e27.bundle.css"
       ],
@@ -31,11 +31,11 @@
   "hashTable": {
     "/inline.318b50c57b4eba3d437b.bundle.js": "998c6060446975e566fd17509558ddc68d72eec3",
     "/assets/bg-colorful.png": "5e1c3d3cad4a416c75502248eaabd0d9dadeeb6a",
-    "/main.a4d8b81ef42057e05ec0.bundle.js": "8c6a27aeed6cfe8f941e6d764794b13cba0292c6",
+    "/main.c12ea8f5dc922b8fcb89.bundle.js": "8c54bfd5f769138557a705a6566626ffc49df0b3",
     "/assets/metamask-network.png": "346eccebaca4fc2dfdfc024b1413f9a860c92ab6",
     "/polyfills.f54959103d6118bd56c0.bundle.js": "f02e23b8f681ca415cf9781194ba5568b32bbb2a",
     "/styles.dfab9db5e0d8b1813e27.bundle.css": "c1a6dd2d0ba473babfa35aa4bf1a35599b10c25e",
     "/favicon.png": "d010d08a75035e4c9a758dba6e0a1e6c0741be31",
-    "/index.html": "922a16a21eb27792fec026af506a139e550d06e6"
+    "/index.html": "a50db157e10a4efc74e32404444e7b0037cb5a7e"
   }
 }
