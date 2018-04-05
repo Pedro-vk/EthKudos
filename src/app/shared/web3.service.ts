@@ -92,7 +92,9 @@ export class Web3Service {
         .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending')))
         .distinctUntilChanged((a, b) => a.size === b.size)
         .mergeMap(() => Observable.fromPromise(this.web3.eth.getBlock('pending', true)))
-        .map(({transactions}) => transactions.filter(transaction => (transaction.from || '').toLowerCase() === account.toLowerCase()))
+        .map(({transactions}) =>
+          transactions.filter(transaction => (transaction.from || '').toLowerCase() === (account || '').toLowerCase()),
+        )
         .map(transactions => transactions.map(tx => tx.hash))
         .distinctUntilChanged((a, b) => a.join('|') === b.join('|'))
         .scan((acc, transactions) =>

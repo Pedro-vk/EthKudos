@@ -3,7 +3,12 @@
   "version": "0.0.1",
   "description": "Kudos system on Ethereum blockchain",
   "author": "Pedro Gutiérrez<info@xitrus.es>",
-  "license": "ISC",
+  "homepage": "eth-kudos.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pedro-vk/EthKudos"
+  },
+  "license": "MIT",
   "private": true,
   "scripts": {
     "start": "ng serve",
@@ -22,7 +27,9 @@
     "test:sol:dev": "truffle test --network dev",
     "test:sol:live": "truffle test --network ropsten",
     "merge:sol:build": "sol-merger \"./contracts/*.sol\" ./build/merged",
-    "clean:sol:build": "for i in build/contracts/*.json; do npx jq '{contractName, abi, bytecode, deployedBytecode, compiler, networks, schemaVersion, updatedAt}' \"$i\" > \"$i.tmp\" && mv \"$i.tmp\" \"$i\"; done"
+    "clean:sol:build": "for i in build/contracts/*.json; do npx jq '{contractName, abi, bytecode, deployedBytecode, compiler, networks, schemaVersion, updatedAt}' \"$i\" > \"$i.tmp\" && mv \"$i.tmp\" \"$i\"; done",
+    "create-cname": "echo $(cat package.json | grep '\"homepage\"' | cut -d '\"' -f 4) > dist/CNAME",
+    "gh-pages-travis": "npm run create-cname && gh-pages-travis"
   },
   "dependencies": {
     "@angular/animations": "^5.2.9",
@@ -60,6 +67,7 @@
     "abi-decoder": "^1.1.0",
     "codelyzer": "^4.0.1",
     "coveralls": "^3.0.0",
+    "gh-pages-travis": "^1.0.4",
     "jasmine-core": "~3.1.0",
     "jasmine-spec-reporter": "~4.2.1",
     "jq-cli-wrapper": "^0.4.0",
