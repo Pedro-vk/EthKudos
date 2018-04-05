@@ -1,6 +1,66 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>EthKudos - Let's thank</title><base href="/"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.png"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Roboto+Mono:400,500" rel="stylesheet"><link href="styles.dfab9db5e0d8b1813e27.bundle.css" rel="stylesheet"/></head><body><eth-kudos-root></eth-kudos-root><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>EthKudos - Let's thank</title><meta name="description" content="EthKudos is a dapp that connects the coworkers and bust its cooperation. All working through Ethereum network."><base href="/"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.png"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Roboto+Mono:400,500" rel="stylesheet"><link href="styles.dfab9db5e0d8b1813e27.bundle.css" rel="stylesheet"/></head><body><eth-kudos-root><style type="text/css">.loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        text-align: center;
+      }
+      h1,
+      h2 {
+        font-family: 'Roboto';
+        color: #333333;
+        text-align: center;
+      }
+      h1 {
+        font-weight: 300;
+        margin: 0;
+        font-size: 68px;
+        flex: 1;
+      }
+
+      h1 span {
+        font-weight: 400;
+      }
+      h2 {
+        font-weight: 300;
+        margin: 0;
+      }
+      .load-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background-color: #fdba2c;
+      }
+      .bar {
+        content: "";
+        display: inline;
+        position: absolute;
+        width: 0;
+        height: 100%;
+        left: 50%;
+        text-align: center;
+      }
+      .bar:nth-child(1) {
+        background-color: #da4733;
+        animation: loading 3s linear infinite;
+      }
+      .bar:nth-child(2) {
+        background-color: #3b78e7;
+        animation: loading 3s linear 1s infinite;
+      }
+      .bar:nth-child(3) {
+        background-color: #fdba2c;
+        animation: loading 3s linear 2s infinite;
+      }
+      @keyframes loading {
+          from {left: 50%; width: 0;z-index:100;}
+          33.3333% {left: 0; width: 100%;z-index: 10;}
+          to {left: 0; width: 100%;}
+      }</style><div class="loading"><h1>Eth<span>Kudos</span></h1><h2>Connecting coworkers</h2></div><div class="load-bar"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></eth-kudos-root><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-    ga('create', 'UA-9283221-10', 'auto');</script><script type="text/javascript" src="inline.318b50c57b4eba3d437b.bundle.js"></script><script type="text/javascript" src="polyfills.f54959103d6118bd56c0.bundle.js"></script><script type="text/javascript" src="main.cf6f6b2802999e6492f9.bundle.js"></script></body></html>
+    ga('create', 'UA-9283221-10', 'auto');</script><script type="text/javascript" src="inline.318b50c57b4eba3d437b.bundle.js"></script><script type="text/javascript" src="polyfills.f54959103d6118bd56c0.bundle.js"></script><script type="text/javascript" src="main.b68854db4d681472bd9f.bundle.js"></script></body></html>
