@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/map';
 
 import { Web3Service, ConnectionStatus } from './web3.service';
 

@@ -3,7 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/empty';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 
@@ -69,7 +73,7 @@ export class AppWrapperComponent implements OnInit {
             case segmenets[1] === 'closed': {
               const pollingNumber = (await kudosTokenService.getPreviousPolls()).indexOf(segmenets[2]);
               return `${orgName} - Polling #${pollingNumber + 1}`;
-            };
+            }
             default: return orgName;
           }
         }

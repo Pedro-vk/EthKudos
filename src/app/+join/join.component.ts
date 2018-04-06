@@ -2,6 +2,17 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/observable/merge';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/shareReplay';
+import 'rxjs/add/operator/startWith';
 
 import { Web3Service, KudosTokenFactoryService, cardInOutAnimation } from '../shared';
 

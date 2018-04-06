@@ -14,12 +14,18 @@ const routes: Routes = [
     {path: 'join/:tokenAddress', component: JoinComponent},
   ]},
   {path: 'error/:errorMessage', component: LandingComponent},
-  {path: ':tokenAddress', component: AppComponent, canActivate: [IsConnectedGuard, IsTokenGuard], canActivateChild: [IsConnectedGuard], children: [
-    {path: '', component: HomeComponent},
-    {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},
-    {path: 'active', component: PollActiveComponent},
-    {path: 'closed/:address', component: PollPreviousComponent, canActivate: [IsPollGuard]},
-  ]},
+  {
+    path: ':tokenAddress',
+    component: AppComponent,
+    canActivate: [IsConnectedGuard, IsTokenGuard],
+    canActivateChild: [IsConnectedGuard],
+    children: [
+      {path: '', component: HomeComponent},
+      {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},
+      {path: 'active', component: PollActiveComponent},
+      {path: 'closed/:address', component: PollPreviousComponent, canActivate: [IsPollGuard]},
+    ],
+  },
   {path: '**', redirectTo: '/'},
 ];
 
