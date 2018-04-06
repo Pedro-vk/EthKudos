@@ -52,6 +52,9 @@ export class AppWrapperComponent implements OnInit {
             });
         }
       });
+
+    const loading = document.getElementById('loading-wrapper');
+    loading.parentNode.removeChild(loading);
   }
 
   async setTitleByUrl(url: string) {
