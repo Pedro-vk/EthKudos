@@ -27,6 +27,10 @@ $header-size: 70px;
   @media (max-width: 500px) {
     padding: 40px 20px;
   }
+
+  /deep/ .help-card-network {
+    max-height: 262px;
+  }
 }
 
 .content {

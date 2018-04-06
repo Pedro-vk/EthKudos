@@ -1,4 +1,4 @@
-<mat-card *ngIf="(status$ | async) === 'no-provider'" @cardInOut>
+<mat-card class="help-card-provider" *ngIf="(status$ | async) === 'no-provider'" @cardInOut>
   <h3>Start using EthKudos using Metamask</h3>
   <h4>EthKudos works on Ethereum network, Metamask is a bridge between Ethereum and dapps like EthKudos</h4>
 
@@ -18,12 +18,12 @@
   </div>
 </mat-card>
 
-<mat-card *ngIf="(status$ | async) === 'no-account'" @cardInOut>
+<mat-card class="help-card-account" *ngIf="(status$ | async) === 'no-account'" @cardInOut>
   <h3>Your MetaMask is locked</h3>
   <h4>Simply open MetaMask and follow the instructions to unlock it</h4>
 </mat-card>
 
-<mat-card *ngIf="(status$ | async) === 'no-network'" @cardInOut>
+<mat-card class="help-card-network" *ngIf="(status$ | async) === 'no-network'" @cardInOut>
   <h3>Oops, you’re on the wrong network</h3>
   <h4>Simply open MetaMask and switch <br> over to the <strong>Ropsten Ethereum Network</strong>.</h4>
 

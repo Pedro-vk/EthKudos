@@ -2,7 +2,8 @@
   <div class="content__text">
     <h2>Join the organisation</h2>
   </div>
-  <div class="content__card">
+
+  <div class="content__card" *ngIf="(status$ | async) === 'total'">
     <mat-card @cardInOut *ngIf="kudosTokenInfo$ | async as org">
       <div class="organisation">
         <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
@@ -51,4 +52,10 @@
       </mat-form-field>
     </mat-card>
   </div>
+
+
+  <div class="content__card" *ngIf="(status$ | async) !== 'total'">
+    <eth-kudos-help-cards></eth-kudos-help-cards>
+  </div>
+
 </div>

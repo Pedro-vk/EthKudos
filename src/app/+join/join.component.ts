@@ -16,6 +16,7 @@ export class JoinComponent {
   joinName$ = new Subject<string>();
   @ViewChild('joinUrl') joinUrlElement: ElementRef;
 
+  readonly status$ = this.web3Service.status$;
   readonly account$ = this.web3Service.account$;
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
