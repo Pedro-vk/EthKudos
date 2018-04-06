@@ -23,7 +23,32 @@
       </div>
     </mat-card>
 
-<!--     <mat-card @cardInOut *ngIf="!(kudosTokenInfo$ | async)?.imMember">
-    </mat-card> -->
+    <mat-card @cardInOut *ngIf="(kudosTokenInfo$ | async)?.imMember === false">
+      <mat-card-title>You are not member yet</mat-card-title>
+      <mat-card-subtitle>
+        Send this link to the owner to request access.
+      </mat-card-subtitle>
+
+      <mat-form-field>
+        <input
+          matInput
+          ngModel=""
+          (ngModelChange)="joinName$.next($event)"
+          type="text"
+          placeholder="What is your name?">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input
+          matInput
+          #joinUrl
+          readonly
+          [ngModel]="adminJoinUrl$ | async"
+          type="text"
+          placeholder="Send it to the owner">
+        <mat-icon matSuffix *ngIf="!copied" (click)="copyJoinUrl()">content_copy</mat-icon>
+        <mat-icon matSuffix *ngIf="copied" matTooltip="Copied!">check</mat-icon>
+      </mat-form-field>
+    </mat-card>
   </div>
 </div>

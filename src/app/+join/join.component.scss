@@ -9,10 +9,9 @@ $header-size: 70px;
   height: 100%;
   overflow: hidden;
   padding: 6px 40px 4px;
-  background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
+  background-image: linear-gradient(to right top, #051937, #00456d, #00747f, #00a160, #8ec414);
   border-width: 1px 0;
   color: rgba(#000000, .7);
-  text-align: center;
   display: block;
   box-sizing: border-box;
   padding: 40px 80px;
@@ -44,9 +43,29 @@ $header-size: 70px;
       @include mat-elevation(3);
 
       width: 100%;
-      max-width: 500px;
+      max-width: 400px;
       margin: auto;
       overflow: hidden;
+
+      & ~ mat-card {
+        margin-top: 40px;
+      }
+    }
+    mat-form-field {
+      width: 100%;
+    }
+    input[readonly] {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: 10px;
+      box-sizing: border-box;
+    }
+    [matSuffix] {
+      font-size: 18px;
+      position: relative;
+      top: 3px;
+      cursor: pointer;
     }
   }
 }
@@ -59,8 +78,24 @@ $header-size: 70px;
   border-top: 1px solid #dcdcdc;
   margin: 24px -24px 0;
   padding: 24px 24px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  cursor: default;
 
   eth-kudos-blockie {
     margin: 0 3px;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: #ffffff;
+    width: 24px;
+    z-index: 2;
+    box-shadow: 0px 0 24px 24px #ffffff;
   }
 }

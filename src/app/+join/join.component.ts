@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import { Web3Service, KudosTokenFactoryService, cardInOutAnimation } from '../shared';
 
@@ -11,22 +12,40 @@ import { Web3Service, KudosTokenFactoryService, cardInOutAnimation } from '../sh
   animations: [cardInOutAnimation],
 })
 export class JoinComponent {
+  copied: boolean;
+  joinName$ = new Subject<string>();
+  @ViewChild('joinUrl') joinUrlElement: ElementRef;
 
+  readonly account$ = this.web3Service.account$;
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
     .shareReplay();
-
   readonly kudosTokenInfo$ = this.activatedRoute.params
     .mergeMap(({tokenAddress}) => this.getKudosTokenInfo(tokenAddress))
     .shareReplay();
-
   readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
+
+  readonly adminJoinUrl$ = this.joinName$
+    .startWith(undefined)
+    .combineLatest(this.web3Service.account$, this.activatedRoute.params)
+    .map(([name, account, {tokenAddress}]) =>
+      `https://eth-kudos.com/${tokenAddress}/admin;address=${account}` + (name ? `;name=${name}` : ''),
+    )
+    .map(url => encodeURI(url))
+    .shareReplay();
 
   constructor(
     private web3Service: Web3Service,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private activatedRoute: ActivatedRoute,
   ) { }
+
+  copyJoinUrl() {
+    this.copied = true;
+    this.joinUrlElement.nativeElement.select();
+    document.execCommand('copy');
+    setTimeout(() => this.copied = false, 2000);
+  }
 
   private getKudosTokenInfo(address: string) {
     const kudosTokenService = this.kudosTokenFactoryService.getKudosTokenServiceAt(address);
