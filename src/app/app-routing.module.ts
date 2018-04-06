@@ -6,10 +6,14 @@ import { AppComponent } from './app.component';
 import { LandingComponent } from './+landing';
 import { HomeComponent } from './+home';
 import { AdminComponent } from './+admin';
+import { JoinComponent } from './+join';
 import { PollActiveComponent, PollPreviousComponent } from './+poll';
 
 const routes: Routes = [
-  {path: '', component: LandingComponent},
+  {path: '', component: LandingComponent, children: [
+    {path: 'join/:tokenAddress', component: JoinComponent, canActivate: [IsConnectedGuard, IsTokenGuard]},
+  ]},
+  {path: 'error/:errorMessage', component: LandingComponent},
   {path: ':tokenAddress', component: AppComponent, canActivate: [IsConnectedGuard, IsTokenGuard], canActivateChild: [IsConnectedGuard], children: [
     {path: '', component: HomeComponent},
     {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},

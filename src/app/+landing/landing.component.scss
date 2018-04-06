@@ -5,6 +5,8 @@ $background: #f6f6f6;
 $content-background: #f9f9f9;
 $header-size: 70px;
 
+@include organisation();
+
 :host {
   background: $background;
   height: 100%;
@@ -86,6 +88,7 @@ header {
   overflow: hidden;
   justify-content: space-between;
   align-items: center;
+  // box-shadow: 0 0 10px rgba(#000000, .2);
 
   h1 {
     font-weight: 300;
@@ -269,62 +272,6 @@ header {
     }
     .new-organisation {
       text-align: center;
-    }
-  }
-}
-
-.organisation {
-  display: flex;
-  align-items: center;
-  padding: 4px 12px;
-  padding-right: 6px;
-  background: #dddddd;
-  border-radius: 24px;
-  height: 48px;
-  line-height: 17px;
-  max-width: 320px;
-  margin: 4px auto 0;
-  position: relative;
-
-  &--margin {
-    margin-top: 20px;
-  }
-
-  &__info {
-    padding: 0 12px;
-    flex: 1;
-    overflow: hidden;
-  }
-  &__name,
-  &__balance,
-  &__not-member {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  &__name {
-    display: block;
-  }
-  &__balance {
-    display: block;
-    font-family: "Roboto Mono";
-
-    span {
-      opacity: .6;
-      padding-left: 2px;
-      font-size: .7em;
-    }
-  }
-  &__not-member {
-    display: block;
-    opacity: .6;
-  }
-  button {
-    border-radius: #{36px / 2};
-    background: rgba(#ffffff, .6);
-
-    & /deep/ .mat-button-ripple {
-      border-radius: #{36px / 2};
     }
   }
 }

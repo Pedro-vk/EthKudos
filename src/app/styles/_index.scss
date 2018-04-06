@@ -80,3 +80,65 @@
     }
   }
 }
+
+@mixin organisation() {
+  .organisation {
+    display: flex;
+    align-items: center;
+    padding: 4px 12px;
+    padding-right: 6px;
+    background: #dddddd;
+    border-radius: 24px;
+    height: 48px;
+    line-height: 17px;
+    max-width: 320px;
+    margin: 4px auto 0;
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    box-sizing: border-box;
+
+    &--margin {
+      margin-top: 20px;
+    }
+
+    &__info {
+      padding: 0 12px;
+      flex: 1;
+      overflow: hidden;
+      text-align: left;
+    }
+    &__name,
+    &__balance,
+    &__not-member {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    &__name {
+      display: block;
+    }
+    &__balance {
+      display: block;
+      font-family: "Roboto Mono";
+
+      span {
+        opacity: .6;
+        padding-left: 2px;
+        font-size: .7em;
+      }
+    }
+    &__not-member {
+      display: block;
+      opacity: .6;
+    }
+    button {
+      border-radius: #{36px / 2};
+      background: rgba(#ffffff, .6);
+
+      & /deep/ .mat-button-ripple {
+        border-radius: #{36px / 2};
+      }
+    }
+  }
+}

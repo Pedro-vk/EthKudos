@@ -1,3 +1,4 @@
+export * from './animations/card-in-out';
 export * from './is-connected.guard';
 export * from './is-owner.guard';
 export * from './is-poll.guard';

@@ -17,7 +17,9 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/startWith';
 import * as MetamaskLogo from 'metamask-logo';
 
-import { Web3Service, ConnectionStatus, KudosOrganisationsService, KudosTokenFactoryService } from '../shared';
+import {
+  Web3Service, ConnectionStatus, KudosOrganisationsService, KudosTokenFactoryService, cardInOutAnimation,
+} from '../shared';
 
 @Component({
   selector: 'eth-kudos-landing',
@@ -25,16 +27,7 @@ import { Web3Service, ConnectionStatus, KudosOrganisationsService, KudosTokenFac
   styleUrls: ['./landing.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
-    trigger('cardInOut', [
-      transition(':enter', [
-        style({opacity: 0, top: '-40px', height: 0, 'padding-top': 0, 'padding-bottom': 0}),
-        animate('.3s ease-in-out', style({opacity: 1, top: 0, height: '*', 'padding-top': '*', 'padding-bottom': '*'})),
-      ]),
-      transition(':leave', [
-        style({opacity: 1, top: 0, height: '*', 'padding-top': '*', 'padding-bottom': '*'}),
-        animate('.3s ease-in-out', style({opacity: 0, top: '40px', height: 0, 'padding-top': 0, 'padding-bottom': 0})),
-      ]),
-    ]),
+    cardInOutAnimation,
     trigger('warning', [
       transition(':enter', [
         style({height: 0, padding: 0}),
@@ -59,6 +52,8 @@ export class LandingComponent implements AfterViewChecked {
   metamaskInstallationLink: string = this.web3Service.getMetamaskInstallationLink();
   @ViewChild('metamaskLogo') metamaskLogo: ElementRef;
   private metamaskLogoViewer: any;
+
+  readonly hasChild: boolean = !!this.activatedRoute.firstChild;
 
   readonly hasError$: Observable<ConnectionStatus> = this.activatedRoute.params
     .map(({errorMessage}) => errorMessage)

@@ -18,6 +18,7 @@ import { COMPONENTS } from './components';
 import { HOME_COMPONENTS } from './+home';
 import { LANDING_COMPONENTS } from './+landing';
 import { POLL_COMPONENTS } from './+poll';
+import { JOIN_COMPONENTS } from './+join';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { POLL_COMPONENTS } from './+poll';
     ...HOME_COMPONENTS,
     ...LANDING_COMPONENTS,
     ...POLL_COMPONENTS,
+    ...JOIN_COMPONENTS,
   ],
   imports: [
     BrowserModule,

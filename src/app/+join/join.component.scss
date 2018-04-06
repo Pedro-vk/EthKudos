@@ -1,0 +1,66 @@
+@import '~@angular/material/theming';
+@import '../styles/index';
+
+@include organisation();
+
+$header-size: 70px;
+
+:host {
+  height: 100%;
+  overflow: hidden;
+  padding: 6px 40px 4px;
+  background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
+  border-width: 1px 0;
+  color: rgba(#000000, .7);
+  text-align: center;
+  display: block;
+  box-sizing: border-box;
+  padding: 40px 80px;
+}
+
+.content {
+  display: flex;
+  margin: auto;
+  align-items: center;
+  height: 100%;
+  max-width: 1400px;
+  margin: auto;
+  justify-content: space-between;
+
+  &__text {
+    color: #ffffff;
+
+    h2 {
+      font-size: 36px;
+      font-weight: 300;
+      text-shadow: 0 1px 3px rgba(#000000, .4);
+    }
+  }
+  &__card {
+    flex: 1;
+    padding-left: 80px;
+
+    mat-card {
+      @include mat-elevation(3);
+
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      overflow: hidden;
+    }
+  }
+}
+
+.organisation {
+  margin: auto;
+}
+
+.members {
+  border-top: 1px solid #dcdcdc;
+  margin: 24px -24px 0;
+  padding: 24px 24px 0;
+
+  eth-kudos-blockie {
+    margin: 0 3px;
+  }
+}

@@ -1,9 +1,9 @@
 <div class="container" id="let's-start">
 
-  <header>
+  <header [class.transparent]="hasChild">
     <h1><span>Eth</span><span class="extra"></span><span class="slim">Kudos</span></h1>
 
-    <div class="organisation" *ngIf="previousOrganisation$ | async as org" @cardInOut>
+    <div class="organisation" *ngIf="!hasChild && (previousOrganisation$ | async) as org" @cardInOut>
       <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
       <div class="organisation__info">
         <span class="organisation__name">{{org.name}}</span>
@@ -22,6 +22,8 @@
 
     <button mat-button (click)="showHelp = true">Solve the error</button>
   </nav>
+
+  <router-outlet></router-outlet>
 
   <section class="main">
 
