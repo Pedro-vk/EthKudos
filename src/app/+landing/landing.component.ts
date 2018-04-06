@@ -1,4 +1,4 @@
-import { Component, AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -15,7 +15,6 @@ import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/startWith';
-import * as MetamaskLogo from 'metamask-logo';
 
 import {
   Web3Service, ConnectionStatus, KudosOrganisationsService, KudosTokenFactoryService, cardInOutAnimation,
@@ -40,18 +39,13 @@ import {
     ]),
   ]
 })
-export class LandingComponent implements AfterViewChecked {
+export class LandingComponent {
   orgAddress: string;
   showHelp: boolean;
   newOrg: {name: string, symbol: string, decimals: number, toDirectory: boolean, working: boolean} = <any>{};
 
   newKudosTokenAddress: Subject<string> = new Subject();
   newOrgAddress: Subject<string> = new Subject();
-
-  metamaskInstallationClicked: boolean;
-  metamaskInstallationLink: string = this.web3Service.getMetamaskInstallationLink();
-  @ViewChild('metamaskLogo') metamaskLogo: ElementRef;
-  private metamaskLogoViewer: any;
 
   readonly hasChild: boolean = !!this.activatedRoute.firstChild;
 
@@ -104,38 +98,8 @@ export class LandingComponent implements AfterViewChecked {
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
-  ngAfterViewChecked() {
-    if (this.metamaskLogo && this.metamaskLogo.nativeElement.offsetParent) {
-      if (!this.metamaskLogoViewer) {
-        this.metamaskLogoViewer = MetamaskLogo({
-          pxNotRatio: true,
-          width: 80,
-          height: 80,
-          followMouse: false,
-          slowDrift: false,
-        });
-        const changeView = () => {
-          const maxDistance = 60;
-          const getRandom = (offset = 0.5) => (offset - Math.random()) * maxDistance * 2;
-          const {x, y, width, height} = this.metamaskLogoViewer.container.getBoundingClientRect();
-
-          this.metamaskLogoViewer.lookAt({
-            x: x + (width / 2) + getRandom(),
-            y: y + (height / 2) + (getRandom(0.7) * 0.8),
-          });
-        };
-        setInterval(() => changeView(), 5000);
-      }
-      this.metamaskLogo.nativeElement.appendChild(this.metamaskLogoViewer.container);
-    }
-  }
-
   getDecimals(n: number = 0): number {
     return n ? 1 / (2 ** n) : 0;
-  }
-
-  reload(): void {
-    window.location.reload();
   }
 
   trackMember(index: number, {member}: {member: string} & any): string {

@@ -11,7 +11,7 @@ import { PollActiveComponent, PollPreviousComponent } from './+poll';
 
 const routes: Routes = [
   {path: '', component: LandingComponent, children: [
-    {path: 'join/:tokenAddress', component: JoinComponent, canActivate: [IsConnectedGuard, IsTokenGuard]},
+    {path: 'join/:tokenAddress', component: JoinComponent},
   ]},
   {path: 'error/:errorMessage', component: LandingComponent},
   {path: ':tokenAddress', component: AppComponent, canActivate: [IsConnectedGuard, IsTokenGuard], canActivateChild: [IsConnectedGuard], children: [
