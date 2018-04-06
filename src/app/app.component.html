@@ -9,6 +9,9 @@
  --><span>{{(token$ | async)?.name}}</span>
   </div>
   <span>
+    <button mat-icon-button class="title__icon" (click)="openShareDialog()" *ngIf="!canBeShared">
+      <mat-icon>share</mat-icon>
+    </button>
     <button mat-icon-button class="title__icon" (click)="share()" *ngIf="canBeShared">
       <mat-icon>share</mat-icon>
     </button>

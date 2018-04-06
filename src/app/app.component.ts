@@ -2,11 +2,13 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { MatDialog } from '@angular/material';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 
 import { Web3Service, ConnectionStatus, KudosTokenFactoryService } from './shared';
+import { ShareDialogComponent } from './components';
 
 @Component({
   selector: 'eth-kudos-app',
@@ -61,6 +63,7 @@ export class AppComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private matDialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -92,6 +95,11 @@ export class AppComponent implements OnInit {
       const etherscan = window.open(url, '_blank');
       etherscan.focus();
     }
+  }
+
+  openShareDialog() {
+    this.activatedRoute.params
+      .subscribe(({tokenAddress}) => this.matDialog.open(ShareDialogComponent, {data: tokenAddress}));
   }
 
   share() {

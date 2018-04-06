@@ -1,0 +1,21 @@
+:host {
+  min-width: 300px;
+  display: block;
+}
+
+mat-form-field {
+  width: 100%;
+}
+input[readonly] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+[matSuffix] {
+  font-size: 18px;
+  position: relative;
+  top: 3px;
+  cursor: pointer;
+}
