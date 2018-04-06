@@ -473,8 +473,8 @@ header {
 }
 
 .preload {
-  height: 0;
-  width: 0;
+  opacity: 0;
+  z-index: -100;
   position: fixed;
   top: -999999px;
   left: -999999px;
