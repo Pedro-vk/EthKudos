@@ -7,6 +7,7 @@ $header-size: 70px;
 
 :host {
   height: 100%;
+  min-height: 600px;
   overflow: hidden;
   padding: 6px 40px 4px;
   background-image: linear-gradient(to right top, #051937, #00456d, #00747f, #00a160, #8ec414);
@@ -15,6 +16,17 @@ $header-size: 70px;
   display: block;
   box-sizing: border-box;
   padding: 40px 80px;
+
+  @media (max-width: 1000px) {
+    padding: 40px;
+  }
+  @media (max-width: 880px) {
+    height: auto;
+    min-height: initial;
+  }
+  @media (max-width: 500px) {
+    padding: 40px 20px;
+  }
 }
 
 .content {
@@ -28,9 +40,11 @@ $header-size: 70px;
 
   &__text {
     color: #ffffff;
+    white-space: nowrap;
 
     h2 {
       font-size: 36px;
+      margin: 0;
       font-weight: 300;
       text-shadow: 0 1px 3px rgba(#000000, .4);
     }
@@ -42,6 +56,7 @@ $header-size: 70px;
     mat-card {
       @include mat-elevation(3);
 
+      box-sizing: border-box;
       width: 100%;
       max-width: 400px;
       margin: auto;
@@ -66,6 +81,28 @@ $header-size: 70px;
       position: relative;
       top: 3px;
       cursor: pointer;
+    }
+  }
+
+  @media (max-width: 880px) {
+    display: block;
+
+    &__text {
+      text-align: center;
+      padding: 20px 0 40px;
+    }
+    &__card {
+      padding: 0;
+    }
+  }
+  @media (max-width: 500px) {
+    &__text h2 {
+      font-size: 32px;
+    }
+  }
+  @media (max-width: 370px) {
+    &__text h2 {
+      font-size: 28px;
     }
   }
 }
