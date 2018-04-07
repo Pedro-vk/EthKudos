@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -40,7 +40,7 @@ import {
     ]),
   ]
 })
-export class LandingComponent {
+export class LandingComponent implements OnInit {
   orgAddress: string;
   showHelp: boolean;
   newOrg: {name: string, symbol: string, decimals: number, toDirectory: boolean, working: boolean} = <any>{};
@@ -98,6 +98,15 @@ export class LandingComponent {
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
+
+  ngOnInit() {
+    this.web3Service.status$
+      .subscribe(status => {
+        if (status === ConnectionStatus.Total && this.router.url.match(/^\/error/)) {
+          this.router.navigate(['/']);
+        }
+      });
+  }
 
   getDecimals(n: number = 0): number {
     return n ? 1 / (2 ** n) : 0;
