@@ -69,75 +69,11 @@ $header-size: 70px;
 }
 
 header {
-  @include mat-elevation(0);
+  @include header;
 
-  position: fixed;
-  z-index: 10;
-  line-height: $header-size;
-  height: $header-size;
-  padding: 0 40px;
-  width: 100%;
-  // max-width: 1800px;
-  top: 0;
-  left: 50%;
-  border-bottom: 1px solid rgba(0,0,0, .08);
-  transform: translateX(-50%);
-  background: #ffffff;
-  color: #555555;
-  display: flex;
-  overflow: hidden;
-  justify-content: space-between;
-  align-items: center;
-  // box-shadow: 0 0 10px rgba(#000000, .2);
-
-  h1 {
-    font-weight: 300;
-    margin: 0;
-    font-size: 32px;
-    margin-right: 40px;
-    cursor: default;
-    white-space: nowrap;
-
-    span {
-      line-height: $header-size - 2px;
-      height: $header-size;
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    span.extra {
-      @include transition();
-
-      overflow: hidden;
-      white-space: nowrap;
-      position: relative;
-      width: 0;
-
-      &:before {
-        content: 'ereum';
-      }
-      @media (max-width: 680px) {
-        display: none;
-      }
-    }
-    &:hover span.extra {
-      width: 89.47px;
-    }
-    span.slim {
-      font-weight: 400;
-    }
-  }
   .organisation {
     overflow: hidden;
     margin: 0;
-  }
-
-  @media (max-width: 540px) {
-    padding: 0 20px;
-
-    h1 {
-      margin-right: 20px;
-    }
   }
 
   @media (max-width: 400px) {
