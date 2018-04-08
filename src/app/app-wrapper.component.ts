@@ -80,6 +80,8 @@ export class AppWrapperComponent implements OnInit {
             default: return orgName;
           }
         }
+        case segmenets[0] === 'faqs': return 'FAQs';
+        case segmenets[0] === 'privacy-policy': return 'Privacy Policy';
         default: return `Let's thank`;
       }
     })();
