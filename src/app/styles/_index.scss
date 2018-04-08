@@ -3,9 +3,18 @@ $background: #f6f6f6;
 $content-background: #f9f9f9;
 $landing-header-size: 70px;
 
-@mixin transition() {
-  transition: all .26s ease;
+@mixin transition($type: normal, $property: all) {
+  @if ($type == slow) {
+    transition: $property .42s ease;
+  }
+  @if ($type == normal) {
+    transition: $property .26s ease;
+  }
+  @if ($type == fast) {
+    transition: $property .14s ease;
+  }
 }
+
 
 @mixin host($columns: false) {
   display: block;

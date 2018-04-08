@@ -22,7 +22,12 @@ header {
   padding-top: $landing-header-size;
 
   .header-bg {
+    @include transition(slow);
+
     background: #666666;
+    height: 0;
+  }
+  &--visible .header-bg {
     height: 400px;
   }
   .content-wrapper {
@@ -38,9 +43,14 @@ header {
   .content {
     max-width: 900px;
     margin: auto;
-    margin-top: -200px;
     background: $background;
     position: relative;
+    margin-top: 0px;
+    opacity: 0;
+    transition:
+      opacity .26s ease,
+      margin-top .5s ease-out;
+    transition-delay: .3s;
 
     h1 {
       font-weight: 300;
@@ -79,6 +89,10 @@ header {
         padding: 40px 20px 0;
       }
     }
+  }
+  &--visible .content {
+    margin-top: -200px;
+    opacity: 1;
   }
 }
 
