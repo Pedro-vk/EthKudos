@@ -1,7 +1,9 @@
 mat-card {
   overflow: hidden;
-  width: 488px;
+  max-width: 488px;
   margin: auto;
+  width: 100%;
+  box-sizing: border-box;
 
   a {
     @incldue transition;
@@ -12,10 +14,6 @@ mat-card {
     &:hover {
       opacity: .8;
     }
-  }
-  mat-card {
-    width: 488px;
-    margin: auto;
   }
   h3 {
     font-size: 18px;

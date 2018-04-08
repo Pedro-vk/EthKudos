@@ -26,29 +26,45 @@ mat-accordion {
     margin-top: 4px;
     margin-bottom: 4px;
   }
-}
-table {
-  width: 100%;
-  max-width: 600px;
-  text-align: center;
-  margin: auto;
+  a {
+    @incldue transition;
 
-  img {
-    max-height: 80px;
+    color: #3f51b5;
+    text-decoration: none;
+
+    &:hover {
+      opacity: .8;
+    }
   }
-  td {
-    padding: 12px;
-  }
-  .logo {
+  table {
     width: 100%;
-    min-width: 150px;
-    box-sizing: border-box;
+    max-width: 600px;
+    text-align: center;
+    margin: auto;
+
+    img {
+      max-height: 80px;
+    }
+    td {
+      padding: 12px;
+    }
+    .logo {
+      width: 100%;
+      min-width: 150px;
+      box-sizing: border-box;
+    }
+    .app-name {
+      display: block;
+      font-size: 22px;
+      font-weight: 300;
+      padding-top: 4px;
+    }
   }
-  .app-name {
-    display: block;
-    font-size: 22px;
-    font-weight: 300;
-    padding-top: 4px;
+  ol ul li {
+    list-style-type: disc;
+  }
+  ol, ul {
+    padding-left: 25px;
   }
 }
 

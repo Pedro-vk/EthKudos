@@ -24,6 +24,13 @@ header {
   }
   .content-wrapper {
     padding: 0 40px 40px;
+
+    @media (max-width: 600px) {
+      padding: 0 20px 20px;
+    }
+    @media (max-width: 500px) {
+      padding: 0 0 20px;
+    }
   }
   .content {
     max-width: 900px;
@@ -42,6 +49,10 @@ header {
       position: relative;
       padding: 0px 40px;
       top: -72px;
+
+      @media (max-width: 500px) {
+        text-align: center;
+      }
     }
 
     &:before {
@@ -60,6 +71,10 @@ header {
       background-color: $background;
       background-image: linear-gradient(to bottom, #ffffff 40px, rgba(#ffffff, 0) 240px);
       display: block;
+
+      @media (max-width: 460px) {
+        padding: 40px 20px 0;
+      }
     }
   }
 }
