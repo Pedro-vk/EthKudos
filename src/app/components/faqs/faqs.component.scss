@@ -1,0 +1,60 @@
+@import '../../styles/index';
+
+:host {
+  color: #555555;
+  font-weight: 400;
+}
+
+h3 {
+  font-weight: 300;
+  font-size: 24px;
+  margin: 40px 0 20px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+mat-accordion {
+  strong,
+  em {
+    color: #444444;
+  }
+  strong {
+    font-weight: 500;
+  }
+  li {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+}
+.prefix {
+  opacity: .7;
+
+  &:after {
+    content: '-';
+    margin: 0 6px;
+    opacity: .6;
+  }
+}
+
+:host {
+  /deep/ {
+    .mat-expansion-panel-header-title {
+      align-items: center;
+      justify-content: space-between;
+
+      mat-icon {
+        @include transition;
+
+        color: rgba(0, 0, 0, .7);
+      }
+    }
+    .mat-expansion-panel {
+      &.mat-expanded {
+        mat-icon {
+          transform: rotate(45deg);
+        }
+      }
+    }
+  }
+}
