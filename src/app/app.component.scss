@@ -53,6 +53,15 @@ $header--secondary---height: 48px !default;
   }
   .title {
     font-weight: 300;
+    display: flex;
+    align-items: center;
+
+    &,
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
     [mat-icon-button] {
       margin-right: 8px;
@@ -95,7 +104,16 @@ $header--secondary---height: 48px !default;
       }
 
       @media (max-width: 460px) {
-        transform: scale(0.8);
+        width: 30px;
+        height: 30px;
+        line-height: 26px;
+
+        mat-icon {
+          font-size: 18px;
+        }
+        svg {
+          transform: scale(.7);
+        }
       }
     }
   }
@@ -106,6 +124,7 @@ $header--secondary---height: 48px !default;
     border-bottom: 1px solid rgba(0,0,0, .08);
     background: #ffffff;
     color: #555555;
+    display: flex;
 
     @media (max-width: 460px) {
       height: $header--small---height;
