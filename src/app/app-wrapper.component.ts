@@ -43,6 +43,8 @@ export class AppWrapperComponent implements OnInit {
     this.router.events
       .subscribe(event => {
         if (event instanceof NavigationEnd) {
+          window.scrollTo(0, 0);
+
           this.setTitleByUrl(event.urlAfterRedirects)
             .then(() => {
               if (environment.production) {
