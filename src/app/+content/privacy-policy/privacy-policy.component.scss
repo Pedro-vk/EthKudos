@@ -1,0 +1,46 @@
+@import '~@angular/material/theming';
+@import '../../styles/index';
+@import '../content-base';
+
+.container {
+  .header-bg {
+    background-image: linear-gradient(to right top, #845ec2, #e552a7, #ff666f, #ffa02e, #e0de00);
+  }
+
+  .content-box {
+    color: #666666;
+    font-weight: 400;
+  }
+
+  a {
+    @incldue transition;
+
+    color: #3f51b5;
+    text-decoration: none;
+
+    &:hover {
+      opacity: .8;
+    }
+  }
+
+  h2 {
+    font-size: 24px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+  h3 {
+    font-size: 18px;
+  }
+  h2,
+  h3 {
+    color: #333333;
+  }
+  h2 {
+    font-weight: 300;
+  }
+  h3 {
+    font-weight: 400;
+  }
+}

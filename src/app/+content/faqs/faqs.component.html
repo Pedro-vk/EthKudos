@@ -1,5 +1,7 @@
-<header [class.transparent]="hasChild">
-  <h1><span>Eth</span><span class="extra"></span><span class="slim">Kudos</span></h1>
+<header>
+  <h1 routerLink="/">
+    <span>Eth</span><span class="extra"></span><span class="slim">Kudos</span>
+  </h1>
 
   <button mat-button routerLink="/">Go home</button>
 </header>
@@ -10,7 +12,7 @@
 
   <div class="content-wrapper">
     <div class="content">
-      <h2>FAQs</h2>
+      <h1>FAQs</h1>
 
       <eth-kudos-faqs class="content-box"></eth-kudos-faqs>
     </div>

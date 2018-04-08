@@ -12,6 +12,10 @@
 
 header {
   @include header;
+
+  h1 {
+    cursor: pointer;
+  }
 }
 
 .container {
@@ -38,7 +42,7 @@ header {
     background: $background;
     position: relative;
 
-    h2 {
+    h1 {
       font-weight: 300;
       font-size: 40px;
       color: #ffffff;
