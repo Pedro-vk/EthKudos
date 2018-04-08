@@ -175,6 +175,7 @@ $landing-header-size: 70px;
     margin-right: 40px;
     cursor: default;
     white-space: nowrap;
+    position: relative;
 
     span {
       line-height: $landing-header-size - 2px;
@@ -203,6 +204,23 @@ $landing-header-size: 70px;
     }
     span.slim {
       font-weight: 400;
+    }
+
+    &:after {
+      content: "beta";
+      position: absolute;
+      top: 0;
+      left: 100%;
+      margin-top: -5px;
+      margin-left: -1px;
+      font-size: 12px;
+      font-family: "Roboto Mono";
+      padding-left: 6px;
+      color: #3f51b5;
+
+      @media (max-width: 700px) {
+        content: '\03B2';
+      }
     }
   }
 
