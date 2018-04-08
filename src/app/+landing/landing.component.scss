@@ -1,10 +1,6 @@
 @import '~@angular/material/theming';
 @import '../styles/index';
 
-$background: #f6f6f6;
-$content-background: #f9f9f9;
-$header-size: 70px;
-
 @include organisation();
 
 :host {
@@ -35,7 +31,7 @@ $header-size: 70px;
   width: 100%;
   margin: auto;
   height: 100%;
-  padding-top: $header-size;
+  padding-top: $landing-header-size;
 
 
   // TODO - Remove it

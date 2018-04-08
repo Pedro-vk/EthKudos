@@ -5,6 +5,7 @@ import { IsOwnerGuard, IsTokenGuard, IsPollGuard, IsConnectedGuard } from './sha
 import { AppComponent } from './app.component';
 import { LandingComponent } from './+landing';
 import { HomeComponent } from './+home';
+import { FaqsComponent } from './+content';
 import { AdminComponent } from './+admin';
 import { JoinComponent } from './+join';
 import { PollActiveComponent, PollPreviousComponent } from './+poll';
@@ -14,6 +15,7 @@ const routes: Routes = [
     {path: 'join/:tokenAddress', component: JoinComponent},
   ]},
   {path: 'error/:errorMessage', component: LandingComponent},
+  {path: 'faqs', component: FaqsComponent},
   {
     path: ':tokenAddress',
     component: AppComponent,

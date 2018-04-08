@@ -15,10 +15,11 @@ import { PROVIDERS } from './shared';
 
 import { COMPONENTS, ENTRY_COMPONENTS } from './components';
 import { ADMIN_COMPONENTS } from './+admin';
+import { CONTENT_COMPONENTS } from './+content';
 import { HOME_COMPONENTS } from './+home';
+import { JOIN_COMPONENTS } from './+join';
 import { LANDING_COMPONENTS } from './+landing';
 import { POLL_COMPONENTS } from './+poll';
-import { JOIN_COMPONENTS } from './+join';
 
 @NgModule({
   declarations: [
@@ -29,10 +30,11 @@ import { JOIN_COMPONENTS } from './+join';
     ...ENTRY_COMPONENTS,
 
     ...ADMIN_COMPONENTS,
+    ...CONTENT_COMPONENTS,
     ...HOME_COMPONENTS,
+    ...JOIN_COMPONENTS,
     ...LANDING_COMPONENTS,
     ...POLL_COMPONENTS,
-    ...JOIN_COMPONENTS,
   ],
   entryComponents: [
     ...ENTRY_COMPONENTS,

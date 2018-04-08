@@ -1,0 +1,67 @@
+@import '~@angular/material/theming';
+@import '../../styles/index';
+
+:host {
+  background: $background;
+  display: block;
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+header {
+  @include header;
+}
+
+.container {
+  padding-top: $landing-header-size;
+
+  .header-bg {
+    background-image: linear-gradient(to right top, #6d4ea1, #006fbf, #0089c2, #009dae, #00ac90);
+    background-image: linear-gradient(to right top, #6d4ea1, #0089c2, #00ac90);
+    height: 400px;
+  }
+  .content-wrapper {
+    padding: 0 40px 40px;
+  }
+  .content {
+    max-width: 900px;
+    margin: auto;
+    margin-top: -200px;
+    background: $background;
+    position: relative;
+
+    h2 {
+      font-weight: 300;
+      font-size: 40px;
+      color: #ffffff;
+      margin: 0;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .8);
+      height: 0;
+      position: relative;
+      padding: 0px 40px;
+      top: -72px;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 240px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.35);
+    }
+    eth-kudos-faqs {
+      padding: 40px 40px 0;
+      position: relative;
+      background-color: $background;
+      background-image: linear-gradient(to bottom, #ffffff 40px, rgba(#ffffff, 0) 240px);
+      display: block;
+    }
+  }
+}
+
+
