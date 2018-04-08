@@ -72,6 +72,27 @@ header {
     margin: 0;
   }
 
+  .header-right-side {
+    display: flex;
+    align-items: center;
+    margin-right: -20px;
+    overflow: hidden;
+    height: 70px;
+
+    a {
+      margin-left: 10px;
+      opacity: .7;
+    }
+
+    @media (max-width: 560px) {
+      margin-right: 0px;
+
+      a {
+        display: none;
+      }
+    }
+  }
+
   @media (max-width: 400px) {
     .organisation {
       eth-kudos-blockie {

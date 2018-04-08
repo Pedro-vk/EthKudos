@@ -3,14 +3,18 @@
   <header [class.transparent]="hasChild">
     <h1><span>Eth</span><span class="extra"></span><span class="slim">Kudos</span></h1>
 
-    <div class="organisation" *ngIf="!hasChild && (previousOrganisation$ | async) as org" @cardInOut>
-      <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
-      <div class="organisation__info">
-        <span class="organisation__name">{{org.name}}</span>
-        <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
-        <span class="organisation__not-member" *ngIf="!org.imMember">You are not member</span>
+    <div class="header-right-side">
+      <div class="organisation" *ngIf="!hasChild && (previousOrganisation$ | async) as org" @cardInOut>
+        <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
+        <div class="organisation__info">
+          <span class="organisation__name">{{org.name}}</span>
+          <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
+          <span class="organisation__not-member" *ngIf="!org.imMember">You are not member</span>
+        </div>
+        <button mat-button color="primary" [routerLink]="['/', org.address]">access</button>
       </div>
-      <button mat-button color="primary" [routerLink]="['/', org.address]">access</button>
+
+      <a mat-icon-button routerLink="/faqs" matTooltip="FAQs"><mat-icon>help_outline</mat-icon></a>
     </div>
   </header>
 
