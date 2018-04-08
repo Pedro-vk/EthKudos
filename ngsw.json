@@ -10,7 +10,7 @@
         "/favicon.png",
         "/index.html",
         "/inline.318b50c57b4eba3d437b.bundle.js",
-        "/main.bce4b5183906f132406b.bundle.js",
+        "/main.6e2e1fc2fb0902bcee89.bundle.js",
         "/polyfills.0cda82ed7df2459fb45d.bundle.js",
         "/styles.dfab9db5e0d8b1813e27.bundle.css"
       ],
@@ -35,7 +35,7 @@
   "hashTable": {
     "/inline.318b50c57b4eba3d437b.bundle.js": "998c6060446975e566fd17509558ddc68d72eec3",
     "/assets/app-store-badge.png": "83535d5978b467a35f873290534bde1b9c4d2d90",
-    "/main.bce4b5183906f132406b.bundle.js": "2d725c5b862f719ee8e7c28a0528529e7bfb5c6c",
+    "/main.6e2e1fc2fb0902bcee89.bundle.js": "8a60e416155d1970c2a66f7c6de128eeed67edab",
     "/assets/bg-colorful.png": "779b8f1311edc7a700fb73486cefbab0a987de1b",
     "/polyfills.0cda82ed7df2459fb45d.bundle.js": "d092885fa14cbef62d7c47214b8953c01bfa0da4",
     "/assets/cipher.png": "5e1232ea6210f1f40d964513c3f02b0b024c59a1",
@@ -43,7 +43,7 @@
     "/assets/google-play-badge.png": "ca83b32b7518ad63bf3231aebf4cbfa467239d8a",
     "/favicon.png": "4f824570bd0b15ecafea6401d9673cad582a581e",
     "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
-    "/index.html": "a91ef3bf8fcd189b468631f62e5ac0478d572249",
+    "/index.html": "38b09d48583e84977e720c5e0c6aeadf6f53ad55",
     "/assets/toshi.png": "5b364160253e9cec5c1af1db3eca14ec91f2cff7"
   }
 }
