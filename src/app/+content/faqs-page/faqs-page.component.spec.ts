@@ -4,11 +4,11 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { COMPONENTS } from '../../components';
 
 import { AppCommonModule } from '../../app-common.module';
-import { FaqsComponent } from './faqs.component';
+import { FaqsPageComponent } from './faqs-page.component';
 
-describe('FaqsComponent', () => {
-  let component: FaqsComponent;
-  let fixture: ComponentFixture<FaqsComponent>;
+describe('FaqsPageComponent', () => {
+  let component: FaqsPageComponent;
+  let fixture: ComponentFixture<FaqsPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -17,7 +17,7 @@ describe('FaqsComponent', () => {
         NoopAnimationsModule,
       ],
       declarations: [
-        FaqsComponent,
+        FaqsPageComponent,
         ...COMPONENTS,
       ],
     })
@@ -25,7 +25,7 @@ describe('FaqsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FaqsComponent);
+    fixture = TestBed.createComponent(FaqsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

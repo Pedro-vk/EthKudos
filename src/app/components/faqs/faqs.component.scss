@@ -47,6 +47,10 @@ mat-accordion {
     }
     td {
       padding: 12px;
+
+      @media (max-width: 700px) {
+        display: block;
+      }
     }
     .logo {
       width: 100%;

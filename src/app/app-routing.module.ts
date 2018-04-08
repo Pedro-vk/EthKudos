@@ -5,7 +5,7 @@ import { IsOwnerGuard, IsTokenGuard, IsPollGuard, IsConnectedGuard } from './sha
 import { AppComponent } from './app.component';
 import { LandingComponent } from './+landing';
 import { HomeComponent } from './+home';
-import { FaqsComponent, PrivacyPolicyComponent } from './+content';
+import { FaqsPageComponent, FaqsOnAppComponent, PrivacyPolicyComponent } from './+content';
 import { AdminComponent } from './+admin';
 import { JoinComponent } from './+join';
 import { PollActiveComponent, PollPreviousComponent } from './+poll';
@@ -15,7 +15,7 @@ const routes: Routes = [
     {path: 'join/:tokenAddress', component: JoinComponent},
   ]},
   {path: 'error/:errorMessage', component: LandingComponent},
-  {path: 'faqs', component: FaqsComponent},
+  {path: 'faqs', component: FaqsPageComponent},
   {path: 'privacy-policy', component: PrivacyPolicyComponent},
   {
     path: ':tokenAddress',
@@ -27,6 +27,7 @@ const routes: Routes = [
       {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},
       {path: 'active', component: PollActiveComponent},
       {path: 'closed/:address', component: PollPreviousComponent, canActivate: [IsPollGuard]},
+      {path: 'faqs', component: FaqsOnAppComponent},
     ],
   },
   {path: '**', redirectTo: '/'},

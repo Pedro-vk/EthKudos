@@ -1,0 +1,22 @@
+@import '~@angular/material/theming';
+@import '../../styles/index';
+
+:host {
+  @include host;
+
+  /deep/ {
+    table .logo {
+      min-width: initial !important;
+      width: auto !important;
+    }
+    table td {
+      padding: 12px 8px !important;
+    }
+  }
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: 400;
+  color: #333333;
+}
