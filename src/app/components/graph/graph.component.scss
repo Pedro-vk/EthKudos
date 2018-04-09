@@ -1,0 +1,71 @@
+@import '~@angular/material/theming';
+@import '../../styles/index';
+
+:host {
+  position: relative;
+  margin: auto; // TODO
+  display: block;
+}
+
+:host,
+.graph {
+  width: 360px;
+  height: 360px;
+}
+
+.tooltip {
+  @include mat-elevation(4);
+
+  position: absolute;
+  min-width: 200px;
+  transform: translateX(-50%) translateY(-100%);
+  margin-top: -20px;
+  z-index: 2;
+  padding: 8px 12px;
+  background: #ffffff;
+  color: #666666;
+  border-radius: 3px;
+  pointer-events: none;
+  opacity: 0;
+  white-space: nowrap;
+  font-weight: 300;
+  text-align: center;
+
+  &--visible {
+    opacity: 1;
+  }
+
+  &__text {
+    padding-top: 10px;
+  }
+  &__footer {
+    opacity: .7;
+  }
+
+  strong {
+    font-weight: 400;
+    color: #333;
+  }
+  code span {
+    color: #444;
+    font-size: .7em;
+    opacity: .7;
+  }
+
+  &:before {
+    $size: 18px;
+
+    content: '';
+    height: $size;
+    width: $size;
+    background: #ffffff;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-top: ($size / -2) - 3px;
+    margin-left: $size / -2;
+    transform: rotate(45deg);
+    border-bottom-right-radius: 2px;
+    box-shadow: 3px 3px 10px -4px rgba(#000000, .8);
+  }
+}

@@ -41,16 +41,17 @@ header {
     }
   }
   .content {
+    $base-delay: .3s;
+
     max-width: 900px;
     margin: auto;
     background: $background;
     position: relative;
-    margin-top: 0px;
+    margin-top: 40px;
     opacity: 0;
     transition:
-      opacity .26s ease,
-      margin-top .5s ease-out;
-    transition-delay: .3s;
+      opacity .4s ease $base-delay,
+      margin-top .7s ease ($base-delay + .2s);
 
     h1 {
       font-weight: 300;
@@ -62,6 +63,8 @@ header {
       position: relative;
       padding: 0px 40px;
       top: -72px;
+      opacity: 0;
+      transition: all .4s ease ($base-delay + .3s);
 
       @media (max-width: 500px) {
         text-align: center;
@@ -76,7 +79,8 @@ header {
       left: 0;
       right: 0;
       height: 240px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 0 5px rgba(0, 0, 0, .1);
+      transition: all .6s ease ($base-delay + .4s);
     }
     .content-box {
       padding: 40px 40px 0;
@@ -93,6 +97,13 @@ header {
   &--visible .content {
     margin-top: -200px;
     opacity: 1;
+
+    &:before {
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.35);
+    }
+    h1 {
+      opacity: 1;
+    }
   }
 }
 
