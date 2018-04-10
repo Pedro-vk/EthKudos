@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { AppCommonModule } from '../app-common.module';
 import { AppRoutingModule } from '../app-routing.module';
@@ -12,6 +12,21 @@ import { LandingComponent } from './landing';
 import { JoinComponent } from './join';
 import { ContentComponent, FaqsPageComponent, PrivacyPolicyComponent } from './content';
 
+const routes = [
+  // Website
+  {path: '', component: LandingComponent, children: [
+    {path: 'join/:tokenAddress', component: JoinComponent},
+  ]},
+  {path: 'error/:errorMessage', component: LandingComponent},
+
+  // Website - content
+  {path: '', component: ContentComponent, children: [
+    {path: 'faqs', component: FaqsPageComponent},
+    {path: 'privacy-policy', component: PrivacyPolicyComponent},
+  ]},
+];
+
+
 @NgModule({
   declarations: [
     JoinComponent,
@@ -21,11 +36,11 @@ import { ContentComponent, FaqsPageComponent, PrivacyPolicyComponent } from './c
     PrivacyPolicyComponent,
   ],
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
+    CommonModule,
+    FormsModule,
+    RouterModule.forChild(routes),
 
     AppCommonModule,
-    AppRoutingModule,
   ],
   providers: [
     ...PROVIDERS,

@@ -10,31 +10,10 @@ import { LandingComponent, ContentComponent, FaqsPageComponent, PrivacyPolicyCom
 
 const routes: Routes = [
   // Website
-  {path: '', component: LandingComponent, children: [
-    {path: 'join/:tokenAddress', component: JoinComponent},
-  ]},
-  {path: 'error/:errorMessage', component: LandingComponent},
-
-  // Website - content
-  {path: '', component: ContentComponent, children: [
-    {path: 'faqs', component: FaqsPageComponent},
-    {path: 'privacy-policy', component: PrivacyPolicyComponent},
-  ]},
+  {path: '', loadChildren: 'app/+website/website.module#WebsiteModule'},
 
   // App
-  {
-    path: ':tokenAddress',
-    component: AppComponent,
-    canActivate: [IsConnectedGuard, IsTokenGuard],
-    canActivateChild: [IsConnectedGuard],
-    children: [
-      {path: '', component: HomeComponent},
-      {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},
-      {path: 'active', component: PollActiveComponent},
-      {path: 'closed/:address', component: PollPreviousComponent, canActivate: [IsPollGuard]},
-      {path: 'faqs', component: FaqsOnAppComponent},
-    ],
-  },
+  {path: ':tokenAddress', loadChildren: 'app/+app/app.module#AppModule'},
 
   {path: '**', redirectTo: '/'},
 ];

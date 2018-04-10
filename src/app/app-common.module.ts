@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
@@ -21,9 +22,6 @@ import { COMPONENTS, ENTRY_COMPONENTS } from './components';
 
 @NgModule({
   imports: [
-    BrowserModule,
-    FormsModule,
-
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
@@ -40,9 +38,6 @@ import { COMPONENTS, ENTRY_COMPONENTS } from './components';
     MatTooltipModule,
   ],
   exports: [
-    BrowserModule,
-    FormsModule,
-
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
@@ -67,6 +62,9 @@ export class AppMaterialModule { }
     ...ENTRY_COMPONENTS,
   ],
   imports: [
+    CommonModule,
+    FormsModule,
+
     AppMaterialModule,
   ],
   exports: [
