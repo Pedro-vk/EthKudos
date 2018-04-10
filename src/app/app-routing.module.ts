@@ -6,15 +6,22 @@ import { IsOwnerGuard, IsTokenGuard, IsPollGuard, IsConnectedGuard } from './sha
 import {
   AppComponent, HomeComponent, AdminComponent, PollActiveComponent, PollPreviousComponent, FaqsOnAppComponent,
 } from './+app';
-import { LandingComponent, FaqsPageComponent, PrivacyPolicyComponent, JoinComponent } from './+website';
+import { LandingComponent, ContentComponent, FaqsPageComponent, PrivacyPolicyComponent, JoinComponent } from './+website';
 
 const routes: Routes = [
+  // Website
   {path: '', component: LandingComponent, children: [
     {path: 'join/:tokenAddress', component: JoinComponent},
   ]},
   {path: 'error/:errorMessage', component: LandingComponent},
-  {path: 'faqs', component: FaqsPageComponent},
-  {path: 'privacy-policy', component: PrivacyPolicyComponent},
+
+  // Website - content
+  {path: '', component: ContentComponent, children: [
+    {path: 'faqs', component: FaqsPageComponent},
+    {path: 'privacy-policy', component: PrivacyPolicyComponent},
+  ]},
+
+  // App
   {
     path: ':tokenAddress',
     component: AppComponent,
@@ -28,6 +35,7 @@ const routes: Routes = [
       {path: 'faqs', component: FaqsOnAppComponent},
     ],
   },
+
   {path: '**', redirectTo: '/'},
 ];
 

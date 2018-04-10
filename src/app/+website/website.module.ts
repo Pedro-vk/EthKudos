@@ -10,12 +10,13 @@ import { PROVIDERS } from '../shared';
 
 import { LandingComponent } from './landing';
 import { JoinComponent } from './join';
-import { FaqsPageComponent, PrivacyPolicyComponent } from './content';
+import { ContentComponent, FaqsPageComponent, PrivacyPolicyComponent } from './content';
 
 @NgModule({
   declarations: [
     JoinComponent,
     LandingComponent,
+    ContentComponent,
     FaqsPageComponent,
     PrivacyPolicyComponent,
   ],

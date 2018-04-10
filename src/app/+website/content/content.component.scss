@@ -1,0 +1,36 @@
+@import '~@angular/material/theming';
+@import '../../styles/index';
+
+:host {
+  background: $background;
+  display: block;
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+header {
+  @include header;
+
+  h1 {
+    cursor: pointer;
+  }
+}
+
+footer {
+  padding: 40px 20px 30px;
+  text-align: center;
+
+  a {
+    opacity: .7;
+    margin: 0 20px 10px;
+
+    @media (max-width: 500px) {
+      margin: 0 10px 10px;
+    }
+    @media (max-width: 420px) {
+      margin: 0 0 10px;
+    }
+  }
+}
