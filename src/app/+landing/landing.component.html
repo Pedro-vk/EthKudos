@@ -212,15 +212,42 @@
         <h3><span>The members are going to</span> <span>hold kudos, that's prestige</span></h3>
         <p>
           Each member will have some kudos to award other coworkers,
+          <br>
           sending a message that will be seen by the receivers.
         </p>
         <p>
           The sending is limited by each receiver, that's going to ensure that all
+          <br>
           the members respect the rules and promotes to send gratitude to more members.
         </p>
         <a href="#let's-start" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp">
           <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block block--graph">
+    <div class="block__content">
+      <div class="block__text">
+        <h2><span>Polling time!</span> <span>Let's thanks!</span></h2>
+        <h3><span>The members are sending gratitudes</span> <span>to people that have helped</span></h3>
+        <p>
+          Each message will increase motivation and improve the team's relationship,
+          <br>
+          the team cooperation won't be forgotten.
+        </p>
+        <p>
+          Your organisation is able to use the polling data to gratify the members.
+          <br>
+          So, wouldn't you like to have EthKudos in your team?
+        </p>
+        <a href="#let's-start" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp">
+          <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
+        </a>
+      </div>
+      <div class="block__grow">
+        <eth-kudos-graph></eth-kudos-graph>
       </div>
     </div>
   </section>

@@ -9,7 +9,7 @@
 
 $small-size: 280;
 $container-size: 380;
-$break-small: 460px;
+$break-small: 900px;
 
 :host,
 .graph {
@@ -119,6 +119,16 @@ $break-small: 460px;
 
     &:before {
       left: $n * 10%;
+    }
+  }
+
+  // for landing
+  @media (min-width: 800px) and (max-width: 1300px) {
+    &--r-10 {@include offset(9)}
+    @for $i from 8 through 9 {
+      &--r-#{$i} {
+        @include offset($i);
+      }
     }
   }
 

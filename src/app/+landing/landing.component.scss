@@ -321,6 +321,8 @@ header {
   &__content {
     display: flex;
     max-width: 1480px;
+    margin: auto;
+    align-items: center;
   }
 
   &__text {
@@ -373,6 +375,11 @@ header {
         font-size: 14px;
       }
     }
+    @media (max-width: 1000px) {
+      br {
+        display: none;
+      }
+    }
   }
   &__grow {
     flex: 1;
@@ -403,7 +410,6 @@ header {
     }
   }
   &--members &__content {
-    align-items: center;
     min-height: 460px;
 
     @media (max-width: 800px) {
@@ -423,9 +429,23 @@ header {
       padding-right: 0;
     }
   }
+  &--graph {
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+  }
+  &--graph &__content {
+    min-height: 460px;
+
+    @media (max-width: 800px) {
+      flex-direction: column;
+    }
+  }
+  &--graph &__grow {
+    padding: 20px;
+  }
 }
 
 footer {
+  background: #ffffff;
   padding: 100px 20px 30px;
   text-align: center;
 

@@ -38,8 +38,8 @@ export class GraphComponent implements OnInit {
   style: cytoscape.Stylesheet[] = (<any>cytoscape).stylesheet()
     .selector('node')
       .css({
-        'height': 30,
-        'width': 30,
+        'height': 32,
+        'width': 32,
         'background-image': (element) => `url(${blockies({seed: (element.data().address || '#').toLowerCase(), size: 8, scale: 8}).toDataURL()})`,
         'background-fit': 'cover',
         'text-valign': (element) => ['bottom', 'center', 'top'][element.data().v + 1],
@@ -54,7 +54,7 @@ export class GraphComponent implements OnInit {
         'font-size': 40,
         'font-family': 'arial',
         'text-margin-y': 3,
-        'text-outline-color': '#ffffff',
+        'text-outline-color': '#fafafa', // Main background color
         'text-outline-width': 4,
         'curve-style': 'bezier',
         'width': 3,
@@ -63,7 +63,7 @@ export class GraphComponent implements OnInit {
         'target-arrow-color': '#b3ccea',
         'source-distance-from-node': 6,
         'target-distance-from-node': 6,
-        'transition-property': 'color, line-color, target-arrow-color, text-outline-color',
+        'transition-property': 'color, line-color, target-arrow-color',
         'transition-timing-function': 'ease',
         'transition-duration': '.4s',
         'z-index': 1,
