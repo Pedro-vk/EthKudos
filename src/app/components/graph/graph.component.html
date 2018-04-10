@@ -5,16 +5,27 @@
   [class.tooltip--visible]="edgeHover$ | async">
 
   <div class="tooltip__header">
-    <div>
-      <strong>{{(edgeHoverBuffer$ | async)?.targetMember?.name}}</strong>
-      received
-      <code>{{(edgeHoverBuffer$ | async)?.data?.kudos}}<span>KUDOS</span></code>
-    </div>
+    <strong>{{(edgeHoverBuffer$ | async)?.targetMember?.name}}</strong>
+    received
+    <code>{{(edgeHoverBuffer$ | async)?.data?.kudos}}<span>KUDOS</span></code>
   </div>
   <div class="tooltip__text">{{(edgeHoverBuffer$ | async)?.data?.message}}</div>
   <div class="tooltip__footer">
     from
     <strong>{{(edgeHoverBuffer$ | async)?.sourceMember?.name}}</strong>
+  </div>
+</div>
+
+<div
+  [style.left.px]="(nodeHoverBuffer$ | async)?.x"
+  [style.top.px]="(nodeHoverBuffer$ | async)?.y"
+  class="tooltip tooltip--node"
+  [class.tooltip--visible]="nodeHover$ | async">
+
+  <div class="tooltip__header">
+    <strong>{{(nodeHoverBuffer$ | async)?.data?.name}}</strong>
+    received
+    <code>{{(nodeHoverBuffer$ | async)?.data?.kudos}}<span>KUDOS</span></code>
   </div>
 </div>
 

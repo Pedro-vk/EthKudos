@@ -35,6 +35,11 @@
     opacity: 1;
   }
 
+  * {
+    z-index: 3;
+    position: relative;
+  }
+
   &__text {
     padding-top: 10px;
   }
@@ -50,6 +55,7 @@
     color: #444;
     font-size: .7em;
     opacity: .7;
+    padding-left: 2px;
   }
 
   &:before {

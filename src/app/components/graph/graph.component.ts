@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import * as blockies from 'blockies';
 import * as cytoscape from 'cytoscape';
@@ -73,11 +73,20 @@ export class GraphComponent implements OnInit {
         'line-color': '#FFD23A',
         'target-arrow-color': '#FFD23A',
         'z-index': 2,
+      })
+    .selector('.hover')
+      .css({
+        'color': '#7B6752',
+        'line-color': '#a58768',
+        'target-arrow-color': '#a58768',
+        'z-index': 3,
       });
 
   private cy: cytoscape.Core;
   private edgeHover$ = new Subject<{x: number, y: number, data: any, sourceMember: any, targetMember: any}>();
   private edgeHoverBuffer$ = this.edgeHover$.filter(_ => !!_);
+  private nodeHover$ = new Subject<{x: number, y: number, data: any}>();
+  private nodeHoverBuffer$ = this.nodeHover$.filter(_ => !!_);
 
   constructor() { }
 
@@ -85,6 +94,11 @@ export class GraphComponent implements OnInit {
     this.initCytoscape();
     this.initInterval();
     this.initEdgeMouseEvents();
+
+    this.graph.nativeElement.onmouseout = () => {
+      this.edgeHover$.next(undefined);
+      this.nodeHover$.next(undefined);
+    };
   }
 
   initCytoscape() {
@@ -135,18 +149,41 @@ export class GraphComponent implements OnInit {
   }
 
   initEdgeMouseEvents() {
+    const getMember = (id) => this.nodes.find(_ => _.data.id === id).data;
     this.cy.on('mouseover', 'edge', event => {
       const position = event.target.renderedBoundingBox();
       const data = event.target.data();
-      const getMember = (id) => this.nodes.find(_ => _.data.id === id).data;
       this.edgeHover$.next({
-        x: position.x2 - position.w / 2,
-        y: position.y2 - position.h / 2,
+        x: Math.round(position.x2 - position.w / 2),
+        y: Math.round(position.y2 - position.h / 2),
         data,
         sourceMember: getMember(data.source),
         targetMember: getMember(data.target),
-      })
+      });
+      // event.target.addClass('hover');
     });
-    this.cy.on('mouseout', 'edge', () => this.edgeHover$.next(undefined));
+
+    const getKudos = (id) => this.edgesList
+      .filter(_ => _[1] === id)
+      .map(_ => _[2])
+      .reduce((acc, _) => +acc + +_, 0);
+    this.cy.on('mouseover', 'node', event => {
+      const position = event.target.renderedBoundingBox();
+      const data = event.target.data();
+      this.nodeHover$.next({
+        x: Math.round(position.x2 - position.w / 2),
+        y: Math.round(position.y2 - position.h / 2),
+        data: {
+          ...data,
+          kudos: getKudos(data.id),
+        },
+      });
+    });
+
+    this.cy.on('mouseout', 'edge', event => {
+      this.edgeHover$.next(undefined);
+      // event.target.removeClass('hover');
+    });
+    this.cy.on('mouseout', 'node', () => this.nodeHover$.next(undefined));
   }
 }
