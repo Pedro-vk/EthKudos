@@ -14,7 +14,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
 
-import { Web3Service, KudosTokenFactoryService, cardInOutAnimation } from '../shared';
+import { Web3Service, KudosTokenFactoryService, cardInOutAnimation } from '../../shared';
 
 @Component({
   selector: 'eth-kudos-join',

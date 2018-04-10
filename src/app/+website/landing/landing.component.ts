@@ -19,7 +19,7 @@ import 'rxjs/add/operator/startWith';
 
 import {
   Web3Service, ConnectionStatus, KudosOrganisationsService, KudosTokenFactoryService, cardInOutAnimation,
-} from '../shared';
+} from '../../shared';
 
 @Component({
   selector: 'eth-kudos-landing',

@@ -2,13 +2,11 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IsOwnerGuard, IsTokenGuard, IsPollGuard, IsConnectedGuard } from './shared';
+
 import {
   AppComponent, HomeComponent, AdminComponent, PollActiveComponent, PollPreviousComponent, FaqsOnAppComponent,
 } from './+app';
-
-import { LandingComponent } from './+landing';
-import { FaqsPageComponent, PrivacyPolicyComponent } from './+content';
-import { JoinComponent } from './+join';
+import { LandingComponent, FaqsPageComponent, PrivacyPolicyComponent, JoinComponent } from './+website';
 
 const routes: Routes = [
   {path: '', component: LandingComponent, children: [

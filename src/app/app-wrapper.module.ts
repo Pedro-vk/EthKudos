@@ -13,18 +13,12 @@ import { environment } from '../environments/environment';
 import { PROVIDERS } from './shared';
 
 import { AppModule } from './+app/app.module';
+import { WebsiteModule } from './+website/website.module';
 
-import { CONTENT_COMPONENTS } from './+content';
-import { JOIN_COMPONENTS } from './+join';
-import { LANDING_COMPONENTS } from './+landing';
 
 @NgModule({
   declarations: [
     AppWrapperComponent,
-
-    ...CONTENT_COMPONENTS,
-    ...JOIN_COMPONENTS,
-    ...LANDING_COMPONENTS,
   ],
   imports: [
     BrowserModule,
@@ -35,6 +29,7 @@ import { LANDING_COMPONENTS } from './+landing';
     AppCommonModule,
 
     AppModule,
+    WebsiteModule,
   ],
   providers: [
     ...PROVIDERS,

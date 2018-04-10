@@ -5,14 +5,14 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 
-import { AppCommonModule } from '../app-common.module';
-import { PROVIDERS } from '../shared';
+import { AppCommonModule } from '../../app-common.module';
+import { PROVIDERS } from '../../shared';
 
-import { LandingComponent } from './landing.component';
+import { JoinComponent } from './join.component';
 
-describe('LandingComponent', () => {
-  let component: LandingComponent;
-  let fixture: ComponentFixture<LandingComponent>;
+describe('JoinComponent', () => {
+  let component: JoinComponent;
+  let fixture: ComponentFixture<JoinComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -22,7 +22,7 @@ describe('LandingComponent', () => {
         NoopAnimationsModule,
       ],
       declarations: [
-        LandingComponent,
+        JoinComponent,
       ],
       providers: [
         ...PROVIDERS,
@@ -39,7 +39,7 @@ describe('LandingComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LandingComponent);
+    fixture = TestBed.createComponent(JoinComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

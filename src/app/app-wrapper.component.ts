@@ -73,6 +73,7 @@ export class AppWrapperComponent implements OnInit {
             .toPromise();
 
           switch (true) {
+            case segmenets[1] === 'faqs': return `${orgName} - FAQs`;
             case segmenets[1] === 'admin': return `${orgName} - Admin`;
             case segmenets[1] === 'active': return `${orgName} - Active polling`;
             case segmenets[1] === 'closed': {
