@@ -3,6 +3,7 @@
 
 :host {
   display: block;
+  flex: 1;
 
   * {
     box-sizing: border-box;
@@ -79,6 +80,7 @@
       background-color: $background;
       background-image: linear-gradient(to bottom, #ffffff 40px, rgba(#ffffff, 0) 240px);
       display: block;
+      min-height: 260px;
 
       @media (max-width: 460px) {
         padding: 40px 20px 0;

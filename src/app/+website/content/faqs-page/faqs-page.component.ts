@@ -15,6 +15,6 @@ export class FaqsPageComponent implements OnInit {
     setTimeout(() => {
       this.visible = true;
       this.changeDetectorRef.markForCheck();
-    });
+    }, 10);
   }
 }
