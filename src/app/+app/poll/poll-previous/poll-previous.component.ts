@@ -9,7 +9,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
 
-import { KudosTokenFactoryService, KudosPollFactoryService } from '../../shared';
+import { KudosTokenFactoryService, KudosPollFactoryService } from '../../../shared';
 
 @Component({
   selector: 'eth-kudos-poll-previous',

@@ -17,6 +17,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { COMPONENTS, ENTRY_COMPONENTS } from './components';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -55,6 +57,26 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSelectModule,
     MatToolbarModule,
     MatTooltipModule,
+  ],
+})
+export class AppMaterialModule { }
+
+@NgModule({
+  declarations: [
+    ...COMPONENTS,
+    ...ENTRY_COMPONENTS,
+  ],
+  imports: [
+    AppMaterialModule,
+  ],
+  exports: [
+    AppMaterialModule,
+
+    ...COMPONENTS,
+    ...ENTRY_COMPONENTS,
+  ],
+  entryComponents: [
+    ...ENTRY_COMPONENTS,
   ],
 })
 export class AppCommonModule { }

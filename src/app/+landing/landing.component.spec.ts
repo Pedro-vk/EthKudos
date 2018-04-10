@@ -6,7 +6,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 
 import { AppCommonModule } from '../app-common.module';
-import { COMPONENTS } from '../components';
 import { PROVIDERS } from '../shared';
 
 import { LandingComponent } from './landing.component';
@@ -24,7 +23,6 @@ describe('LandingComponent', () => {
       ],
       declarations: [
         LandingComponent,
-        ...COMPONENTS,
       ],
       providers: [
         ...PROVIDERS,

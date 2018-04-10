@@ -9,7 +9,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
 
-import { KudosTokenFactoryService, KudosPollService } from '../shared';
+import { KudosTokenFactoryService, KudosPollService } from '../../shared';
 
 @Component({
   selector: 'eth-kudos-home',

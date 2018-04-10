@@ -3,17 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/empty';
+import 'rxjs/add/observable/of';
 
-import { AppCommonModule } from '../app-common.module';
-import { COMPONENTS } from '../components';
-import { PROVIDERS } from '../shared';
+import { AppCommonModule } from '../../../app-common.module';
+import { PROVIDERS } from '../../../shared';
 
-import { AdminComponent } from './admin.component';
+import { PollActiveComponent } from './poll-active.component';
 
-describe('AdminComponent', () => {
-  let component: AdminComponent;
-  let fixture: ComponentFixture<AdminComponent>;
+describe('PollActiveComponent', () => {
+  let component: PollActiveComponent;
+  let fixture: ComponentFixture<PollActiveComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -23,15 +22,14 @@ describe('AdminComponent', () => {
         NoopAnimationsModule,
       ],
       declarations: [
-        AdminComponent,
-        ...COMPONENTS,
+        PollActiveComponent,
       ],
       providers: [
         ...PROVIDERS,
         {
           provide: ActivatedRoute, useValue: ((_: any) => {
             _.parent = {};
-            _.parent.params = _.params = Observable.empty();
+            _.parent.params = _.parent.params = Observable.of({tokenAddress: `0x${'0'.repeat(40)}`});
             return _;
           })({}),
         }
@@ -41,7 +39,7 @@ describe('AdminComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AdminComponent);
+    fixture = TestBed.createComponent(PollActiveComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

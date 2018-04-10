@@ -13,7 +13,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
 
-import { Web3Service, KudosTokenFactoryService } from '../../shared';
+import { Web3Service, KudosTokenFactoryService } from '../../../shared';
 
 @Component({
   selector: 'eth-kudos-poll-active',

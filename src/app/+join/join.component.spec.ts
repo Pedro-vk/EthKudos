@@ -6,7 +6,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 
 import { AppCommonModule } from '../app-common.module';
-import { COMPONENTS } from '../components';
 import { PROVIDERS } from '../shared';
 
 import { JoinComponent } from './join.component';
@@ -24,7 +23,6 @@ describe('JoinComponent', () => {
       ],
       declarations: [
         JoinComponent,
-        ...COMPONENTS,
       ],
       providers: [
         ...PROVIDERS,

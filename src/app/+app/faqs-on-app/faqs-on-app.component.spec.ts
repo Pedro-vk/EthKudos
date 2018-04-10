@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppCommonModule } from '../../app-common.module';
-import { COMPONENTS } from '../../components';
 
 import { FaqsOnAppComponent } from './faqs-on-app.component';
 
@@ -18,7 +17,6 @@ describe('FaqsOnAppComponent', () => {
       ],
       declarations: [
         FaqsOnAppComponent,
-        ...COMPONENTS,
       ],
     })
     .compileComponents();

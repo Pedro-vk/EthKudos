@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA } from '@angular/material';
 
-import { AppCommonModule } from '../../app-common.module';
+import { AppMaterialModule } from '../../app-common.module';
 
 import { ShareDialogComponent } from './share-dialog.component';
 
@@ -13,7 +13,7 @@ describe('ShareDialogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        AppCommonModule,
+        AppMaterialModule,
         NoopAnimationsModule,
       ],
       providers: [

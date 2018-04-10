@@ -83,11 +83,11 @@ export class GraphComponent implements OnInit {
         'z-index': 3,
       });
 
+  edgeHover$ = new Subject<{x: number, rX: number, y: number, data: any, sourceMember: any, targetMember: any}>();
+  edgeHoverBuffer$ = this.edgeHover$.filter(_ => !!_);
+  nodeHover$ = new Subject<{x: number, rX: number, y: number, data: any}>();
+  nodeHoverBuffer$ = this.nodeHover$.filter(_ => !!_);
   private cy: cytoscape.Core;
-  private edgeHover$ = new Subject<{x: number, rX: number, y: number, data: any, sourceMember: any, targetMember: any}>();
-  private edgeHoverBuffer$ = this.edgeHover$.filter(_ => !!_);
-  private nodeHover$ = new Subject<{x: number, rX: number, y: number, data: any}>();
-  private nodeHoverBuffer$ = this.nodeHover$.filter(_ => !!_);
 
   constructor() { }
 

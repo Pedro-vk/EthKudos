@@ -3,9 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { AppCommonModule } from './app-common.module';
-import { COMPONENTS } from './components';
-import { PROVIDERS } from './shared';
+import { AppCommonModule } from '../app-common.module';
+import { PROVIDERS } from '../shared';
 
 import { AppComponent } from './app.component';
 
@@ -23,7 +22,6 @@ describe('AppComponent', () => {
       ],
       declarations: [
         AppComponent,
-        ...COMPONENTS,
       ],
       providers: [
         ...PROVIDERS,

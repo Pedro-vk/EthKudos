@@ -5,9 +5,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 
-import { AppCommonModule } from '../../app-common.module';
-import { COMPONENTS } from '../../components';
-import { PROVIDERS } from '../../shared';
+import { AppCommonModule } from '../../../app-common.module';
+import { PROVIDERS } from '../../../shared';
 
 import { PollPreviousComponent } from './poll-previous.component';
 
@@ -24,7 +23,6 @@ describe('PollPreviousComponent', () => {
       ],
       declarations: [
         PollPreviousComponent,
-        ...COMPONENTS,
       ],
       providers: [
         ...PROVIDERS,

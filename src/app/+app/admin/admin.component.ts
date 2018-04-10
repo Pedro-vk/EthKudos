@@ -16,7 +16,7 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
 
-import { Web3Service, KudosTokenFactoryService } from '../shared';
+import { Web3Service, KudosTokenFactoryService } from '../../shared';
 
 @Component({
   selector: 'eth-kudos-admin',
