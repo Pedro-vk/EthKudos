@@ -15,6 +15,7 @@ function hexToArray(hex: string) {
 })
 export class GraphComponent implements OnInit {
   @ViewChild('graph') graph: ElementRef;
+  mqSmall: MediaQueryList;
 
   nodes: (cytoscape.NodeDefinition | any)[] = [
     {data: {id: 'a', v:  1, h:  0, name: 'Ifan Colon', address: 'RANDOM #####Ifan Colon#####'}},
@@ -28,10 +29,10 @@ export class GraphComponent implements OnInit {
   edgesList = [
     ['b', 'a', 1, 'Thanks for setting up my PC'], ['c', 'a', 0.5, 'I love the new laptops!'],
     ['f', 'g', 0.2, 'Thanks for watering my cactus :)'], ['c', 'd', 1, 'You are an amazing coworker'],
-    ['e', 'a', 2, 'The server is working again! Thanks!'], ['f', 'a', 1.5, 'Thanks to requeue the data! you saved my butt!'],
+    ['e', 'a', 2, 'The server is working again! Thanks!'], ['f', 'a', 1.5, 'Thanks for requeue the data!'],
     ['g', 'a', 0.2, 'Thanks for install the printer'], ['a', 'b', 0.5, 'I love the new plants!'],
     ['g', 'c', 0.8, 'I love the new branding'], ['f', 'c', 1.2, 'Thanks to sending me the new branding'],
-    ['c', 'b', 1, 'Thanks for buying the bamboo tables'], ['d', 'c', 1, 'I appreciate your dedication with the new project'],
+    ['c', 'b', 1, 'Thanks for buying the bamboo tables'], ['d', 'c', 1, 'I appreciate your dedication'],
     ['d', 'e', 0.5, 'Thanks for you help'], ['e', 'f', 0.1, 'Thanks for the coffee ;)'],
   ];
   style: cytoscape.Stylesheet[] = (<any>cytoscape).stylesheet()
@@ -83,9 +84,9 @@ export class GraphComponent implements OnInit {
       });
 
   private cy: cytoscape.Core;
-  private edgeHover$ = new Subject<{x: number, y: number, data: any, sourceMember: any, targetMember: any}>();
+  private edgeHover$ = new Subject<{x: number, rX: number, y: number, data: any, sourceMember: any, targetMember: any}>();
   private edgeHoverBuffer$ = this.edgeHover$.filter(_ => !!_);
-  private nodeHover$ = new Subject<{x: number, y: number, data: any}>();
+  private nodeHover$ = new Subject<{x: number, rX: number, y: number, data: any}>();
   private nodeHoverBuffer$ = this.nodeHover$.filter(_ => !!_);
 
   constructor() { }
@@ -99,15 +100,37 @@ export class GraphComponent implements OnInit {
       this.edgeHover$.next(undefined);
       this.nodeHover$.next(undefined);
     };
+
+    this.mqSmall = matchMedia('(max-width: 460px)');
+    this.mqSmall.addListener(() => this.cyResize());
+    this.cyResize();
+  }
+
+  cyResize() {
+    this.cy.resize();
+    this.cy.fit();
+    Array.from(new Array(10))
+      .map((_, i) => i * 100)
+      .forEach(time => setTimeout(() => {
+        this.cy.resize();
+        this.cy.fit();
+      }, time));
   }
 
   initCytoscape() {
     this.cy = cytoscape({
       container: this.graph.nativeElement,
       elements: {
-        nodes: this.nodes,
+        nodes: this.nodes
+          .map(node => ({
+            ...node,
+            selectable: false,
+          })),
         edges: this.edgesList
-          .map(([source, target, kudos, message]: any[]) => ({data: {source, target, kudos, message}})),
+          .map(([source, target, kudos, message]: any[]) => ({
+            selectable: false,
+            data: {source, target, kudos, message},
+          })),
       },
       style: this.style,
       layout: {
@@ -118,10 +141,8 @@ export class GraphComponent implements OnInit {
       },
       autoungrabify: true,
       autounselectify: true,
-      panningEnabled: false,
       userPanningEnabled: false,
       boxSelectionEnabled: false,
-      zoomingEnabled: false,
       userZoomingEnabled: false,
     });
   }
@@ -149,13 +170,17 @@ export class GraphComponent implements OnInit {
   }
 
   initEdgeMouseEvents() {
-    const getMember = (id) => this.nodes.find(_ => _.data.id === id).data;
+    const getPosition = p => p / this.cy.container().clientWidth * 100;
+    const getPercentageX = (x: number) => Math.round(x / this.cy.container().clientWidth * 10);
+
+    const getMember = id => this.nodes.find(_ => _.data.id === id).data;
     this.cy.on('mouseover', 'edge', event => {
       const position = event.target.renderedBoundingBox();
       const data = event.target.data();
       this.edgeHover$.next({
-        x: Math.round(position.x2 - position.w / 2),
-        y: Math.round(position.y2 - position.h / 2),
+        x: getPosition(position.x2 - position.w / 2),
+        rX: getPercentageX(position.x2 - position.w / 2),
+        y: getPosition(position.y2 - position.h / 2),
         data,
         sourceMember: getMember(data.source),
         targetMember: getMember(data.target),
@@ -163,7 +188,7 @@ export class GraphComponent implements OnInit {
       // event.target.addClass('hover');
     });
 
-    const getKudos = (id) => this.edgesList
+    const getKudos = id => this.edgesList
       .filter(_ => _[1] === id)
       .map(_ => _[2])
       .reduce((acc, _) => +acc + +_, 0);
@@ -171,8 +196,9 @@ export class GraphComponent implements OnInit {
       const position = event.target.renderedBoundingBox();
       const data = event.target.data();
       this.nodeHover$.next({
-        x: Math.round(position.x2 - position.w / 2),
-        y: Math.round(position.y2 - position.h / 2),
+        x: getPosition(position.x2 - position.w / 2),
+        rX: getPercentageX(position.x2 - position.w / 2),
+        y: getPosition(position.y2 - position.h / 2),
         data: {
           ...data,
           kudos: getKudos(data.id),

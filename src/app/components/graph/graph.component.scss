@@ -7,13 +7,52 @@
   display: block;
 }
 
+$small-size: 280;
+$container-size: 380;
+$break-small: 460px;
+
 :host,
 .graph {
-  width: 360px;
-  height: 360px;
+  width: $container-size * 1px;
+  height: $container-size * 1px;
+
+}
+
+.graph {
+  @media (max-width: $break-small) {
+    $ratio: $small-size / $container-size;
+
+    transform: scale($ratio);
+  }
+}
+
+@media (max-width: $break-small) {
+  :host {
+    width: $small-size * 1px;
+    height: $small-size * 1px;
+  }
+  .graph {
+    $ratio: $small-size / $container-size;
+    $margin: ($container-size - $small-size) / 2;
+
+    transform: scale($ratio);
+    position: relative;
+    top: $margin * -1px;
+    left: $margin * -1px;
+  }
+}
+
+.tooltip-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .tooltip {
+  $base-transform: translateY(-100%);
+
   @include mat-elevation(4);
 
   position: absolute;
@@ -26,13 +65,13 @@
   color: #666666;
   border-radius: 3px;
   pointer-events: none;
-  opacity: 0;
   white-space: nowrap;
   font-weight: 300;
   text-align: center;
+  display: none;
 
   &--visible {
-    opacity: 1;
+    display: table;
   }
 
   * {
@@ -73,5 +112,24 @@
     transform: rotate(45deg);
     border-bottom-right-radius: 2px;
     box-shadow: 3px 3px 10px -4px rgba(#000000, .8);
+  }
+
+  @mixin offset($n) {
+    transform: $base-transform translateX($n * -10%);
+
+    &:before {
+      left: $n * 10%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    &--r-10 {@include offset(9)}
+    &--r-0 {@include offset(1)}
+
+    @for $i from 1 through 9 {
+      &--r-#{$i} {
+        @include offset($i);
+      }
+    }
   }
 }
