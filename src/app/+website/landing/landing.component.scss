@@ -328,7 +328,7 @@ header {
   &__text {
     padding: 20px;
     max-width: 640px;
-    color: #333333;
+    color: #444444;
 
     h2,
     h3 {
@@ -356,6 +356,19 @@ header {
         margin-bottom: 0;
       }
     }
+    a {
+      @incldue transition;
+
+      color: #3f51b5;
+      text-decoration: none;
+
+      &:hover {
+        opacity: .8;
+      }
+    }
+    strong {
+      font-weight: 500;
+    }
     button {
       margin-top: 14px;
     }
@@ -379,6 +392,10 @@ header {
       br {
         display: none;
       }
+    }
+    @media (max-width: 800px) {
+      padding-left: 0;
+      padding-right: 0;
     }
   }
   &__grow {
@@ -425,8 +442,6 @@ header {
     }
     @media (max-width: 800px) {
       margin-left: 0;
-      padding-left: 0;
-      padding-right: 0;
     }
   }
   &--graph {
@@ -441,6 +456,133 @@ header {
   }
   &--graph &__grow {
     padding: 20px;
+  }
+  &--donation {
+    background: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+
+    .keyword {
+      font-family: "Roboto Mono";
+      color: #3f51b5;
+    }
+    svg {
+      margin: auto;
+      display: block;
+    }
+  }
+  &--donation &__content {
+    min-height: 400px;
+  }
+}
+
+.gauge {
+  circle {
+    $size: 360;
+    $border: 10;
+    $dash: ($size - $border) * 3.1416;
+
+    stroke-dasharray: $dash;
+    cx: $size / 2;
+    cy: $size / 2;
+    r: $size / 2  - $border / 2;
+    stroke-width: $border;
+    fill: transparent;
+    transform: rotate(135deg);
+    transform-origin: 50% 50%;
+
+    &.back {
+      stroke: #cccccc;
+      stroke-dashoffset: $dash * 0.25;
+    }
+  }
+
+  &-wrapper {
+    position: relative;
+    display: table;
+    margin: auto;
+  }
+  &-content {
+    position: absolute;
+    display: table;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    text-align: center;
+    padding-bottom: 20px;
+
+    &__ether {
+      font-family: "Roboto Mono";
+      font-weight: 400;
+      font-size: 32px;
+      color: #333;
+      line-height: 1em;
+
+      span {
+        opacity: .6;
+        display: inline-block;
+        padding-left: 4px;
+      }
+    }
+    &__sub-ether {
+      text-align: right;
+      font-size: 14px;
+      font-weight: 400;
+      color: #3f51b5;
+
+      &--left {
+        text-align: left;
+      }
+    }
+    &__of {
+      height: 16px;
+      position: relative;
+
+      &:before {
+        content: '';
+        height: 2px;
+        width: 40px;
+        background: #3f51b5;
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%) rotate(45deg);
+      }
+    }
+    button {
+      margin-top: 36px;
+    }
+  }
+  &-network {
+    position: absolute;
+    bottom: 0;
+    font-size: 18px;
+    line-height: 1.34em;
+    font-weight: 300;
+    text-align: center;
+    width: 110px;
+    color: #333333;
+
+    span {
+      display: block;
+      font-size: .8em;
+      line-height: 1.2em;
+      opacity: .7;
+    }
+
+    &--left {
+      left: 0;
+    }
+    &--right {
+      right: 0;
+    }
+  }
+  &-ethereum-logo {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    width: 80px;
+    transform: translateX(-50%);
   }
 }
 

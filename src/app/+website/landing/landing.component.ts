@@ -1,7 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import Web3 from 'web3';
+import * as Web3Module from 'web3';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromPromise';
@@ -48,6 +51,9 @@ export class LandingComponent implements OnInit {
   newKudosTokenAddress: Subject<string> = new Subject();
   newOrgAddress: Subject<string> = new Subject();
 
+  donationBalance: number;
+  donationGoal: number;
+
   readonly hasChild: boolean = !!this.activatedRoute.firstChild;
 
   readonly hasError$: Observable<ConnectionStatus> = this.activatedRoute.params
@@ -89,7 +95,6 @@ export class LandingComponent implements OnInit {
     .mergeMap(address => this.getKudosTokenInfo(address))
     .distinctUntilChanged();
 
-
   constructor(
     private web3Service: Web3Service,
     private kudosOrganisationsService: KudosOrganisationsService,
@@ -97,6 +102,7 @@ export class LandingComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
+    private http: HttpClient,
   ) { }
 
   ngOnInit() {
@@ -106,6 +112,11 @@ export class LandingComponent implements OnInit {
           this.router.navigate(['/']);
         }
       });
+
+    // Getting donation account balance
+    this.donationGoal = 0.2;
+    this.getBalance('0x178a262C6B2FFB042f5cb1A7a20d7edbDdb3B16D', 'G5GY5DRYQNX4SFJKNPQHHF3864VNKT29H3')
+      .subscribe(balance => this.donationBalance = balance);
   }
 
   getDecimals(n: number = 0): number {
@@ -114,6 +125,26 @@ export class LandingComponent implements OnInit {
 
   trackMember(index: number, {member}: {member: string} & any): string {
     return member || undefined;
+  }
+
+  getBalance(account: string, apiKey: string): Observable<number> {
+    return Observable.interval(30 * 1000)
+      .startWith(undefined)
+      .mergeMap(() =>
+        this.http
+          .get<{result: string}>(
+            `https://api.etherscan.io/api?module=account&action=balance&address=${account}&tag=latest&apikey=${apiKey}`,
+          ),
+      )
+      .map(({result}) => +(<Web3><any>Web3Module).utils.fromWei(result, 'ether'));
+  }
+
+  getDonationProgress(): number {
+    const dashoffset = 1099.56;
+    if (!this.donationBalance) {
+      return dashoffset;
+    }
+    return Math.min(dashoffset * (0.75 * (1 - Math.min(this.donationBalance / this.donationGoal, 1)) + 0.25), dashoffset * 0.98);
   }
 
   createOrganisation(form?: NgForm) {

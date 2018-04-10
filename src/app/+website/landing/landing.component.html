@@ -218,7 +218,7 @@
         <p>
           The sending is limited by each receiver, that's going to ensure that all
           <br>
-          the members respect the rules and promotes to send gratitude to more members.
+          the members respect the rules and promote to send gratitude to more members.
         </p>
         <a href="#let's-start" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp">
           <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
@@ -231,7 +231,7 @@
     <div class="block__content">
       <div class="block__text">
         <h2><span>Polling time!</span> <span>Let's thanks!</span></h2>
-        <h3><span>The members are sending gratitudes</span> <span>to people that have helped</span></h3>
+        <h3><span>The members are sending gratitude</span> <span>to people that have helped</span></h3>
         <p>
           Each message will increase motivation and improve the team's relationship,
           <br>
@@ -240,7 +240,7 @@
         <p>
           Your organisation is able to use the polling data to gratify the members.
           <br>
-          So, wouldn't you like to have EthKudos in your team?
+          So, wouldn't you like to have EthKudos on your team?
         </p>
         <a href="#let's-start" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp">
           <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
@@ -248,6 +248,71 @@
       </div>
       <div class="block__grow">
         <eth-kudos-graph></eth-kudos-graph>
+      </div>
+    </div>
+  </section>
+
+  <section class="block block--donation">
+    <div class="block__content">
+      <div class="block__text">
+        <h2><span>Why <span class="keyword">beta</span>?</span> <span>Why <span class="keyword">ropsten</span>?</span></h2>
+        <h3><span>We want to improve EthKudos,</span> <span>we need your feedback!</span></h3>
+        <p>
+          You can give us your feedback on <a href="https://github.com/Pedro-vk/EthKudos/issues" target="blank">GitHub</a>.
+          <br>
+          Tell us how is your team using EthKudos and what are you missing.
+        </p>
+        <p>
+          Help us to speed up the deployment on <strong>Ethereum main network</strong>.
+          <br>
+          Create your organisation, give us some feedback and donate some Ether.
+        </p>
+      </div>
+      <div class="block__grow">
+        <div class="gauge-wrapper">
+          <svg class="gauge" width="360" height="360">
+            <defs>
+              <linearGradient
+                id="gradient"
+                x1="0%" y1="0%"
+                x2="100%" y2="100%"
+                gradientUnits="userSpaceOnUse"
+                gradientTransform="rotate(45)">
+
+                <stop
+                  *ngFor="let c of ['#886bb7', '#008de1', '#00aae3', '#00c0b9', '#00cd74'] as colors; let i = index"
+                  [attr.stop-color]="c"
+                  [attr.offset]="i / (colors.length - 1)" />
+
+              </linearGradient>
+            </defs>
+            <circle class="back"/>
+            <circle
+              class="color"
+              stroke="url(#gradient)"
+              [attr.stroke-dashoffset]="getDonationProgress()"/>
+          </svg>
+          <div class="gauge-network gauge-network--left">Ropsten <span>Network</span></div>
+          <div class="gauge-network gauge-network--right">Main <span>Network</span></div>
+          <div class="gauge-ethereum-logo">
+            <svg x="0px" y="0px" viewBox="0 0 1920 1920" enable-background="new 0 0 1920 1920" xml:space="preserve">
+              <polygon opacity="0.45" points="563.9,982.5 959.9,1216.5 959.9,325.5"/>
+              <polygon opacity="0.6" points="563.9,982.5 959.9,802.5 1355.9,982.5 959.9,1216.5"/>
+              <polygon opacity="0.8" points="1355.9,982.5 959.9,1216.5 959.9,325.5"/>
+              <polygon opacity="0.45" points="959.9,1594.5 959.9,1270.5 563.9,1036.5"/>
+              <polygon opacity="0.8" points="959.9,1594.5 959.9,1270.5 1356.1,1036.5"/>
+            </svg>
+          </div>
+          <div class="gauge-content">
+            <div class="gauge-content__ether">{{(donationBalance || 0) | number : '.5'}}<span>&Xi;</span></div>
+            <div class="gauge-content__sub-ether">raised</div>
+            <div class="gauge-content__of"></div>
+            <div class="gauge-content__sub-ether gauge-content__sub-ether--left">needed</div>
+            <div class="gauge-content__ether">{{(donationGoal || 0) | number : '.5'}}<span>&Xi;</span></div>
+
+            <button mat-raised-button color="primary">donate</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>

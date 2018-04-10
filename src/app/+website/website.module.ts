@@ -1,7 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppCommonModule } from '../app-common.module';
 import { AppRoutingModule } from '../app-routing.module';
@@ -21,9 +18,6 @@ import { ContentComponent, FaqsPageComponent, PrivacyPolicyComponent } from './c
     PrivacyPolicyComponent,
   ],
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-
     AppCommonModule,
     AppRoutingModule,
   ],

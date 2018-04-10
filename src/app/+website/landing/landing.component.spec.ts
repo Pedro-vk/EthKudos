@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable } from 'rxjs/Observable';
@@ -20,6 +21,7 @@ describe('LandingComponent', () => {
         AppCommonModule,
         RouterTestingModule,
         NoopAnimationsModule,
+        HttpClientTestingModule,
       ],
       declarations: [
         LandingComponent,

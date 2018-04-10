@@ -1,6 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppCommonModule } from '../app-common.module';
 import { AppRoutingModule } from '../app-routing.module';
@@ -24,9 +22,6 @@ import { FaqsOnAppComponent } from './faqs-on-app';
     FaqsOnAppComponent,
   ],
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-
     AppCommonModule,
     AppRoutingModule,
   ],

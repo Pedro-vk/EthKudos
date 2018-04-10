@@ -94,7 +94,7 @@ export class AppWrapperComponent implements OnInit {
 
   claimTestEtherOnRopsten(account: string): void {
     console.log('Claim -> ', account);
-    this.http.post('https://faucet.metamask.io', account)
+    this.http.post('https://faucet.metamask.io', account, {responseType: 'text'})
       .subscribe(() => console.log('Claim done!'));
   }
 }
