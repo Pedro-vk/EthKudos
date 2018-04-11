@@ -105,6 +105,7 @@
                 name="orgName"
                 placeholder="Token name"
                 required>
+              <mat-hint align="end">That's the name of your organisation and the token</mat-hint>
             </mat-form-field>
 
             <mat-form-field>
@@ -113,8 +114,11 @@
                 [(ngModel)]="newOrg.symbol"
                 type="text"
                 name="orgSymbol"
+                minlength="3"
+                maxlength="8"
                 placeholder="Token symbol"
                 required>
+              <mat-hint align="end">The symbol should looks like <code>USD</code>, <code>ETH</code>, <code>BTC</code>...</mat-hint>
             </mat-form-field>
 
             <mat-form-field>
@@ -126,6 +130,7 @@
                 [max]="8"
                 name="orgDecimals"
                 placeholder="Token decimals">
+              <mat-hint align="end">How much decimals needs your token?</mat-hint>
             </mat-form-field>
 
             <mat-checkbox
