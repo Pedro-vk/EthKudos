@@ -1,4 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
+import { AppCommonModule } from '../../../app-common.module';
+import { PROVIDERS } from '../../../shared';
 
 import { DonateComponent } from './donate.component';
 
@@ -8,6 +12,13 @@ describe('DonateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        AppCommonModule,
+        NoopAnimationsModule,
+      ],
+      providers: [
+        ...PROVIDERS,
+      ],
       declarations: [ DonateComponent ]
     })
     .compileComponents();
