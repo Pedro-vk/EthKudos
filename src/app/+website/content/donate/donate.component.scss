@@ -34,15 +34,33 @@ h2 {
   margin-top: 40px;
   justify-content: space-around;
   align-items: center;
+
+  @media (max-width: 860px) {
+    justify-content: space-between;
+  }
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+
+    & > mat-card:first-child {
+      margin-bottom: 40px;
+    }
+  }
 }
 
 .right-side {
+  max-width: 100%;
+
   mat-card {
     margin-bottom: 40px;
 
     &:last-child {
       margin-bottom: 0;
     }
+  }
+
+  @media (max-width: 800px) {
+    padding: 0 10px;
   }
 }
 
