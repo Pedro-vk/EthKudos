@@ -20,12 +20,27 @@ h2 {
 }
 
 .organisation {
-  max-width: 400px;
+  max-width: initial;
   margin: auto;
+  display: inline-flex;
+  text-align: left;
+  max-width: 100%;
 
   &__balance {
     font-size: .8em;
     opacity: .8;
+  }
+  button {
+    width: 34px;
+    height: 34px;
+  }
+  mat-icon {
+    font-size: 20px;
+    line-height: 19px;
+  }
+
+  &-wrapper {
+    text-align: center;
   }
 }
 

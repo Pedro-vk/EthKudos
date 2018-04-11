@@ -9,13 +9,20 @@
 
         <h2><span>Make EthKudos better</span> <span>with your Ether donation</span></h2>
 
-        <div class="organisation">
-          <eth-kudos-blockie [address]="donationAddress" variant="big"></eth-kudos-blockie>
-          <div class="organisation__info">
-            <span class="organisation__name">EthKudos Donation address</span>
-            <span class="organisation__balance">{{donationAddress}}</span>
+        <div class="organisation-wrapper">
+          <div class="organisation">
+            <eth-kudos-blockie [address]="donationAddress" variant="big"></eth-kudos-blockie>
+            <div class="organisation__info">
+              <span class="organisation__name">EthKudos Donation address</span>
+              <span class="organisation__balance" #address>{{donationAddress}}</span>
+            </div>
+            <button mat-icon-button color="primary" *ngIf="!copied" (click)="copyAddress()">
+              <mat-icon>content_copy</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" *ngIf="copied" matTooltip="Copied!">
+              <mat-icon>check</mat-icon>
+            </button>
           </div>
-          <!-- <button mat-button color="primary">join</button> -->
         </div>
 
         <div class="cards-container">

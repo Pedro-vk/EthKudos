@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 
 import { Web3Service, networkType } from '../../../shared';
 
@@ -10,8 +10,10 @@ import { Web3Service, networkType } from '../../../shared';
 })
 export class DonateComponent implements OnInit {
   visible: boolean;
+  copied: boolean;
   donationAmount: number = 0.01;
   pendingDonation: {working: boolean, tx?: string, confirmations?: number} = {working: undefined};
+  @ViewChild('address') addressElement: ElementRef;
 
   readonly donationAddress = '0x178a262C6B2FFB042f5cb1A7a20d7edbDdb3B16D';
   readonly status$ = this.web3Service.status$;
@@ -24,6 +26,22 @@ export class DonateComponent implements OnInit {
       this.visible = true;
       this.changeDetectorRef.markForCheck();
     }, 10);
+  }
+
+  copyAddress() {
+    this.copied = true;
+
+    const range = document.createRange();
+    range.selectNodeContents(this.addressElement.nativeElement);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    document.execCommand('copy');
+
+    selection.removeAllRanges();
+
+    setTimeout(() => this.copied = false, 2000);
   }
 
   donate() {
