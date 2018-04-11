@@ -29,7 +29,8 @@
     "merge:sol:build": "sol-merger \"./contracts/*.sol\" ./build/merged",
     "clean:sol:build": "for i in build/contracts/*.json; do npx jq '{contractName, abi, bytecode, deployedBytecode, compiler, networks, schemaVersion, updatedAt}' \"$i\" > \"$i.tmp\" && mv \"$i.tmp\" \"$i\"; done",
     "create-cname": "echo $(cat package.json | grep '\"homepage\"' | cut -d '\"' -f 4) > dist/CNAME",
-    "gh-pages-travis": "cp dist/index.html dist/404.html && npm run create-cname && gh-pages-travis"
+    "heroku": "cp -fr ./.heroku/. ./dist",
+    "gh-pages-travis": "cp dist/index.html dist/404.html && npm run create-cname && npm run heroku && gh-pages-travis"
   },
   "dependencies": {
     "@angular/animations": "^5.2.9",
