@@ -50,8 +50,16 @@ h2 {
   width: 29 * 7px;
 }
 
+
+eth-kudos-help-cards,
+.tx,
 .donation {
   max-width: 340px;
+  display: block;
+}
+
+
+.donation {
   width: 100%;
 
   h3 {
@@ -73,26 +81,23 @@ h2 {
       }
     }
   }
-}
+  .warning {
+    font-size: 14px;
+    opacity: .6;
+    padding-top: 14px;
+    display: flex;
+    align-items: center;
 
-.no-network {
-  max-width: 340px;
-  width: 100%;
-
-  em {
-    opacity: .7;
-    font-size: .8em;
-    text-align: center;
-    display: block;
-  }
-  strong {
-    font-weight: 500;
+    mat-icon {
+      margin-right: 10px;
+    }
+    em {
+      opacity: .7;
+    }
   }
 }
 
 .tx {
-  max-width: 340px;
-
   &,
   &-link,
   &-ok {

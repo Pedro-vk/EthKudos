@@ -43,7 +43,7 @@
               </button>
             </mat-card>
 
-            <mat-card class="donation" *ngIf="(network | async) === 'main'; else noMainNet">
+            <mat-card class="donation" *ngIf="(status$ | async) === 'total' || (status$ | async) === 'no-network'; else noProvider">
               <h3>Donate</h3>
               <div class="inputs">
                 <mat-form-field class="ether-input">
@@ -62,20 +62,18 @@
                   donate
                 </button>
               </div>
+              <div class="warning" *ngIf="(status$ | async) !== 'main'">
+                <mat-icon>warning</mat-icon>
+                <em>
+                  Ether on testnet has no value.
+                  <br>
+                  But we appreciate your support.
+                </em>
+              </div>
             </mat-card>
 
-            <ng-template #noMainNet>
-              <mat-card class="no-network">
-                <p>
-                  You are on <strong>{{network | async | titlecase}} Ethereum network</strong>.
-                </p>
-                <p>
-                  Change to <strong>Main Ethereum network</strong> to make an instant donation.
-                </p>
-                <p>
-                  <em>Ether on testnet has no value.</em>
-                </p>
-              </mat-card>
+            <ng-template #noProvider>
+              <eth-kudos-help-cards></eth-kudos-help-cards>
             </ng-template>
 
           </div>

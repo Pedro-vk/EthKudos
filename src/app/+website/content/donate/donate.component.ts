@@ -10,11 +10,12 @@ import { Web3Service, networkType } from '../../../shared';
 })
 export class DonateComponent implements OnInit {
   visible: boolean;
-  network = this.web3Service.getNetworkType();
   donationAmount: number = 0.01;
   pendingDonation: {working: boolean, tx?: string, confirmations?: number} = {working: undefined};
 
   readonly donationAddress = '0x178a262C6B2FFB042f5cb1A7a20d7edbDdb3B16D';
+  readonly status$ = this.web3Service.status$;
+  readonly network$ = this.web3Service.getNetworkType();
 
   constructor(private web3Service: Web3Service, private changeDetectorRef: ChangeDetectorRef) { }
 
