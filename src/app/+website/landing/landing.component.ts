@@ -8,6 +8,7 @@ import * as Web3Module from 'web3';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/interval';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';

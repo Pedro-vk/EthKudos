@@ -472,10 +472,20 @@ header {
   }
   &--donation &__content {
     min-height: 400px;
+
+    @media (max-width: 800px) {
+      flex-direction: column-reverse;
+    }
+  }
+  &--donation &__grow {
+    padding: 20px;
   }
 }
 
 .gauge {
+  width: 360px;
+  max-width: 100%;
+
   circle {
     $size: 360;
     $border: 10;
@@ -500,6 +510,7 @@ header {
     position: relative;
     display: table;
     margin: auto;
+    max-width: 100%;
   }
   &-content {
     position: absolute;
@@ -555,12 +566,13 @@ header {
   }
   &-network {
     position: absolute;
-    bottom: 0;
     font-size: 18px;
     line-height: 1.34em;
     font-weight: 300;
     text-align: center;
-    width: 110px;
+    width: 110 / 360 * 100%;
+    height: 0;
+    bottom: 40 / 360 * 100%;
     color: #333333;
 
     span {
@@ -583,6 +595,38 @@ header {
     left: 50%;
     width: 80px;
     transform: translateX(-50%);
+  }
+
+  @media (max-width: 430px) {
+    &-content {
+      &__ether {
+        font-size: 28px;
+      }
+      &__of {
+        height: 10px;
+
+        &:before {
+          width: 30px;
+        }
+      }
+      button {
+        margin-top: 20px;
+      }
+    }
+    &-ethereum-logo {
+      width: 60px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    &-content {
+      &__ether {
+        font-size: 22px;
+      }
+      &-ethereum-logo {
+        width: 60px;
+      }
+    }
   }
 }
 

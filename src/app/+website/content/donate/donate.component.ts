@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
+import 'rxjs/add/operator/first';
 
 import { Web3Service, networkType } from '../../../shared';
 
@@ -11,7 +12,7 @@ import { Web3Service, networkType } from '../../../shared';
 export class DonateComponent implements OnInit {
   visible: boolean;
   copied: boolean;
-  donationAmount: number = 0.01;
+  donationAmount = 0.01;
   pendingDonation: {working: boolean, tx?: string, confirmations?: number} = {working: undefined};
   @ViewChild('address') addressElement: ElementRef;
 

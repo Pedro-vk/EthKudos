@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/filter';
 import * as blockies from 'blockies';
 import * as cytoscape from 'cytoscape';
 
@@ -40,7 +41,8 @@ export class GraphComponent implements OnInit {
       .css({
         'height': 32,
         'width': 32,
-        'background-image': (element) => `url(${blockies({seed: (element.data().address || '#').toLowerCase(), size: 8, scale: 8}).toDataURL()})`,
+        'background-image': (element) =>
+          `url(${blockies({seed: (element.data().address || '#').toLowerCase(), size: 8, scale: 8}).toDataURL()})`,
         'background-fit': 'cover',
         'text-valign': (element) => ['bottom', 'center', 'top'][element.data().v + 1],
         'text-halign': (element) => ['left', 'center', 'right'][element.data().h + 1],
@@ -163,7 +165,7 @@ export class GraphComponent implements OnInit {
           }
         });
       n++;
-    }
+    };
 
     update();
     setInterval(() => update(), 500);
