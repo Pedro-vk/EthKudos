@@ -10,7 +10,7 @@
         "/favicon.png",
         "/index.html",
         "/inline.318b50c57b4eba3d437b.bundle.js",
-        "/main.c44aa69b29f6efd1af34.bundle.js",
+        "/main.78c0e39e1a66bf067a7c.bundle.js",
         "/polyfills.0cda82ed7df2459fb45d.bundle.js",
         "/styles.dfab9db5e0d8b1813e27.bundle.css"
       ],
@@ -24,6 +24,7 @@
         "/assets/app-store-badge.png",
         "/assets/bg-colorful.png",
         "/assets/cipher.png",
+        "/assets/donation-qr.svg",
         "/assets/google-play-badge.png",
         "/assets/metamask-network.png",
         "/assets/toshi.png"
@@ -35,15 +36,16 @@
   "hashTable": {
     "/inline.318b50c57b4eba3d437b.bundle.js": "998c6060446975e566fd17509558ddc68d72eec3",
     "/assets/app-store-badge.png": "83535d5978b467a35f873290534bde1b9c4d2d90",
-    "/main.c44aa69b29f6efd1af34.bundle.js": "b8b5202cf6df202031114c6bc70b715a5a5357df",
+    "/main.78c0e39e1a66bf067a7c.bundle.js": "79aa248c9ea9ce25ec7dd125a4976872e19b3dfc",
     "/assets/bg-colorful.png": "779b8f1311edc7a700fb73486cefbab0a987de1b",
     "/polyfills.0cda82ed7df2459fb45d.bundle.js": "d092885fa14cbef62d7c47214b8953c01bfa0da4",
     "/assets/cipher.png": "5e1232ea6210f1f40d964513c3f02b0b024c59a1",
     "/styles.dfab9db5e0d8b1813e27.bundle.css": "c1a6dd2d0ba473babfa35aa4bf1a35599b10c25e",
-    "/assets/google-play-badge.png": "ca83b32b7518ad63bf3231aebf4cbfa467239d8a",
+    "/assets/donation-qr.svg": "35ea2d45cfcd2db20ece8c219777d7496c95c78a",
     "/favicon.png": "4f824570bd0b15ecafea6401d9673cad582a581e",
+    "/assets/google-play-badge.png": "ca83b32b7518ad63bf3231aebf4cbfa467239d8a",
+    "/index.html": "8554ddd0b03f1e08095b0c0f2427cceb7f1d05a4",
     "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
-    "/index.html": "5a438f06c2b722cd30fd66b0d290cef422082ae7",
     "/assets/toshi.png": "5b364160253e9cec5c1af1db3eca14ec91f2cff7"
   }
 }
