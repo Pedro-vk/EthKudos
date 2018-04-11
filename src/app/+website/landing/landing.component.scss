@@ -635,6 +635,9 @@ footer {
   padding: 100px 20px 30px;
   text-align: center;
 
+  div {
+    display: inline-block;
+  }
   a {
     opacity: .7;
     margin: 0 20px 10px;
