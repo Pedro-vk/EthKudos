@@ -216,4 +216,25 @@ export class Web3Service {
       default: return 'https://metamask.io/';
     }
   }
+
+  goToEtherscan(tx: string): void {
+    const network = this.networkType;
+    let url;
+
+    switch (network) {
+      case 'main':
+        url = `https://etherscan.io/tx/${tx}`;
+        break;
+      case 'ropsten':
+      case 'rinkeby':
+      case 'kovan':
+        url = `https://${network}.etherscan.io/tx/${tx}`;
+        break;
+      default: break;
+    }
+    if (url) {
+      const etherscan = window.open(url, '_blank');
+      etherscan.focus();
+    }
+  }
 }

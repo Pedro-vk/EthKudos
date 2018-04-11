@@ -6,7 +6,9 @@ import { IsOwnerGuard, IsTokenGuard, IsPollGuard, IsConnectedGuard } from './sha
 import {
   AppComponent, HomeComponent, AdminComponent, PollActiveComponent, PollPreviousComponent, FaqsOnAppComponent,
 } from './+app';
-import { LandingComponent, ContentComponent, FaqsPageComponent, PrivacyPolicyComponent, JoinComponent } from './+website';
+import {
+  LandingComponent, ContentComponent, FaqsPageComponent, PrivacyPolicyComponent, JoinComponent, DonateComponent,
+} from './+website';
 
 const routes: Routes = [
   // Website
@@ -19,6 +21,7 @@ const routes: Routes = [
   {path: '', component: ContentComponent, children: [
     {path: 'faqs', component: FaqsPageComponent},
     {path: 'privacy-policy', component: PrivacyPolicyComponent},
+    {path: 'donate', component: DonateComponent},
   ]},
 
   // App

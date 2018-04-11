@@ -77,24 +77,7 @@ export class AppComponent implements OnInit {
   }
 
   goToEtherscan(tx: string): void {
-    const network = this.web3Service.networkType;
-    let url;
-
-    switch (network) {
-      case 'main':
-        url = `https://etherscan.io/tx/${tx}`;
-        break;
-      case 'ropsten':
-      case 'rinkeby':
-      case 'kovan':
-        url = `https://${network}.etherscan.io/tx/${tx}`;
-        break;
-      default: break;
-    }
-    if (url) {
-      const etherscan = window.open(url, '_blank');
-      etherscan.focus();
-    }
+    this.web3Service.goToEtherscan(tx);
   }
 
   openShareDialog() {

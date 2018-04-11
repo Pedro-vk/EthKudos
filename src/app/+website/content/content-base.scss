@@ -85,6 +85,43 @@
       @media (max-width: 460px) {
         padding: 40px 20px 0;
       }
+
+      &--content-style {
+        color: #666666;
+        font-weight: 400;
+
+        a {
+          @incldue transition;
+
+          color: #3f51b5;
+          text-decoration: none;
+
+          &:hover {
+            opacity: .8;
+          }
+        }
+
+        h2 {
+          font-size: 24px;
+
+          &:first-child {
+            margin-top: 0;
+          }
+        }
+        h3 {
+          font-size: 18px;
+        }
+        h2,
+        h3 {
+          color: #333333;
+        }
+        h2 {
+          font-weight: 300;
+        }
+        h3 {
+          font-weight: 400;
+        }
+      }
     }
   }
   &--visible .content {

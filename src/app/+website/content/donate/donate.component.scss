@@ -1,0 +1,167 @@
+@import '~@angular/material/theming';
+@import '../../../styles/index';
+@import '../content-base';
+
+@include organisation();
+
+.container {
+  .header-bg {
+    background-image: linear-gradient(to right top, #00c243, #00b492, #009fd1, #0082e9, #0059cd);
+  }
+}
+
+h2 {
+  text-align: center;
+  padding: 20px 0;
+
+  span {
+    display: inline-block;
+  }
+}
+
+.organisation {
+  max-width: 400px;
+  margin: auto;
+
+  &__balance {
+    font-size: .8em;
+    opacity: .8;
+  }
+}
+
+.cards-container {
+  display: flex;
+  margin-top: 40px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.right-side {
+  mat-card {
+    margin-bottom: 40px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.qr {
+  width: 29 * 7px;
+}
+
+.donation {
+  max-width: 340px;
+  width: 100%;
+
+  h3 {
+    margin: 0;
+    margin-bottom: 10px;
+  }
+  .inputs {
+    height: 36px;
+    display: flex;
+    align-items: center;
+
+    button {
+      margin-left: 20px;
+    }
+    mat-form-field {
+
+      /deep/ .mat-form-field-infix {
+        width: auto;
+      }
+    }
+  }
+}
+
+.no-network {
+  max-width: 340px;
+  width: 100%;
+
+  em {
+    opacity: .7;
+    font-size: .8em;
+    text-align: center;
+    display: block;
+  }
+  strong {
+    font-weight: 500;
+  }
+}
+
+.tx {
+  max-width: 340px;
+
+  &,
+  &-link,
+  &-ok {
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+  }
+
+  &-link {
+    color: #666666;
+    cursor: pointer;
+    position: relative;
+    top: 1px;
+
+    mat-icon {
+      font-size: 20px;
+      position: relative;
+      top: 1px;
+    }
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: 8px;
+      padding-left: 8px;
+      color: #333333;
+    }
+  }
+  &-ok {
+    color: #3f51b5;
+    overflow: initial;
+    margin-bottom-right: 8px;
+
+    mat-icon {
+      font-size: 20px;
+      position: relative;
+      top: 2px;
+    }
+    span {
+      font-family: "Roboto Mono";
+    }
+  }
+}
+
+.ether-input {
+  input {
+    text-align: right;
+  }
+  input,
+  [matSuffix] {
+    font-family: "Roboto Mono";
+  }
+  [matSuffix] {
+    opacity: .7;
+    position: relative;
+    top: 1px;
+  }
+}
+
+[disabled] {
+  position: relative;
+  overflow: hidden;
+  pointer-events: initial;
+  opacity: 1;
+
+  mat-progress-bar.on-disabled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+}

@@ -6,41 +6,4 @@
   .header-bg {
     background-image: linear-gradient(to right top, #845ec2, #de4fa1, #ff5f68, #ff932a, #cbc900);
   }
-
-  .content-box {
-    color: #666666;
-    font-weight: 400;
-  }
-
-  a {
-    @incldue transition;
-
-    color: #3f51b5;
-    text-decoration: none;
-
-    &:hover {
-      opacity: .8;
-    }
-  }
-
-  h2 {
-    font-size: 24px;
-
-    &:first-child {
-      margin-top: 0;
-    }
-  }
-  h3 {
-    font-size: 18px;
-  }
-  h2,
-  h3 {
-    color: #333333;
-  }
-  h2 {
-    font-weight: 300;
-  }
-  h3 {
-    font-weight: 400;
-  }
 }
