@@ -18,6 +18,7 @@ import { Web3Service, KudosTokenFactoryService } from './shared';
 @Component({
   selector: 'eth-kudos-root',
   template: '<router-outlet></router-outlet>',
+  styleUrls: ['./app-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppWrapperComponent implements OnInit {

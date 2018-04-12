@@ -1,59 +1,62 @@
 @import '~@angular/material/theming';
 
-@include mat-core();
+@mixin app-style() {
 
-$app-primary: mat-palette($mat-indigo);
-$app-accent: mat-palette($mat-grey, A200, A100, A400);
+  @include mat-core();
 
-$app-warn: mat-palette($mat-red);
+  $app-primary: mat-palette($mat-indigo);
+  $app-accent: mat-palette($mat-grey, A200, A100, A400);
 
-$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+  $app-warn: mat-palette($mat-red);
 
-@include angular-material-theme($app-theme);
+  $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
-html,
-body,
-eth-kudos-root {
-  display: block;
-  height: 100%;
-}
+  @include angular-material-theme($app-theme);
 
-body {
-  margin: 0;
-  background: #fafafa;
-  font-family: 'Roboto', sans-serif;
-}
-code {
-  font-family: 'Roboto Mono', monospace;
-}
+  html,
+  body,
+  eth-kudos-root {
+    display: block;
+    height: 100%;
+  }
 
-.on-disabled {
-  display: none !important;
-}
-[disabled] {
-  opacity: .66;
-  pointer-events: none;
+  body {
+    margin: 0;
+    background: #fafafa;
+    font-family: 'Roboto', sans-serif;
+  }
+  code {
+    font-family: 'Roboto Mono', monospace;
+  }
 
   .on-disabled {
-    display: block !important;
-  }
-}
-
-mat-form-field.input-address input {
-  font-family: 'Roboto mono';
-}
-
-.pointer {
-  cursor: pointer;
-}
-
-@media (max-width: 540px) {
-  .bp-l {
     display: none !important;
   }
-}
-@media (min-width: 541px) {
-  .bp-s {
-    display: none !important;
+  [disabled] {
+    opacity: .66;
+    pointer-events: none;
+
+    .on-disabled {
+      display: block !important;
+    }
+  }
+
+  mat-form-field.input-address input {
+    font-family: 'Roboto mono';
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+  @media (max-width: 540px) {
+    .bp-l {
+      display: none !important;
+    }
+  }
+  @media (min-width: 541px) {
+    .bp-s {
+      display: none !important;
+    }
   }
 }

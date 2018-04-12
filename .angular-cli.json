@@ -19,9 +19,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "eth-kudos",
       "serviceWorker": true,
-      "styles": [
-        "styles.scss"
-      ],
+      "styles": [],
       "scripts": [],
       "environmentSource": "environments/environment.ts",
       "environments": {

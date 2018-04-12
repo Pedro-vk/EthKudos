@@ -481,6 +481,10 @@ header {
   }
   &--donation &__grow {
     padding: 20px;
+
+    @media (min-width: 800px) {
+      min-width: 360px;
+    }
   }
 }
 
