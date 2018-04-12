@@ -1,4 +1,27 @@
 <IfModule mod_rewrite.c>
+  <IfModule mod_proxy.c>
+    # <Location "/api/faucet">
+      ProxyPass "/api/faucet" "https://faucet.metamask.io/"
+      ProxyPassReverse "/api/faucet" "https://faucet.metamask.io/"
+      Header always set "Access-Control-Allow-Origin" "*"
+    # </Location>
+  </IfModule>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RequestHeader set X-Prerender-Token "PB8alNRUNSNovPvRFmv7"
+  RewriteBase /
+
+  <IfModule mod_proxy_http.c>
+    RewriteCond %{HTTP_USER_AGENT} sitemap|googlebot|baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora\ link\ preview|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator [NC,OR]
+    RewriteCond %{QUERY_STRING} _escaped_fragment_
+
+    RewriteRule ^(?!.*?(\.js|\.css|\.xml|\.less|\.png|\.jpg|\.jpeg|\.gif|\.pdf|\.doc|\.txt|\.ico|\.rss|\.zip|\.mp3|\.rar|\.exe|\.wmv|\.doc|\.avi|\.ppt|\.mpg|\.mpeg|\.tif|\.wav|\.mov|\.psd|\.ai|\.xls|\.mp4|\.m4a|\.swf|\.dat|\.dmg|\.iso|\.flv|\.m4v|\.torrent|\.ttf|\.woff))(.*) http://service.prerender.io/https://eth-kudos.com/$2 [P,L]
+  </IfModule>
+</IfModule>
+
+<IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
   RewriteRule ^index\.html$ - [L]
