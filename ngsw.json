@@ -10,7 +10,7 @@
         "/favicon.png",
         "/index.html",
         "/inline.318b50c57b4eba3d437b.bundle.js",
-        "/main.ed44067f8f59d5f4fff0.bundle.js",
+        "/main.8c0d8ceb094a422d403e.bundle.js",
         "/polyfills.0cda82ed7df2459fb45d.bundle.js",
         "/styles.dfab9db5e0d8b1813e27.bundle.css"
       ],
@@ -36,7 +36,7 @@
   "hashTable": {
     "/inline.318b50c57b4eba3d437b.bundle.js": "998c6060446975e566fd17509558ddc68d72eec3",
     "/assets/app-store-badge.png": "83535d5978b467a35f873290534bde1b9c4d2d90",
-    "/main.ed44067f8f59d5f4fff0.bundle.js": "a64921cb503273b812c11732b87b14553b0182b2",
+    "/main.8c0d8ceb094a422d403e.bundle.js": "6e0e6aa9309da9652ffcd58ce4608ef0aa6bff72",
     "/assets/bg-colorful.png": "779b8f1311edc7a700fb73486cefbab0a987de1b",
     "/polyfills.0cda82ed7df2459fb45d.bundle.js": "d092885fa14cbef62d7c47214b8953c01bfa0da4",
     "/assets/cipher.png": "5e1232ea6210f1f40d964513c3f02b0b024c59a1",
@@ -44,7 +44,7 @@
     "/assets/donation-qr.svg": "35ea2d45cfcd2db20ece8c219777d7496c95c78a",
     "/favicon.png": "4f824570bd0b15ecafea6401d9673cad582a581e",
     "/assets/google-play-badge.png": "ca83b32b7518ad63bf3231aebf4cbfa467239d8a",
-    "/index.html": "2e824f5442e0df6e67b8ebcf572d13b0e0e25bf9",
+    "/index.html": "6b6c893773325c0179d20f4eb98d9fb151028831",
     "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
     "/assets/toshi.png": "5b364160253e9cec5c1af1db3eca14ec91f2cff7"
   }
