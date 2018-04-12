@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@angular-devkit/core": "^0.5.4",
-    "@angular/cli": "1.7.3",
+    "@angular/cli": "^1.7.4",
     "@angular/compiler-cli": "^5.2.9",
     "@angular/language-service": "^5.0.0",
     "@types/cytoscape": "^3.1.7",
