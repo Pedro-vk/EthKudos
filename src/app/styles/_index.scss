@@ -164,18 +164,15 @@ $landing-header-size: 70px;
   height: $landing-header-size;
   padding: 0 40px;
   width: 100%;
-  // max-width: 1800px;
   top: 0;
-  left: 50%;
+  left: 0;
   border-bottom: 1px solid rgba(0,0,0, .08);
-  transform: translateX(-50%);
   background: #ffffff;
   color: #555555;
   display: flex;
   overflow: hidden;
   justify-content: space-between;
   align-items: center;
-  // box-shadow: 0 0 10px rgba(#000000, .2);
 
   h1 {
     font-weight: 300;
@@ -238,6 +235,98 @@ $landing-header-size: 70px;
 
     h1 {
       margin-right: 26px;
+    }
+  }
+}
+
+@mixin ranking() {
+  .ranking {
+    padding: 8px 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    eth-kudos-blockie {
+      vertical-align: middle;
+      margin-right: 10px;
+      display: inline-block;
+    }
+
+    &__balance {
+      font-family: 'Roboto Mono';
+      color: #666666;
+      background: #dddddd;
+      padding: 2px 10px;
+      display: inline-block;
+      border-radius: 12.5px;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+
+      code {
+        opacity: .6;
+        padding-left: 2px;
+        font-size: .7em;
+      }
+      &-wrapper {
+        min-width: 108px;
+        display: inline-block;
+        text-align: right;
+        margin-right: 18px;
+        vertical-align: middle;
+
+        @media (max-width: 400px) {
+          min-width: 80px;
+          font-size: 12px;
+        }
+      }
+    }
+    [data-n='1'] &__balance {
+      color: #ffffff;
+      background: #cfb53b;
+    }
+    [data-n='2'] &__balance {
+      color: #ffffff;
+      background: #b3ccea;
+    }
+    [data-n='3'] &__balance {
+      color: #ffffff;
+      background: #a58768;
+    }
+    &__name {
+      font-size: 20px;
+      font-weight: 400;
+      opacity: .8;
+      padding-top: 2px;
+      display: inline-block;
+      vertical-align: middle;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+      &--address {
+        font-family: "Roboto Mono";
+        font-size: 14px;
+        padding-top: 1px;
+        opacity: .6 !important;
+      }
+
+      @media (max-width: 400px) {
+        font-size: 16px;
+
+        &--address {
+          font-size: 12px;
+        }
+      }
+    }
+    [data-n='1'] &__name,
+    [data-n='2'] &__name,
+    [data-n='3'] &__name {
+      opacity: 1;
+    }
+
+    &-wrapper {
+      margin: 0 !important;
+      width: 100%;
     }
   }
 }

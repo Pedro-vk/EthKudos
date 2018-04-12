@@ -2,6 +2,7 @@
 @import '../../styles/index';
 
 @include organisation();
+@include ranking();
 
 :host {
   background: $background;
