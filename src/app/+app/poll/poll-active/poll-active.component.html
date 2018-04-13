@@ -68,10 +68,12 @@
     <mat-form-field class="input-address kudos-input">
       <input
         matInput
-        [(ngModel)]="reward.kudos"
+        [ngModel]="reward.kudos"
+        (keyup)="setRewardKudos($event.target)"
         type="number"
         [max]="maxKudosToSend$ | async"
         [min]="0"
+        [step]="tokenStep"
         name="rewardKudos"
         placeholder="How many {{(token$ | async)?.symbol}} do you want to send"
         required>

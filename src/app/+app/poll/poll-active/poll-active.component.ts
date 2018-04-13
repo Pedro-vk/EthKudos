@@ -22,7 +22,8 @@ import { Web3Service, KudosTokenFactoryService } from '../../../shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PollActiveComponent implements OnInit {
-  token: {name: string, symbol: string} = <any>{};
+  tokenDecimals: number = 0;
+  tokenStep: number = 0;
   reward: {member: string, kudos: number, message: string, working: boolean} = <any>{};
 
   readonly kudosTokenService$ = this.activatedRoute.parent.params
@@ -75,6 +76,17 @@ export class PollActiveComponent implements OnInit {
       .first()
       .catch(() => Observable.empty())
       .subscribe(() => this.router.navigate(['/']));
+    this.token$
+      .first()
+      .subscribe(({decimals}) => {
+        this.tokenDecimals = decimals;
+        this.tokenStep = 10 ** -decimals;
+      });
+  }
+
+  setRewardKudos(inputNumber: {value: number}) {
+    this.reward.kudos = +(+inputNumber.value || 0).toFixed(this.tokenDecimals);
+    inputNumber.value = this.reward.kudos;
   }
 
   sendReward(form?: NgForm) {
