@@ -17,6 +17,9 @@ function hexToArray(hex: string) {
 export class GraphComponent implements OnInit {
   @ViewChild('graph') graph: ElementRef;
   mqSmall: MediaQueryList;
+  randomly = true;
+  activeRandom: any;
+  cleanRandom: Function;
 
   nodes: (cytoscape.NodeDefinition | any)[] = [
     {data: {id: 'a', v:  1, h:  0, name: 'Ifan Colon', address: 'RANDOM #####Ifan Colon#####'}},
@@ -34,7 +37,7 @@ export class GraphComponent implements OnInit {
     ['g', 'a', 0.2, 'Thanks for install the printer'], ['a', 'b', 0.5, 'I love the new plants!'],
     ['g', 'c', 0.8, 'I love the new branding'], ['f', 'c', 1.2, 'Thanks to sending me the new branding'],
     ['c', 'b', 1, 'Thanks for buying the bamboo tables'], ['d', 'c', 1, 'I appreciate your dedication'],
-    ['d', 'e', 0.5, 'Thanks for you help'], ['e', 'f', 0.1, 'Thanks for the coffee ;)'],
+    ['d', 'e', 0.5, 'Thanks for your help'], ['e', 'f', 0.1, 'Thanks for the coffee ;)'],
   ];
   style: cytoscape.Stylesheet[] = (<any>cytoscape).stylesheet()
     .selector('node')
@@ -97,6 +100,9 @@ export class GraphComponent implements OnInit {
     this.initCytoscape();
     this.initInterval();
     this.initEdgeMouseEvents();
+
+    const initRandomTimeout = setTimeout(() => this.initRandom(), 1000);
+    this.cleanRandom = () => clearTimeout(initRandomTimeout);
 
     this.graph.nativeElement.onmouseout = () => {
       this.edgeHover$.next(undefined);
@@ -171,41 +177,46 @@ export class GraphComponent implements OnInit {
     setInterval(() => update(), 500);
   }
 
-  initEdgeMouseEvents() {
-    const getPosition = p => p / this.cy.container().clientWidth * 100;
-    const getPercentageX = (x: number) => Math.round(x / this.cy.container().clientWidth * 10);
+  readonly getPosition = p => p / this.cy.container().clientWidth * 100;
+  readonly getPercentageX = (x: number) => Math.round(x / this.cy.container().clientWidth * 10);
+  readonly getMember = id => this.nodes.find(_ => _.data.id === id).data;
+  readonly getKudos = id => this.edgesList
+    .filter(_ => _[1] === id)
+    .map(_ => _[2])
+    .reduce((acc, _) => +acc + +_, 0);
 
-    const getMember = id => this.nodes.find(_ => _.data.id === id).data;
+  initRandom() {
+    const edges = this.cy.edges();
+    let edge;
+    do {
+      edge = edges[Math.floor(edges.length * Math.random())];
+    } while (this.activeRandom === edge);
+
+    this.showEdgeTooltip(edge.renderedBoundingBox(), edge.data());
+
+    const t1 = setTimeout(() => this.edgeHover$.next(undefined), 4000);
+    const t2 = setTimeout(() => this.initRandom(), 4500);
+
+    this.cleanRandom = () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }
+
+  initEdgeMouseEvents() {
     this.cy.on('mouseover', 'edge', event => {
       const position = event.target.renderedBoundingBox();
       const data = event.target.data();
-      this.edgeHover$.next({
-        x: getPosition(position.x2 - position.w / 2),
-        rX: getPercentageX(position.x2 - position.w / 2),
-        y: getPosition(position.y2 - position.h / 2),
-        data,
-        sourceMember: getMember(data.source),
-        targetMember: getMember(data.target),
-      });
+      this.showEdgeTooltip(position, data);
+      this.cleanRandom();
       // event.target.addClass('hover');
     });
 
-    const getKudos = id => this.edgesList
-      .filter(_ => _[1] === id)
-      .map(_ => _[2])
-      .reduce((acc, _) => +acc + +_, 0);
     this.cy.on('mouseover', 'node', event => {
       const position = event.target.renderedBoundingBox();
       const data = event.target.data();
-      this.nodeHover$.next({
-        x: getPosition(position.x2 - position.w / 2),
-        rX: getPercentageX(position.x2 - position.w / 2),
-        y: getPosition(position.y2 - position.h / 2),
-        data: {
-          ...data,
-          kudos: getKudos(data.id),
-        },
-      });
+      this.showNodeTooltip(position, data);
+      this.cleanRandom();
     });
 
     this.cy.on('mouseout', 'edge', event => {
@@ -213,5 +224,28 @@ export class GraphComponent implements OnInit {
       // event.target.removeClass('hover');
     });
     this.cy.on('mouseout', 'node', () => this.nodeHover$.next(undefined));
+  }
+
+  showEdgeTooltip(position, data) {
+    this.edgeHover$.next({
+      x: this.getPosition(position.x2 - position.w / 2),
+      rX: this.getPercentageX(position.x2 - position.w / 2),
+      y: this.getPosition(position.y2 - position.h / 2),
+      data,
+      sourceMember: this.getMember(data.source),
+      targetMember: this.getMember(data.target),
+    });
+  }
+
+  showNodeTooltip(position, data) {
+    this.nodeHover$.next({
+      x: this.getPosition(position.x2 - position.w / 2),
+      rX: this.getPercentageX(position.x2 - position.w / 2),
+      y: this.getPosition(position.y2 - position.h / 2),
+      data: {
+        ...data,
+        kudos: this.getKudos(data.id),
+      },
+    });
   }
 }
