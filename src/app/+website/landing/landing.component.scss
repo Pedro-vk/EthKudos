@@ -375,6 +375,17 @@ header {
       margin-top: 14px;
     }
 
+    em.note {
+      font-size: 12px;
+      color: #666666;
+      opacity: .8;
+
+      &:before {
+        content: '* ';
+        color: #333333;
+      }
+    }
+
     &--right {
       text-align: right;
     }
@@ -466,6 +477,14 @@ header {
     .keyword {
       font-family: "Roboto Mono";
       color: #3f51b5;
+
+      sup {
+        opacity: .6;
+        font-size: .8em;
+        position: relative;
+        top: 4px;
+        left: -2px;
+      }
     }
     svg {
       margin: auto;
