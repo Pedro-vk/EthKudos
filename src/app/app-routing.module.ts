@@ -7,7 +7,8 @@ import {
   AppComponent, HomeComponent, AdminComponent, PollActiveComponent, PollPreviousComponent, FaqsOnAppComponent,
 } from './+app';
 import {
-  LandingComponent, ContentComponent, FaqsPageComponent, PrivacyPolicyComponent, JoinComponent, DonateComponent,
+  LandingComponent, ContentComponent, FaqsPageComponent, PrivacyPolicyComponent, JoinComponent,
+  DonateComponent, AboutComponent,
 } from './+website';
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
     {path: 'faqs', component: FaqsPageComponent},
     {path: 'privacy-policy', component: PrivacyPolicyComponent},
     {path: 'donate', component: DonateComponent},
+    {path: 'about', component: AboutComponent},
   ]},
 
   // App

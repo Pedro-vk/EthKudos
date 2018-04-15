@@ -1,0 +1,9 @@
+@import '~@angular/material/theming';
+@import '../../../styles/index';
+@import '../content-base';
+
+.container {
+  .header-bg {
+    background-image: linear-gradient(to right top, #00d509, #00d359, #00d082, #00cba0, #00c4b3);
+  }
+}

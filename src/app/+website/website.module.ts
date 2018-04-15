@@ -7,16 +7,13 @@ import { PROVIDERS } from '../shared';
 
 import { LandingComponent } from './landing';
 import { JoinComponent } from './join';
-import { ContentComponent, FaqsPageComponent, PrivacyPolicyComponent, DonateComponent } from './content';
+import { CONTENT_COMPONENTS } from './content';
 
 @NgModule({
   declarations: [
     JoinComponent,
     LandingComponent,
-    ContentComponent,
-    FaqsPageComponent,
-    PrivacyPolicyComponent,
-    DonateComponent,
+    ...CONTENT_COMPONENTS,
   ],
   imports: [
     AppCommonModule,
