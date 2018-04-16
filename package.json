@@ -29,7 +29,7 @@
     "merge:sol:build": "sol-merger \"./contracts/*.sol\" ./build/merged",
     "clean:sol:build": "for i in build/contracts/*.json; do npx jq '{contractName, abi, bytecode, deployedBytecode, compiler, networks, schemaVersion}' \"$i\" > \"$i.tmp\" && mv \"$i.tmp\" \"$i\"; done",
     "i18n:extract": "ngx-translate-extract -i ./src -o ./src/i18n/*.json && npm run i18n:duplicate-base",
-    "i18n:duplicate-base": "jq 'to_entries | map( {(.key) : .key } ) | add' src/i18n/en.json > src/i18n/en.json.tmp && mv -f src/i18n/en.json.tmp src/i18n/en.json",
+    "i18n:duplicate-base": "jq 'to_entries | map( {(.key) :  (if .value == \"\" then .key else .value end) } ) | add' src/i18n/en.json > src/i18n/en.json.tmp && mv -f src/i18n/en.json.tmp src/i18n/en.json",
     "create-cname": "echo $(cat package.json | grep '\"homepage\"' | cut -d '\"' -f 4) > dist/CNAME",
     "heroku": "cp -fr ./.heroku/. ./dist",
     "gh-pages-travis": "cp dist/index.html dist/404.html && npm run create-cname && npm run heroku && gh-pages-travis"
@@ -54,7 +54,9 @@
     "detect-browser": "^2.2.0",
     "karma-chrome-launcher": "^2.2.0",
     "lcov-result-merger": "^2.0.0",
+    "messageformat": "^1.1.1",
     "metamask-logo": "^2.1.4",
+    "ngx-translate-messageformat-compiler": "^3.0.0",
     "sol-merger": "^0.1.2",
     "truffle-contract": "^3.0.4",
     "web3": "1.0.0-beta.33",

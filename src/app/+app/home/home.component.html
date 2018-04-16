@@ -8,10 +8,10 @@
       <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
       <mat-card-title translate>Active polling</mat-card-title>
       <mat-card-subtitle class="bp-l">
-        There are {{ getActivePollMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }} in this polling.
+        {{'MEMBERS_ACTIVE_POLL_LONG' | translate : {NUMBER: (getActivePollMembersNumber$ | async)} }}
       </mat-card-subtitle>
       <mat-card-subtitle class="bp-s">
-        {{ getActivePollMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}
+        {{'MEMBERS_ACTIVE_POLL_SHORT' | translate : {NUMBER: (getActivePollMembersNumber$ | async)} }}
       </mat-card-subtitle>
     </mat-card-header>
 
