@@ -18,7 +18,7 @@ contract('KudosToken', accounts => {
     kudosRouterInstance = await KudosRouter.new();
     await kudosRouterInstance.setResource('KudosPollFactory', '0.0-test.1', kudosPollFactory)
 
-    instance = await KudosToken.new('KudosToken', 'KKT', decimals, kudosRouterInstance.address);
+    instance = await KudosToken.new('KudosToken Organisation', 'KudosToken', 'KKT', decimals, kudosRouterInstance.address);
   });
 
   // Lifecycle - Init
@@ -48,6 +48,16 @@ contract('KudosToken', accounts => {
 
       await instance.transferOwnership(accounts[0], {from: accounts[1]});
       assert.equal(await instance.owner(), accounts[0], `${accounts[0]} wasn't the owner`);
+    });
+  });
+
+  // Information
+  describe('(Information)', function() {
+    this.timeout(10 * 60 * 1000);
+
+    it('should transfer the ownership', async () => {
+      await instance.changeOrganisationName('ChangedOrganisationName');
+      assert.equal(await instance.organisationName(), 'ChangedOrganisationName', `'ChangedOrganisationName' wasn't the owner`);
     });
   });
 

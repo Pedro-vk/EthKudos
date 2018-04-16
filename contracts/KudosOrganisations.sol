@@ -17,8 +17,18 @@ contract KudosOrganisations is Ownable {
     routerAddress = _routerAddress;
   }
 
+  // Upgrade
+  function upgradeFrom(address _address) public returns (bool) {
+    KudosOrganisations organisation = KudosOrganisations(_address);
+    for (uint i = 0; i < organisation.getOrganisationsSize(); i++) {
+      organisations.push(organisation.getOrganisation(i));
+    }
+    return true;
+  }
+
   // Organisations
   function newOrganisation(
+    string _organisationName,
     string _tokenName,
     string _tokenSymbol,
     uint8 _decimalUnits,
@@ -26,6 +36,7 @@ contract KudosOrganisations is Ownable {
   ) public returns (address) {
     address newKudosTokenAddress = KudosTokenFactory(KudosRouter(routerAddress).getResourceAddress("KudosTokenFactory"))
       .newKudosToken(
+        _organisationName,
         _tokenName,
         _tokenSymbol,
         _decimalUnits,
@@ -44,6 +55,14 @@ contract KudosOrganisations is Ownable {
 
   function getOrganisations() public constant returns (address[]) {
     return organisations;
+  }
+
+  function getOrganisationsSize() public constant returns (uint256) {
+    return organisations.length;
+  }
+
+  function getOrganisation(uint256 _index) public constant returns (address) {
+    return organisations[_index];
   }
 
   function removeOrganisation(address _organisation) onlyOwner public returns (bool) {

@@ -9,17 +9,19 @@ import "./KudosPollFactory.sol";
 
 
 contract KudosTokenFactory {
-  string public version = "0.1";
+  string public version = "0.2";
 
   function KudosTokenFactory() public { }
 
   function newKudosToken(
+    string _organisationName,
     string _tokenName,
     string _tokenSymbol,
     uint8 _decimalUnits,
     address _routerAddress
   ) public returns (address kudosTokenAddress) {
     address kudosToken = new KudosToken(
+      _organisationName,
       _tokenName,
       _tokenSymbol,
       _decimalUnits,
@@ -32,7 +34,9 @@ contract KudosTokenFactory {
 
 
 contract KudosToken is BasicToken, Ownable {
-  string public version = "0.1";
+  string public version = "0.2";
+
+  string public organisationName;
 
   string public name;
   string public symbol;
@@ -56,11 +60,13 @@ contract KudosToken is BasicToken, Ownable {
   event ClosePoll(address indexed poll);
 
   function KudosToken(
+    string _organisationName,
     string _tokenName,
     string _tokenSymbol,
     uint8 _decimalUnits,
     address _routerAddress
   ) public {
+    organisationName = _organisationName;
     name = _tokenName;
     symbol = _tokenSymbol;
     decimals = _decimalUnits;
@@ -134,6 +140,13 @@ contract KudosToken is BasicToken, Ownable {
 
   function getPollsSize() public constant returns (uint256) {
     return polls.length;
+  }
+
+  // Organisation name
+  function changeOrganisationName(string _newName) onlyOwner public returns (bool) {
+    organisationName = _newName;
+
+    return true;
   }
 
   // Members
