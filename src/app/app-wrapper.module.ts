@@ -6,7 +6,6 @@ import { registerLocaleData } from '@angular/common';
 import localeEn from '@angular/common/locales/en-GB';
 import localeEs from '@angular/common/locales/es';
 import { TranslateModule, TranslateLoader, TranslateCompiler } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateMessageFormatCompiler, MESSAGE_FORMAT_CONFIG } from 'ngx-translate-messageformat-compiler';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -16,7 +15,7 @@ import { AppWrapperComponent } from './app-wrapper.component';
 
 import { environment } from '../environments/environment';
 
-import { PROVIDERS } from './shared';
+import { PROVIDERS, TranslationLoaderService } from './shared';
 
 import { AppModule } from './+app/app.module';
 import { WebsiteModule } from './+website/website.module';
@@ -32,10 +31,6 @@ export function getCurrentValidLocale() {
   return 'en';
 }
 
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'i18n/');
-}
-
 @NgModule({
   declarations: [
     AppWrapperComponent,
@@ -49,12 +44,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
+        useClass: TranslationLoaderService,
       },
       compiler: {
         provide: TranslateCompiler,
-        useClass: TranslateMessageFormatCompiler
+        useClass: TranslateMessageFormatCompiler,
       },
     }),
 

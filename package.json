@@ -48,7 +48,6 @@
     "@angular/router": "^5.0.0",
     "@angular/service-worker": "^5.0.0",
     "@ngx-translate/core": "^9.1.1",
-    "@ngx-translate/http-loader": "^3.0.1",
     "blockies": "0.0.2",
     "core-js": "^2.5.4",
     "detect-browser": "^2.2.0",

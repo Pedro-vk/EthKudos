@@ -9,6 +9,7 @@ export * from './kudos-poll.service';
 export * from './kudos-token-factory.service';
 export * from './kudos-token.service';
 export * from './service-worker.service';
+export * from './translation-loader.service';
 export * from './web3.service';
 
 import { IsConnectedGuard } from './is-connected.guard';
@@ -19,6 +20,7 @@ import { KudosOrganisationsService } from './kudos-organisations.service';
 import { KudosPollFactoryService } from './kudos-poll-factory.service';
 import { KudosTokenFactoryService } from './kudos-token-factory.service';
 import { ServiceWorkerService } from './service-worker.service';
+import { TranslationLoaderService } from './translation-loader.service';
 import { Web3Service } from './web3.service';
 
 export const PROVIDERS = [
@@ -30,5 +32,6 @@ export const PROVIDERS = [
   KudosPollFactoryService,
   KudosTokenFactoryService,
   ServiceWorkerService,
+  TranslationLoaderService,
   Web3Service,
 ];
