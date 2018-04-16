@@ -86,8 +86,11 @@ export class PollActiveComponent implements OnInit {
   }
 
   setRewardKudos(inputNumber: {value: number}) {
-    this.reward.kudos = +(+inputNumber.value || 0).toFixed(this.tokenDecimals);
-    inputNumber.value = this.reward.kudos;
+    const cleanNumber = +(+inputNumber.value || 0).toFixed(this.tokenDecimals);
+    if (this.reward.kudos !== cleanNumber || cleanNumber !== +inputNumber.value) {
+      this.reward.kudos = cleanNumber;
+      inputNumber.value = cleanNumber;
+    }
   }
 
   sendReward(form?: NgForm) {
