@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +25,8 @@ import { COMPONENTS, ENTRY_COMPONENTS } from './components';
     BrowserModule,
     FormsModule,
 
+    TranslateModule,
+
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
@@ -42,6 +45,8 @@ import { COMPONENTS, ENTRY_COMPONENTS } from './components';
   exports: [
     BrowserModule,
     FormsModule,
+
+    TranslateModule,
 
     MatAutocompleteModule,
     MatButtonModule,

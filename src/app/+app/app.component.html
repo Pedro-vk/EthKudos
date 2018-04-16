@@ -13,11 +13,11 @@
       mat-icon-button
       class="title__icon"
       (click)="canBeShared ? share() : openShareDialog()"
-      matTooltip="Share the organisation">
+      [matTooltip]="'Share the organisation' | translate">
 
       <mat-icon>share</mat-icon>
     </button>
-    <button mat-icon-button class="title__icon" routerLink="/" matTooltip="Leave">
+    <button mat-icon-button class="title__icon" routerLink="/" [matTooltip]="'Leave' | translate">
       <mat-icon>exit_to_app</mat-icon>
     </button>
     <button mat-icon-button class="title__icon" routerLink="./faqs" matTooltip="FAQs">
@@ -40,18 +40,18 @@
       <eth-kudos-blockie [address]="account" variant="big" noicon></eth-kudos-blockie>
       <div class="header__account" [class.header__account--no-member]="!(imMember$ | async)">
         <span class="header__account-row header__account-row--name">{{(myContact$ | async) || "&nbsp;"}}</span>
-        <span class="header__account-row header__account-row--no-member">You are not member</span>
+        <span class="header__account-row header__account-row--no-member" translate>You are not member</span>
         <span class="header__account-row header__account-row--address">{{account}}</span>
       </div>
     </div>
   </div>
   <div class="header__balance">
     <div class="header__balance-row">
-      <span class="bp-l">Account balance:</span><!--
+      <span class="bp-l" translate>Account balance:</span><!--
    --><code> {{((balance$ | async) || 0) | number : '.0-5'}} <span class="symbol">&Xi;</span></code>
     </div>
     <div class="header__balance-row">
-      <span class="bp-l">Kudos received:</span><!--
+      <span class="bp-l" translate>Kudos received:</span><!--
    --><code> {{((kudosBalance$ | async) || 0) | number : '.0-2'}} <span class="symbol">{{(token$ | async)?.symbol}}</span></code>
     </div>
   </div>
@@ -62,7 +62,7 @@
   color="accent"
   [class.visible]="(status$ | async) === 'total' && !!(pendingTransactions$ | async)?.length">
 
-  <div class="title">
+  <div class="title" translate>
     Pending transactions:
   </div>
   <mat-chip-list>

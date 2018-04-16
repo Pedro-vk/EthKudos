@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
@@ -37,10 +38,15 @@ export class AppWrapperComponent implements OnInit {
     private web3Service: Web3Service,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private serviceWorkerService: ServiceWorkerService,
+    private translateService: TranslateService,
     private http: HttpClient,
     private router: Router,
     private title: Title,
-  ) { }
+  ) {
+    translateService.setDefaultLang('en');
+    translateService.use(translateService.getBrowserCultureLang().split('-')[0]);
+    console.log(translateService)
+  }
 
   ngOnInit(): void {
     this.web3Service.account$

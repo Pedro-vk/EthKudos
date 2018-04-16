@@ -6,7 +6,7 @@
 
     <mat-card-header>
       <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
-      <mat-card-title>Active polling</mat-card-title>
+      <mat-card-title translate>Active polling</mat-card-title>
       <mat-card-subtitle class="bp-l">
         There are {{ getActivePollMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }} in this polling.
       </mat-card-subtitle>
@@ -16,7 +16,7 @@
     </mat-card-header>
 
     <div class="remaining-wrapper">
-      Remaining
+      {{'Remaining' | translate}}
 
       <code class="remaining">
         {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{(token$ | async)?.symbol}}</span>
@@ -26,10 +26,10 @@
 
   <div class="no-active-poll" *ngIf="!(getActivePollContract$ | async)">
     <mat-icon>not_interested</mat-icon>
-    No active poll
+    {{'No active poll' | translate}}
   </div>
 
-  <h2 class="heading" *ngIf="getPreviousPollsContracts$ | async">Previous polls</h2>
+  <h2 class="heading" *ngIf="getPreviousPollsContracts$ | async" translate>Previous polls</h2>
 
   <mat-accordion *ngIf="getPreviousPollsContracts$ | async as previousPollsContracts">
     <mat-expansion-panel
@@ -52,7 +52,7 @@
             <span class="previous__date bp-l">at {{poll.creation | date : 'short'}}</span>
 
             <div class="previous__right" *ngIf="poll.kudos">
-              Gratified
+              {{'Gratified' | translate}}
               <code class="previous__my-kudos">
                 {{poll.kudos}}<!--
              --><span class="previous__my-kudos-symbol">{{(token$ | async)?.symbol}}</span>
@@ -66,7 +66,7 @@
 </div>
 
 <div class="side" *ngIf="(getBalances$ | async) && (getBalances$ | async)?.length !== 0">
-  <h2 class="heading">Most awarded</h2>
+  <h2 class="heading" translate>Most awarded</h2>
 
   <mat-accordion>
     <mat-expansion-panel
