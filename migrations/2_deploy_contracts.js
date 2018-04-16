@@ -5,7 +5,7 @@ const KudosPollFactory = artifacts.require("KudosPollFactory");
 const KudosStruct = artifacts.require("KudosStructs");
 const StringUtils = artifacts.require("StringUtils");
 
-module.exports = async function(deployer) {
+module.exports = function(deployer) {
   deployer.deploy(KudosStruct)
     .then(() => {
       deployer.link(KudosStruct, [KudosTokenFactory, KudosPollFactory]);
