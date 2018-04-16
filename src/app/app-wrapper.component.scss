@@ -1,5 +1,23 @@
+@import '~@angular/material/theming';
 @import '../styles';
 
 /deep/ {
   @include app-style;
+}
+
+:host .updates-message {
+  @include mat-elevation(8);
+
+  position: fixed;
+  display: table;
+  max-width: 280px;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #444444;
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
@@ -13,18 +14,29 @@ import 'rxjs/add/operator/mergeMap';
 
 import { environment } from '../environments/environment';
 
-import { Web3Service, KudosTokenFactoryService } from './shared';
+import { Web3Service, KudosTokenFactoryService, ServiceWorkerService } from './shared';
 
 @Component({
   selector: 'eth-kudos-root',
-  template: '<router-outlet></router-outlet>',
+  templateUrl: './app-wrapper.component.html',
   styleUrls: ['./app-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('updatesIn', [
+      transition(':enter', [
+        style({opacity: 0, bottom: '-40px'}),
+        animate('.3s ease-in-out', style({opacity: 1, bottom: '*'})),
+      ]),
+    ]),
+  ],
 })
 export class AppWrapperComponent implements OnInit {
+  readonly hasUpdates$ = this.serviceWorkerService.onUpdate.map(() => true);
+
   constructor(
     private web3Service: Web3Service,
     private kudosTokenFactoryService: KudosTokenFactoryService,
+    private serviceWorkerService: ServiceWorkerService,
     private http: HttpClient,
     private router: Router,
     private title: Title,
@@ -98,5 +110,9 @@ export class AppWrapperComponent implements OnInit {
     console.log('Claim -> ', account);
     this.http.post('https://faucet.metamask.io', account, {responseType: 'text'})
       .subscribe(() => console.log('Claim done!'));
+  }
+
+  reload() {
+    window.location.reload();
   }
 }

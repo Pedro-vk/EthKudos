@@ -1,0 +1,6 @@
+<router-outlet></router-outlet>
+
+<mat-card class="updates-message" *ngIf="hasUpdates$ | async" @updatesIn>
+  Update available
+  <button mat-button color="warn" (click)="reload()">refresh</button>
+</mat-card>
