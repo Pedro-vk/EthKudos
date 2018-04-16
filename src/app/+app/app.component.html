@@ -6,7 +6,7 @@
  --><button @buttonFade mat-icon-button routerLink="./admin" *ngIf="(imOwner$ | async) && !routeIs('/admin')">
       <mat-icon>settings</mat-icon>
     </button><!--
- --><span>{{(token$ | async)?.name}}</span>
+ --><span>{{(organisationName$ | async) || (token$ | async)?.name}}</span>
   </div>
   <span>
     <button

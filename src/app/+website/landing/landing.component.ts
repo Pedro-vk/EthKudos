@@ -47,7 +47,7 @@ import {
 export class LandingComponent implements OnInit {
   orgAddress: string;
   showHelp: boolean;
-  newOrg: {name: string, symbol: string, decimals: number, toDirectory: boolean, working: boolean} = <any>{};
+  newOrg: {organisationName: string, name: string, symbol: string, decimals: number, toDirectory: boolean, working: boolean} = <any>{};
 
   newKudosTokenAddress: Subject<string> = new Subject();
   newOrgAddress: Subject<string> = new Subject();
@@ -154,6 +154,7 @@ export class LandingComponent implements OnInit {
     this.newOrg.working = true;
     this.kudosOrganisationsService
       .newOrganisation(
+        this.newOrg.organisationName,
         this.newOrg.name,
         this.newOrg.symbol,
         this.newOrg.decimals || 0,
@@ -189,6 +190,7 @@ export class LandingComponent implements OnInit {
       .mergeMap(() => this.web3Service.account$)
       .map(async () => ({
         address: kudosTokenService.address,
+        organisationName: +(await kudosTokenService.version()) > 0.1 ? await kudosTokenService.organisationName() : undefined,
         name: await kudosTokenService.name(),
         symbol: await kudosTokenService.symbol(),
         decimals: await kudosTokenService.decimals(),

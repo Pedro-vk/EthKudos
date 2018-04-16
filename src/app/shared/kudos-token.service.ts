@@ -19,6 +19,7 @@ import { KudosPollService } from './kudos-poll.service';
 
 interface KudosTokenConstants {
   version: string;
+  organisationName: string;
   name: string;
   symbol: string;
   decimals: number;
@@ -77,6 +78,7 @@ export class KudosTokenService
 
   // Constants
   readonly version = () => this.generateConstant('version')();
+  readonly organisationName = () => this.generateConstant('organisationName')();
   readonly name = () => this.generateConstant('name')();
   readonly symbol = () => this.generateConstant('symbol')();
   readonly decimals = () => this.generateConstant('decimals')();

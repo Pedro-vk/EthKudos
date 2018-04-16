@@ -7,7 +7,7 @@
       <div class="organisation" *ngIf="!hasChild && (previousOrganisation$ | async) as org" @cardInOut>
         <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
         <div class="organisation__info">
-          <span class="organisation__name">{{org.name}}</span>
+          <span class="organisation__name">{{org.organisationName || org.name}}</span>
           <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
           <span class="organisation__not-member" *ngIf="!org.imMember">You are not member</span>
         </div>
@@ -77,7 +77,7 @@
           <div class="organisation" *ngIf="selectedOrganisation$ | async as org" @cardInOut>
             <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
             <div class="organisation__info">
-              <span class="organisation__name">{{org.name}}</span>
+              <span class="organisation__name">{{org.organisationName || org.name}}</span>
               <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
               <span class="organisation__not-member" *ngIf="!org.imMember">You are not member</span>
             </div>
@@ -100,12 +100,22 @@
             <mat-form-field>
               <input
                 matInput
+                [(ngModel)]="newOrg.organisationName"
+                type="text"
+                name="orgOrganisationName"
+                placeholder="Organisation name"
+                required>
+            </mat-form-field>
+
+            <mat-form-field>
+              <input
+                matInput
                 [(ngModel)]="newOrg.name"
                 type="text"
                 name="orgName"
                 placeholder="Token name"
                 required>
-              <mat-hint align="end">That's the name of your organisation and the token</mat-hint>
+              <mat-hint align="end">That's the name of your token (kudos)</mat-hint>
             </mat-form-field>
 
             <mat-form-field>
@@ -141,10 +151,10 @@
               Add to the organisations directory
             </mat-checkbox>
 
-            <div class="organisation organisation--margin" *ngIf="newOrg.name" @cardInOut>
+            <div class="organisation organisation--margin" *ngIf="newOrg.organisationName" @cardInOut>
               <eth-kudos-blockie random variant="big"></eth-kudos-blockie>
               <div class="organisation__info">
-                <span class="organisation__name">{{newOrg.name}}</span>
+                <span class="organisation__name">{{newOrg.organisationName}}</span>
                 <span class="organisation__balance">{{(19 + getDecimals(newOrg.decimals)) | number : '.0-' + (newOrg.decimals || 0)}}<span>{{newOrg.symbol}}</span></span>
               </div>
               <button mat-button color="primary" [disabled]="!newOrgForm.valid" (click)="createOrganisation(newOrgForm)">create</button>
@@ -171,7 +181,7 @@
           <div class="organisation">
             <eth-kudos-blockie [address]="newOrganisation.address" variant="big"></eth-kudos-blockie>
             <div class="organisation__info">
-              <span class="organisation__name">{{newOrganisation.name}}</span>
+              <span class="organisation__name">{{newOrganisation.organisationName || newOrganisation.name}}</span>
               <span class="organisation__balance" *ngIf="newOrganisation.imMember">{{newOrganisation.myBalance}}<span>{{newOrganisation.symbol}}</span></span>
               <span class="organisation__not-member" *ngIf="!newOrganisation.imMember">Let's start</span>
             </div>

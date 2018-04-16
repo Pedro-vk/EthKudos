@@ -41,8 +41,9 @@ export class KudosOrganisationsService
   readonly owner = () => this.generateConstant('owner')();
 
   // Actions
-  readonly newOrganisation = (tokenName: string, tokenSymbol: string, decimalUnits: number, addToDirectory: boolean) =>
-    this.generateAction('newOrganisation')(tokenName, tokenSymbol, decimalUnits, addToDirectory)
+  readonly newOrganisation =
+    (tokenOrganisationName: string, tokenName: string, tokenSymbol: string, decimalUnits: number, addToDirectory: boolean) =>
+      this.generateAction('newOrganisation')(tokenOrganisationName, tokenName, tokenSymbol, decimalUnits, addToDirectory)
   readonly removeOrganisation = (address: string) => this.generateAction('removeOrganisation')(address);
 
   constructor(protected web3Service: Web3Service) {
