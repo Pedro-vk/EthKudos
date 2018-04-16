@@ -60,6 +60,5 @@
     "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "2.0.0",
-  "updatedAt": "2018-04-02T23:30:16.404Z"
+  "schemaVersion": "2.0.0"
 }

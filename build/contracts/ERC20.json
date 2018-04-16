@@ -182,6 +182,5 @@
     "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "2.0.0",
-  "updatedAt": "2018-03-30T23:07:21.700Z"
+  "schemaVersion": "2.0.0"
 }
