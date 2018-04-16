@@ -45,7 +45,6 @@ export class AppWrapperComponent implements OnInit {
   ) {
     translateService.setDefaultLang('en');
     translateService.use(translateService.getBrowserCultureLang().split('-')[0]);
-    console.log(translateService)
   }
 
   ngOnInit(): void {

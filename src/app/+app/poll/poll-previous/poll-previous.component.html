@@ -2,25 +2,25 @@
   <mat-card *ngIf="pollContract$ | async as pollContract" class="active-poll">
     <mat-card-header>
       <eth-kudos-blockie [address]="pollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
-      <mat-card-title>Closed poll</mat-card-title>
+      <mat-card-title translate>Closed poll</mat-card-title>
       <mat-card-subtitle>
         <div class="icon-block">
           <mat-icon>person</mat-icon>
           <span>
-            {{ pollContractMembersNumber$ | async | i18nPlural : {'=1': '# member', 'other': '# members'} }}
+            {{'MEMBERS_ACTIVE_POLL_SHORT' | translate : {NUMBER: pollContractMembersNumber$ | async} }}
           </span>
         </div>
         <div class="icon-block bp-l">
           <mat-icon>date_range</mat-icon>
           <span>
-            at {{(pollContractCreation$ | async) * 1000 | date : 'short'}}
+            {{'AT_DATE' | translate : {DATE: (pollContractCreation$ | async) * 1000 | date : 'short'} }}
           </span>
         </div>
       </mat-card-subtitle>
     </mat-card-header>
   </mat-card>
 
-  <h2 class="heading" *ngIf="(pollContractMyGratitudes$ | async)?.length">Gratitudes received</h2>
+  <h2 class="heading" *ngIf="(pollContractMyGratitudes$ | async)?.length" translate>Gratitudes received</h2>
 
   <mat-card
     *ngFor="let gratitude of pollContractMyGratitudes$ | async; let last = last; trackBy: trackGratitude"
@@ -30,7 +30,7 @@
     <mat-card-header>
       <mat-card-title *ngIf="gratitude.fromName">
         {{gratitude.fromName}}
-        <span>sent:</span>
+        <span translate>sent:</span>
       </mat-card-title>
       <mat-card-title *ngIf="!gratitude.fromName">
         <code>{{gratitude.from}}</code>
@@ -46,7 +46,7 @@
 </div>
 
 <div *ngIf="(pollContractResults$ | async)?.length !== 0">
-  <h2 class="heading">Most awarded</h2>
+  <h2 class="heading" translate>Most awarded</h2>
 
   <mat-accordion>
     <mat-expansion-panel

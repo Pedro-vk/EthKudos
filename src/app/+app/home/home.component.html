@@ -49,7 +49,7 @@
 
             <mat-icon class="bp-l">date_range</mat-icon>
 
-            <span class="previous__date bp-l">at {{poll.creation | date : 'short'}}</span>
+            <span class="previous__date bp-l">{{'AT_DATE' | translate : {DATE: (poll.creation | date : 'short')} }}</span>
 
             <div class="previous__right" *ngIf="poll.kudos">
               {{'Gratified' | translate}}
