@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, LOCALE_ID, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -42,9 +42,10 @@ export class AppWrapperComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private title: Title,
+    @Inject(LOCALE_ID) private localeId: string,
   ) {
     translateService.setDefaultLang('en');
-    translateService.use(translateService.getBrowserCultureLang().split('-')[0]);
+    translateService.use(localeId);
   }
 
   ngOnInit(): void {
