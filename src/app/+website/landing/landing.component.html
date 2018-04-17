@@ -34,12 +34,12 @@
     <div class="main__text">
       <h2>Connecting coworkers</h2>
       <p>
-        EthKudos provides a way of gratifying the team cooperation.
+        EthKudos provides an opportunity of gratifying the team collaboration.
       </p>
       <p>
-        Each member will reward people that have helped him or her,
+        Each member rewards people who helped him or her,
         <br>
-        boosting team cooperation and appreciating the work of the members.
+        encouraging and recognizing team cooperation between members.
       </p>
       <p class="main__text-button" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp" @cardInOut>
         <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
@@ -224,16 +224,16 @@
       </div>
       <div class="block__text">
         <h2><span>Your organisation or</span> <span>team, your token</span></h2>
-        <h3><span>The members are going to</span> <span>hold kudos, that's prestige</span></h3>
+        <h3><span>The more Kudos a member</span> <span> receives, the more prestige</span></h3>
         <p>
           Each member will have some kudos to reward other coworkers,
           <br>
           sending a message that will be seen by the receivers.
         </p>
         <p>
-          The sending is limited by each receiver, that's going to ensure that all
+          There is a limit of kudos sendings, which ensures that all the
           <br>
-          the members respect the rules and promote to send gratitude to more members.
+          members respect the rules and promote gratitude between members.
         </p>
         <a href="#let's-start" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp">
           <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
@@ -245,7 +245,7 @@
   <section class="block block--graph">
     <div class="block__content">
       <div class="block__text">
-        <h2><span>Polling time!</span> <span>Let's thanks!</span></h2>
+        <h2><span>Polling time!</span> <span>Time to reward!</span></h2>
         <h3><span>The members are sending gratitude</span> <span>to people that have helped</span></h3>
         <p>
           Each message will increase motivation and improve the team's relationship,

@@ -105,7 +105,7 @@ export class AppWrapperComponent implements OnInit {
         case segmenets[0] === 'faqs': return 'FAQs';
         case segmenets[0] === 'donate': return 'Donate';
         case segmenets[0] === 'privacy-policy': return 'Privacy Policy';
-        default: return `Let's thank`;
+        default: return `Time to reward`;
       }
     })();
 
