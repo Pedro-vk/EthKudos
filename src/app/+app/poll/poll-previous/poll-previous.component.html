@@ -7,13 +7,13 @@
         <div class="icon-block">
           <mat-icon>person</mat-icon>
           <span>
-            {{'MEMBERS_SHORT' | translate : {NUMBER: pollContractMembersNumber$ | async} }}
+            {{'MEMBERS_SHORT' | translate : {NUMBER: (pollContractMembersNumber$ | async) || ''} }}
           </span>
         </div>
         <div class="icon-block bp-l">
           <mat-icon>date_range</mat-icon>
           <span>
-            {{'AT_DATE' | translate : {DATE: (pollContractCreation$ | async) * 1000 | date : 'short'} }}
+            {{'AT_DATE' | translate : {DATE: ((pollContractCreation$ | async) * 1000 | date : 'short') || ''} }}
           </span>
         </div>
       </mat-card-subtitle>

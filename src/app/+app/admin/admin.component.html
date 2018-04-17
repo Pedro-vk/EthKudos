@@ -45,7 +45,7 @@
           [placeholder]="'Min. duration of the polling (minutes)' | translate"
           required>
         <mat-hint *ngIf="newPoll.minDurationInMinutes" align="end">
-          {{ 'CLOSABLE_AT_DATE' | translate : {DATE: isGoingToFinishOn(newPoll.minDurationInMinutes) | date : 'short'} }}
+          {{ 'CLOSABLE_AT_DATE' | translate : {DATE: (isGoingToFinishOn(newPoll.minDurationInMinutes) | date : 'short') || ''} }}
         </mat-hint>
       </mat-form-field>
 
@@ -97,7 +97,7 @@
     <mat-card-actions class="actions-with-warn">
       <span class="action-warn" *ngIf="!(activePollCanBeClosed$ | async)">
         <mat-icon>warning</mat-icon>
-        {{'CLOSABLE_AT_DATE' | translate : {DATE: activePollMinDeadline$ | async | date : 'short'} }}
+        {{'CLOSABLE_AT_DATE' | translate : {DATE: (activePollMinDeadline$ | async | date : 'short') || ''} }}
       </span>
       <button
         mat-button

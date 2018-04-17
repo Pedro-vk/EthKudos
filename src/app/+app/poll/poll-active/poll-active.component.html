@@ -6,13 +6,13 @@
       <div class="icon-block">
         <mat-icon>person</mat-icon>
         <span>
-          {{'MEMBERS_SHORT' | translate : {NUMBER: (getActivePollMembersNumber$ | async)} }}
+          {{'MEMBERS_SHORT' | translate : {NUMBER: (getActivePollMembersNumber$ | async) || ''} }}
         </span>
       </div>
       <div class="icon-block bp-l">
         <mat-icon>date_range</mat-icon>
         <span>
-          {{'AT_DATE' | translate : {DATE: ((getActivePollCreation$ | async) * 1000 | date : 'short')} }}
+          {{'AT_DATE' | translate : {DATE: ((getActivePollCreation$ | async) * 1000 | date : 'short') || ''} }}
         </span>
       </div>
     </mat-card-subtitle>
@@ -34,7 +34,7 @@
     <mat-card-header>
       <mat-card-title translate>Send gratitudes</mat-card-title>
       <mat-card-subtitle>
-        {{ 'SEND_KUDOS_AND_GRATITUDES' | translate : {SYMBOL: (token$ | async)?.symbol} }}
+        {{ 'SEND_KUDOS_AND_GRATITUDES' | translate : {SYMBOL: (token$ | async)?.symbol || ''} }}
       </mat-card-subtitle>
     </mat-card-header>
 
@@ -75,7 +75,7 @@
         [min]="0"
         [step]="tokenStep"
         name="rewardKudos"
-        [placeholder]="'HOW_MANY_KUDOS_SEND'  | translate : {SYMBOL: (token$ | async)?.symbol}"
+        [placeholder]="'HOW_MANY_KUDOS_SEND'  | translate : {SYMBOL: (token$ | async)?.symbol || ''}"
         required>
       <span class="symbol-suffix" matSuffix>{{(token$ | async)?.symbol}}</span>
     </mat-form-field>
