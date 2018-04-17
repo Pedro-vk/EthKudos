@@ -1,6 +1,6 @@
 <div class="content">
   <div class="content__text">
-    <h2>Join the organisation</h2>
+    <h2 translate>Join the organisation</h2>
   </div>
 
   <div class="content__card" *ngIf="(status$ | async) === 'total'">
@@ -8,11 +8,11 @@
       <div class="organisation">
         <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
         <div class="organisation__info">
-          <span class="organisation__name">{{org.name}}</span>
+          <span class="organisation__name">{{org.organisationName || org.name}}</span>
           <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
-          <span class="organisation__not-member" *ngIf="!org.imMember">You are not member</span>
+          <span class="organisation__not-member" *ngIf="!org.imMember" translate>You are not member</span>
         </div>
-        <button mat-button color="primary" [routerLink]="['/', org.address]">join</button>
+        <button mat-button color="primary" [routerLink]="['/', org.address]">{{'join' | translate}}</button>
       </div>
       <div class="members" *ngIf="org.members.length">
         <eth-kudos-blockie
@@ -25,8 +25,8 @@
     </mat-card>
 
     <mat-card @cardInOut *ngIf="(kudosTokenInfo$ | async)?.imMember === false">
-      <mat-card-title>You are not member yet</mat-card-title>
-      <mat-card-subtitle>
+      <mat-card-title translate>You are not member yet</mat-card-title>
+      <mat-card-subtitle translate>
         Send this link to the owner to request access.
       </mat-card-subtitle>
 
@@ -36,7 +36,7 @@
           ngModel=""
           (ngModelChange)="joinName$.next($event)"
           type="text"
-          placeholder="What is your name?">
+          [placeholder]="'What is your name?' | translate">
       </mat-form-field>
 
       <mat-form-field>
@@ -46,9 +46,9 @@
           readonly
           [ngModel]="adminJoinUrl$ | async"
           type="text"
-          placeholder="Send it to the owner">
+          [placeholder]="'Send it to the owner' | translate">
         <mat-icon matSuffix *ngIf="!copied" (click)="copyJoinUrl()">content_copy</mat-icon>
-        <mat-icon matSuffix *ngIf="copied" matTooltip="Copied!">check</mat-icon>
+        <mat-icon matSuffix *ngIf="copied" [matTooltip]="'Copied!' | translate">check</mat-icon>
       </mat-form-field>
     </mat-card>
   </div>

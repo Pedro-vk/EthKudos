@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Share it!</h2>
+<h2 mat-dialog-title translate>Share it!</h2>
 <mat-dialog-content>
   <mat-form-field>
     <input
@@ -7,8 +7,8 @@
       readonly
       [ngModel]="'https://eth-kudos.com/join/' + tokenAddress"
       type="text"
-      placeholder="Link to this organisation">
+      [placeholder]="'Link to this organisation' | translate">
     <mat-icon matSuffix *ngIf="!copied" (click)="copyShareUrl()">content_copy</mat-icon>
-    <mat-icon matSuffix *ngIf="copied" matTooltip="Copied!">check</mat-icon>
+    <mat-icon matSuffix *ngIf="copied" [matTooltip]="'Copied!' | translate">check</mat-icon>
   </mat-form-field>
 </mat-dialog-content>
