@@ -97,7 +97,7 @@
     <mat-card-actions class="actions-with-warn">
       <span class="action-warn" *ngIf="!(activePollCanBeClosed$ | async)">
         <mat-icon>warning</mat-icon>
-        {{'CLOSABLE_AT_DATE' | translate : {DATE: activePollMinDeadline$ | async | date : 'short'} }
+        {{'CLOSABLE_AT_DATE' | translate : {DATE: activePollMinDeadline$ | async | date : 'short'} }}
       </span>
       <button
         mat-button
