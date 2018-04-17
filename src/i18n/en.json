@@ -51,13 +51,16 @@
   "Solve the error": "Solve the error",
   "The member won't be removed from active polling": "The member won't be removed from active polling",
   "The new members will be added to the active polling.": "The new members will be added to the active polling.",
+  "The owner can create a new one.": "The owner can create a new one.",
   "The remaining kudos not sent are going to be frozen.": "The remaining kudos not sent are going to be frozen.",
   "What is your name?": "What is your name?",
   "You are not in the correct network.": "You are not in the correct network.",
   "You are not member": "You are not member",
   "You are not member yet": "You are not member yet",
+  "You can open a new polling.": "You can open a new polling.",
   "You have not installed MetaMask.": "You have not installed MetaMask.",
   "Your MetaMask is locked.": "Your MetaMask is locked.",
+  "go to admin": "go to admin",
   "join": "join",
   "sent:": "sent:"
 }

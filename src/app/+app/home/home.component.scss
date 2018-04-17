@@ -34,6 +34,12 @@ mat-card-actions {
     line-height: 0.84em;
     margin-left: 4px;
   }
+
+  &--sub {
+    padding-top: 0;
+    margin-top: -10px;
+    font-size: 16px;
+  }
 }
 
 .previous {

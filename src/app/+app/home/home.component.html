@@ -29,6 +29,16 @@
     {{'No active poll' | translate}}
   </div>
 
+  <div class="no-active-poll no-active-poll--sub" *ngIf="!(getActivePollContract$ | async)">
+    <span *ngIf="imOwner$ | async">
+      {{'You can open a new polling.' | translate}}
+      <button mat-button routerLink="./admin">{{'go to admin' | translate}}</button>
+    </span>
+    <span *ngIf="!(imOwner$ | async)">
+      {{'The owner can create a new one.' | translate}}
+    </span>
+  </div>
+
   <h2 class="heading" *ngIf="getPreviousPollsContracts$ | async" translate>Previous polls</h2>
 
   <mat-accordion *ngIf="getPreviousPollsContracts$ | async as previousPollsContracts">

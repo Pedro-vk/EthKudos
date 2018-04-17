@@ -22,6 +22,7 @@ export class HomeComponent {
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
     .shareReplay();
   readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
+  readonly imOwner$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imOnwer()));
   readonly getBalances$ = this.kudosTokenService$
     .mergeMap(kudosTokenService =>
       kudosTokenService
