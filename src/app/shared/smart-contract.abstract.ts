@@ -108,7 +108,11 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   ): ((...args) => Promise<Tx>) & {sync: (...args) => Promise<string>} {
 
     const fn: any = (...args) => (<any>this.contract)[action](...args, {from: this.web3Service.account});
-    fn.sync = (...args) => (<any>this.contract)[action].sendTransaction(...args, {from: this.web3Service.account});
+    fn.sync = (...args) =>
+      (<any>this.contract)[action].sendTransaction(...args, {
+        from: this.web3Service.account,
+        gasPrice: 30 * 1000000000,
+      });
     return fn;
   }
 

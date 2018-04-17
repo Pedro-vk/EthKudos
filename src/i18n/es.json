@@ -45,7 +45,7 @@
   "SEND_KUDOS_AND_GRATITUDES": "Manda {SYMBOL} junto a un mensaje de agradecimiento a otros miembros.",
   "Send gratitudes": "Mandar agradecimientos",
   "Send it to the owner": "Mándaselo al administrador",
-  "Send this link to the owner to request access.": "Mandale al administrador de la organización el link para acceder.",
+  "Send this link to the owner to request access.": "Manda al admin. de la organización el link para acceder.",
   "Share it!": "Compartelo!",
   "Share the organisation": "Comparte la organización",
   "Solve the error": "Solucionar",
@@ -60,6 +60,7 @@
   "You can open a new polling.": "Pues crear una nueva.",
   "You have not installed MetaMask.": "No tienes instalado MetaMask.",
   "Your MetaMask is locked.": "MetaMask está bloqueado.",
+  "enter": "entrar",
   "go to admin": "ir a administración",
   "join": "unirse",
   "sent:": "envió:"

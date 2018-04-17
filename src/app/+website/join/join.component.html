@@ -4,26 +4,6 @@
   </div>
 
   <div class="content__card" *ngIf="(status$ | async) === 'total'">
-    <mat-card @cardInOut *ngIf="kudosTokenInfo$ | async as org">
-      <div class="organisation">
-        <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
-        <div class="organisation__info">
-          <span class="organisation__name">{{org.organisationName || org.name}}</span>
-          <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
-          <span class="organisation__not-member" *ngIf="!org.imMember" translate>You are not member</span>
-        </div>
-        <button mat-button color="primary" [routerLink]="['/', org.address]">{{'join' | translate}}</button>
-      </div>
-      <div class="members" *ngIf="org.members.length">
-        <eth-kudos-blockie
-          *ngFor="let member of org.members"
-          [address]="member.member"
-          [matTooltip]="member.name"
-          variant="big">
-        </eth-kudos-blockie>
-      </div>
-    </mat-card>
-
     <mat-card @cardInOut *ngIf="(kudosTokenInfo$ | async)?.imMember === false">
       <mat-card-title translate>You are not member yet</mat-card-title>
       <mat-card-subtitle translate>
@@ -50,6 +30,26 @@
         <mat-icon matSuffix *ngIf="!copied" (click)="copyJoinUrl()">content_copy</mat-icon>
         <mat-icon matSuffix *ngIf="copied" [matTooltip]="'Copied!' | translate">check</mat-icon>
       </mat-form-field>
+    </mat-card>
+
+    <mat-card @cardInOut *ngIf="kudosTokenInfo$ | async as org">
+      <div class="organisation">
+        <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
+        <div class="organisation__info">
+          <span class="organisation__name">{{org.organisationName || org.name}}</span>
+          <span class="organisation__balance" *ngIf="org.imMember">{{org.myBalance}}<span>{{org.symbol}}</span></span>
+          <span class="organisation__not-member" *ngIf="!org.imMember" translate>You are not member</span>
+        </div>
+        <button mat-button color="primary" [routerLink]="['/', org.address]">{{'enter' | translate}}</button>
+      </div>
+      <div class="members" *ngIf="org.members.length">
+        <eth-kudos-blockie
+          *ngFor="let member of org.members"
+          [address]="member.member"
+          [matTooltip]="member.name"
+          variant="big">
+        </eth-kudos-blockie>
+      </div>
     </mat-card>
   </div>
 
