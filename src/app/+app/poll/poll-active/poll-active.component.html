@@ -1,106 +1,134 @@
-<mat-card *ngIf="getActivePollContract$ | async as activePollContract" class="active-poll relative">
-  <mat-card-header>
-    <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
-    <mat-card-title translate>Active polling</mat-card-title>
-    <mat-card-subtitle>
-      <div class="icon-block">
-        <mat-icon>person</mat-icon>
-        <span>
-          {{'MEMBERS_SHORT' | translate : {NUMBER: (getActivePollMembersNumber$ | async) || ''} }}
-        </span>
-      </div>
-      <div class="icon-block bp-l">
-        <mat-icon>date_range</mat-icon>
-        <span>
-          {{'AT_DATE' | translate : {DATE: ((getActivePollCreation$ | async) * 1000 | date : 'short') || ''} }}
-        </span>
-      </div>
-    </mat-card-subtitle>
-  </mat-card-header>
-
-  <div class="remaining-wrapper" *ngIf="imMember$ | async">
-    {{'Remaining' | translate}}
-
-    <code class="remaining">
-      {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{(token$ | async)?.symbol}}</span>
-    </code>
-  </div>
-</mat-card>
-
-<form #rewardForm="ngForm" novalidate *ngIf="imMember$ | async">
-  <mat-card [attr.disabled]="reward.working" class="relative">
-    <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
-
+<div class="side">
+  <mat-card *ngIf="getActivePollContract$ | async as activePollContract" class="active-poll relative">
     <mat-card-header>
-      <mat-card-title translate>Send gratitudes</mat-card-title>
+      <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
+      <mat-card-title translate>Active polling</mat-card-title>
       <mat-card-subtitle>
-        {{ 'SEND_KUDOS_AND_GRATITUDES' | translate : {SYMBOL: (token$ | async)?.symbol || ''} }}
+        <div class="icon-block">
+          <mat-icon>person</mat-icon>
+          <span>
+            {{'MEMBERS_SHORT' | translate : {NUMBER: (getActivePollMembersNumber$ | async) || ''} }}
+          </span>
+        </div>
+        <div class="icon-block bp-l">
+          <mat-icon>date_range</mat-icon>
+          <span>
+            {{'AT_DATE' | translate : {DATE: ((getActivePollCreation$ | async) * 1000 | date : 'short') || ''} }}
+          </span>
+        </div>
       </mat-card-subtitle>
     </mat-card-header>
 
-    <mat-form-field class="input-address">
-      <eth-kudos-blockie matPrefix [address]="reward.member" variant="prefix"></eth-kudos-blockie>
-      <mat-select
-        [(ngModel)]="reward.member"
-        name="rewardMember"
-        [placeholder]="'Member' | translate"
-        required>
+    <div class="remaining-wrapper" *ngIf="imMember$ | async">
+      {{'Remaining' | translate}}
 
-        <mat-option
-          *ngFor="let contact of getOtherMembers$ | async"
-          [value]="contact.member">
-
-          <div class="select-contact">
-            <eth-kudos-blockie [address]="contact.member" variant="prefix"></eth-kudos-blockie>
-
-            <div class="select-contact__info" *ngIf="contact.name">
-              <div class="select-contact__name">{{contact.name}}</div>
-              <div class="select-contact__account" [attr.data-address]="contact.member"></div>
-            </div>
-            <div class="select-contact__info" *ngIf="!contact.name">
-              <div class="select-contact__account">{{contact.member}}</div>
-            </div>
-          </div>
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="input-address kudos-input">
-      <input
-        matInput
-        [ngModel]="reward.kudos"
-        (blur)="setRewardKudos($event.target)"
-        type="number"
-        [max]="maxKudosToSend$ | async"
-        [min]="0"
-        [step]="tokenStep"
-        name="rewardKudos"
-        [placeholder]="'HOW_MANY_KUDOS_SEND'  | translate : {SYMBOL: (token$ | async)?.symbol || ''}"
-        required>
-      <span class="symbol-suffix" matSuffix>{{(token$ | async)?.symbol}}</span>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input
-        matInput
-        [(ngModel)]="reward.message"
-        type="text"
-        name="rewardMessage"
-        [placeholder]="'Message of gratitude' | translate"
-        required>
-    </mat-form-field>
-
-    <mat-card-actions>
-      <button mat-button (click)="rewardForm.reset()" type="button">{{'Clear' | translate}}</button>
-      <button
-        mat-button
-        color="primary"
-        type="button"
-        [disabled]="!rewardForm.valid"
-        (click)="sendReward(rewardForm)">
-
-        {{'Send gratitudes' | translate}}
-      </button>
-    </mat-card-actions>
+      <code class="remaining">
+        {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{(token$ | async)?.symbol}}</span>
+      </code>
+    </div>
   </mat-card>
-</form>
+
+  <form #rewardForm="ngForm" novalidate *ngIf="imMember$ | async">
+    <mat-card [attr.disabled]="reward.working" class="relative">
+      <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
+
+      <mat-card-header>
+        <mat-card-title translate>Send gratitudes</mat-card-title>
+        <mat-card-subtitle>
+          {{ 'SEND_KUDOS_AND_GRATITUDES' | translate : {SYMBOL: (token$ | async)?.symbol || ''} }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-form-field class="input-address">
+        <eth-kudos-blockie matPrefix [address]="reward.member" variant="prefix"></eth-kudos-blockie>
+        <mat-select
+          [(ngModel)]="reward.member"
+          name="rewardMember"
+          [placeholder]="'Member' | translate"
+          required>
+
+          <mat-option
+            *ngFor="let contact of getOtherMembers$ | async"
+            [value]="contact.member">
+
+            <div class="select-contact">
+              <eth-kudos-blockie [address]="contact.member" variant="prefix"></eth-kudos-blockie>
+
+              <div class="select-contact__info" *ngIf="contact.name">
+                <div class="select-contact__name">{{contact.name}}</div>
+                <div class="select-contact__account" [attr.data-address]="contact.member"></div>
+              </div>
+              <div class="select-contact__info" *ngIf="!contact.name">
+                <div class="select-contact__account">{{contact.member}}</div>
+              </div>
+            </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="input-address kudos-input">
+        <input
+          matInput
+          [ngModel]="reward.kudos"
+          (blur)="setRewardKudos($event.target)"
+          type="number"
+          [max]="maxKudosToSend$ | async"
+          [min]="0"
+          [step]="tokenStep"
+          name="rewardKudos"
+          [placeholder]="'HOW_MANY_KUDOS_SEND'  | translate : {SYMBOL: (token$ | async)?.symbol || ''}"
+          required>
+        <span class="symbol-suffix" matSuffix>{{(token$ | async)?.symbol}}</span>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input
+          matInput
+          [(ngModel)]="reward.message"
+          type="text"
+          name="rewardMessage"
+          [placeholder]="'Message of gratitude' | translate"
+          required>
+      </mat-form-field>
+
+      <mat-card-actions>
+        <button mat-button (click)="rewardForm.reset()" type="button">{{'Clear' | translate}}</button>
+        <button
+          mat-button
+          color="primary"
+          type="button"
+          [disabled]="!rewardForm.valid"
+          (click)="sendReward(rewardForm)">
+
+          {{'Send gratitudes' | translate}}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>
+
+<div class="side" *ngIf="(myGratitudesSent$ | async)?.length">
+  <h2 class="heading" translate>Gratitudes sent</h2>
+
+  <mat-card
+    *ngFor="let gratitude of myGratitudesSent$ | async; let last = last; trackBy: trackGratitude"
+    [class.half-margin]="!last"
+    class="gratitude">
+
+    <mat-card-header>
+      <mat-card-title *ngIf="gratitude.toName">
+        {{gratitude.toName}}
+        <span translate>is going to receive:</span>
+      </mat-card-title>
+      <mat-card-title *ngIf="!gratitude.toName">
+        <code>{{gratitude.to}}</code>
+        <span translate>is going to receive:</span>
+      </mat-card-title>
+      <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>
+    </mat-card-header>
+
+    <span class="gratitude__kudos">
+      {{gratitude.kudos}}<span>{{(token$ | async)?.symbol}}</span>
+    </span>
+  </mat-card>
+</div>

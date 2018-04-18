@@ -34,7 +34,7 @@
       </mat-card-title>
       <mat-card-title *ngIf="!gratitude.fromName">
         <code>{{gratitude.from}}</code>
-        <span>sent:</span>
+        <span translate>sent:</span>
       </mat-card-title>
       <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>
     </mat-card-header>
@@ -45,7 +45,7 @@
   </mat-card>
 </div>
 
-<div *ngIf="(pollContractResults$ | async)?.length !== 0">
+<div class="side" *ngIf="(pollContractResults$ | async)?.length !== 0">
   <h2 class="heading" translate>Most awarded</h2>
 
   <mat-accordion>

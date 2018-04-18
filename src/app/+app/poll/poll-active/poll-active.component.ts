@@ -63,6 +63,18 @@ export class PollActiveComponent implements OnInit {
     .combineLatest(this.web3Service.account$)
     .map(([contacts, account]) => contacts.filter(_ => (_.member || '').toLowerCase() !== (account || '').toLowerCase()))
     .share();
+  readonly myGratitudesSent$ = this.getActivePollContract$
+    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.myGratitudesSent()))
+    .combineLatest(this.kudosTokenService$)
+    .map(([gratitudes, kudosTokenService]) => gratitudes
+      .map(async _ => ({
+        ..._,
+        kudos: await kudosTokenService.fromInt(_.kudos),
+        toName: await kudosTokenService.getContact(_.to),
+      }))
+    )
+    .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
+    .shareReplay();
 
   constructor(
     private web3Service: Web3Service,
@@ -119,6 +131,10 @@ export class PollActiveComponent implements OnInit {
           .then(() => done(true))
           .catch(() => done());
       });
+  }
+
+  trackGratitude(index: string): string {
+    return `${index}` || undefined;
   }
 
   private onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {

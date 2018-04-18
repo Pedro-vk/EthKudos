@@ -1,7 +1,9 @@
 @import '../../../styles/index';
 
+@include gratitude-card();
+
 :host {
-  @include host(false);
+  @include host(true);
 }
 
 mat-form-field {
@@ -88,4 +90,8 @@ mat-card-actions {
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+}
+
+.gratitude {
+  margin-bottom: 20px;
 }
