@@ -345,6 +345,9 @@ $landing-header-size: 70px;
       margin-bottom: 0;
       padding-right: 100px;
     }
+    [mat-card-avatar] {
+      margin-right: 10px;
+    }
 
     &__kudos {
       position: absolute;

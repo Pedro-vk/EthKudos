@@ -92,6 +92,6 @@ mat-card-actions {
   }
 }
 
-.gratitude {
+.gratitude:not(:last-child) {
   margin-bottom: 20px;
 }

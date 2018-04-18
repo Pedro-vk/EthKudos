@@ -4,7 +4,7 @@
 @include gratitude-card();
 
 :host {
-  @include host(false);
+  @include host(true);
 }
 
 mat-form-field {
@@ -41,6 +41,6 @@ mat-card-actions {
   }
 }
 
-.gratitude {
+.gratitude:not(:last-child) {
   margin-bottom: 20px;
 }

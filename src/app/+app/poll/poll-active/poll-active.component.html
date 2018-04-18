@@ -116,6 +116,7 @@
     class="gratitude">
 
     <mat-card-header>
+      <eth-kudos-blockie [address]="gratitude.to" variant="card" mat-card-avatar></eth-kudos-blockie>
       <mat-card-title *ngIf="gratitude.toName">
         {{gratitude.toName}}
         <span translate>is going to receive:</span>
