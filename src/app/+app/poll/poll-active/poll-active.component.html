@@ -69,7 +69,7 @@
       <input
         matInput
         [ngModel]="reward.kudos"
-        (keyup)="setRewardKudos($event.target)"
+        (blur)="setRewardKudos($event.target)"
         type="number"
         [max]="maxKudosToSend$ | async"
         [min]="0"

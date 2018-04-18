@@ -25,6 +25,7 @@ export class PollActiveComponent implements OnInit {
   tokenDecimals: number = 0;
   tokenStep: number = 0;
   reward: {member: string, kudos: number, message: string, working: boolean} = <any>{};
+  maxKudos: number;
 
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .filter(({tokenAddress}) => !!tokenAddress)
@@ -83,18 +84,27 @@ export class PollActiveComponent implements OnInit {
         this.tokenDecimals = decimals;
         this.tokenStep = 10 ** -decimals;
       });
+    this.maxKudosToSend$
+      .subscribe(maxKudos => this.maxKudos = maxKudos);
   }
 
   setRewardKudos(inputNumber: {value: number}) {
     const cleanNumber = +(+inputNumber.value || 0).toFixed(this.tokenDecimals);
-    if (this.reward.kudos !== cleanNumber || cleanNumber !== +inputNumber.value) {
-      this.reward.kudos = cleanNumber;
-      inputNumber.value = cleanNumber;
+    let number = cleanNumber;
+    if (number <= 0) {
+      number = undefined;
+    }
+    if (number > this.maxKudos) {
+      number = this.maxKudos;
+    }
+    if (this.reward.kudos !== number || number !== +inputNumber.value) {
+      this.reward.kudos = number;
+      inputNumber.value = number;
     }
   }
 
   sendReward(form?: NgForm) {
-    const done = (success?) => this.onActionFinished(success, this.reward, _ => this.reward = _, form);
+    const done = (success?) => console.log({success}) || this.onActionFinished(success, this.reward, _ => this.reward = _, form);
 
     this.reward.working = true;
     this.getActivePollContract$
