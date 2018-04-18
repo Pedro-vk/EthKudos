@@ -15,7 +15,7 @@
       </mat-card-subtitle>
     </mat-card-header>
 
-    <div class="remaining-wrapper">
+    <div class="remaining-wrapper" *ngIf="imMember$ | async">
       {{'Remaining' | translate}}
 
       <code class="remaining">

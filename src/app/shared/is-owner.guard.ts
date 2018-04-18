@@ -20,7 +20,7 @@ export class IsOwnerGuard implements CanActivate {
     return kudosTokenService
       .onInitialized
       .first()
-      .mergeMap(() => Observable.fromPromise(kudosTokenService.imOnwer()))
+      .mergeMap(() => Observable.fromPromise(kudosTokenService.imOwner()))
       .do(imOwner => {
         if (!imOwner) {
           this.router.navigate([state.url.split('/').slice(0, -1).join('/')]);

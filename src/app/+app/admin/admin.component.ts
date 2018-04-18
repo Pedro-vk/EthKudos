@@ -87,7 +87,7 @@ export class AdminComponent implements OnInit {
     this.kudosTokenService$
       .subscribe(kudosTokenService => {
         kudosTokenService
-          .checkUpdates(_ => _.imOnwer())
+          .checkUpdates(_ => _.imOwner())
           .filter(imOnwer => !imOnwer)
           .first()
           .subscribe(() => this.router.navigate(['../'], {relativeTo: this.activatedRoute}));

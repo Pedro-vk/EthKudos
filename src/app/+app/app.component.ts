@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
   readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
   readonly organisationName$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.organisationName()));
   readonly kudosBalance$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(async _ => _.fromInt(await _.myBalance())));
-  readonly imOwner$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imOnwer()));
+  readonly imOwner$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imOwner()));
   readonly imMember$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imMember()));
   readonly myContact$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.myContact()));
 
