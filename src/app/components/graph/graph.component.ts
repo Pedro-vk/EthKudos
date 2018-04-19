@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 import * as blockies from 'blockies';
@@ -21,24 +21,9 @@ export class GraphComponent implements OnInit {
   activeRandom: any;
   cleanRandom: Function;
 
-  nodes: (cytoscape.NodeDefinition | any)[] = [
-    {data: {id: 'a', v:  1, h:  0, name: 'Ifan Colon', address: 'RANDOM #####Ifan Colon#####'}},
-    {data: {id: 'b', v:  0, h:  1, name: 'Phoenix Mclean', address: 'RANDOM #####Phoenix Mclean##### 1'}},
-    {data: {id: 'c', v:  0, h:  1, name: 'Carlie Lim', address: 'RANDOM #####Carlie Lim##### 1'}},
-    {data: {id: 'd', v: -1, h:  0, name: 'Luci Haynes', address: 'RANDOM #####Luci Haynes##### @892'}},
-    {data: {id: 'e', v: -1, h:  0, name: 'Jaya Lovell', address: 'RANDOM #####Jaya Lovell#####'}},
-    {data: {id: 'f', v:  0, h: -1, name: 'Larry Pineda', address: 'RANDOM #####Larry Pineda#####'}},
-    {data: {id: 'g', v:  0, h: -1, name: 'Robbie Shepherd', address: 'RANDOM #####Robbie Shepherd##### 2'}},
-  ];
-  edgesList = [
-    ['b', 'a', 1, 'Thanks for setting up my PC'], ['c', 'a', 0.5, 'I love the new laptops!'],
-    ['f', 'g', 0.2, 'Thanks for watering my cactus :)'], ['c', 'd', 1, 'You are an amazing coworker'],
-    ['e', 'a', 2, 'The server is working again! Thanks!'], ['f', 'a', 1.5, 'Thanks for rescue the data!'],
-    ['g', 'a', 0.2, 'Thanks for install the printer'], ['a', 'b', 0.5, 'I love the new plants!'],
-    ['g', 'c', 0.8, 'I love the new branding'], ['f', 'c', 1.2, 'Thanks to sending me the new branding'],
-    ['c', 'b', 1, 'Thanks for buying the bamboo tables'], ['d', 'c', 1, 'I appreciate your dedication'],
-    ['d', 'e', 0.5, 'Thanks for your help'], ['e', 'f', 0.1, 'Thanks for the coffee ;)'],
-  ];
+  @Input() nodes: (cytoscape.NodeDefinition | any)[];
+  @Input() edgesList;
+
   style: cytoscape.Stylesheet[] = (<any>cytoscape).stylesheet()
     .selector('node')
       .css({
