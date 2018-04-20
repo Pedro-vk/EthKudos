@@ -163,8 +163,7 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
     return await this.getGratitudesOf(myAccount);
   }
 
-  async myGratitudesSent(): Promise<(Gratitude & {to: string})[]> {
-    const myAccount = await this.web3Service.getAccount().toPromise();
+  async allGratitudes(): Promise<(Gratitude & {to: string})[]> {
     const members = await this.getMembers();
     const gratidudesByMember = members
       .map(async member =>
@@ -172,8 +171,13 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
           .map(gratitude => ({...gratitude, to: member})),
       );
     const allGratitudes = (await Promise.all(gratidudesByMember))
-      .reduce((acc, _) => [...acc, ..._], [])
-      .filter(gratitude => gratitude.from.toLowerCase() === myAccount.toLowerCase());
+      .reduce((acc, _) => [...acc, ..._], []);
     return allGratitudes;
+  }
+
+  async myGratitudesSent(): Promise<(Gratitude & {to: string})[]> {
+    const myAccount = await this.web3Service.getAccount().toPromise();
+    return (await this.allGratitudes())
+      .filter(gratitude => gratitude.from.toLowerCase() === myAccount.toLowerCase());
   }
 }

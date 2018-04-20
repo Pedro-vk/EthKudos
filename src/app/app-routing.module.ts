@@ -4,7 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { IsOwnerGuard, IsTokenGuard, IsPollGuard, IsConnectedGuard } from './shared';
 
 import {
-  AppComponent, HomeComponent, AdminComponent, PollActiveComponent, PollPreviousComponent, FaqsOnAppComponent,
+  AppComponent, HomeComponent, AdminComponent, PollActiveComponent, PollPreviousComponent,
+  FaqsOnAppComponent, PollChartComponent,
 } from './+app';
 import {
   LandingComponent, ContentComponent, FaqsPageComponent, PrivacyPolicyComponent, JoinComponent,
@@ -37,6 +38,7 @@ const routes: Routes = [
       {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},
       {path: 'active', component: PollActiveComponent},
       {path: 'closed/:address', component: PollPreviousComponent, canActivate: [IsPollGuard]},
+      {path: 'graph/:address', component: PollChartComponent/*, canActivate: [IsPollGuard]*/},
       {path: 'faqs', component: FaqsOnAppComponent},
     ],
   },

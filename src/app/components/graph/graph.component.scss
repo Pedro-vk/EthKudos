@@ -3,7 +3,7 @@
 
 :host {
   position: relative;
-  margin: auto; // TODO
+  margin: auto;
   display: block;
 }
 
@@ -40,6 +40,12 @@ $break-small: 900px;
     top: $margin * -1px;
     left: $margin * -1px;
   }
+}
+
+.graph--large {
+  height: 100%;
+  width: 100%;
+  transform: initial;
 }
 
 .tooltip-wrapper {

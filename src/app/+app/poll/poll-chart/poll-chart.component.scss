@@ -1,0 +1,17 @@
+:host {
+  $padding: 0px;
+
+  display: block;
+  position: absolute;
+  top: $padding;
+  left: $padding;
+  right: $padding;
+  bottom: $padding;
+  width: calc(100% - #{$padding * 2});
+  height: calc(100% - #{$padding * 2});
+}
+
+eth-kudos-graph {
+  height: 100%;
+  width: 100%;
+}

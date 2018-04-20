@@ -1,0 +1,7 @@
+<eth-kudos-graph
+  #graph
+  [large]="true"
+  [nodes]="gratitudesNodes$ | async"
+  [edgesList]="gratitudesEdges$ | async"
+  [symbol]="(token$ | async)?.symbol">
+</eth-kudos-graph>

@@ -21,69 +21,30 @@ export class GraphComponent implements OnInit {
   activeRandom: any;
   cleanRandom: Function;
 
+  @Input() large;
   @Input() nodes: (cytoscape.NodeDefinition | any)[];
   @Input() edgesList;
+  @Input() symbol;
 
-  style: cytoscape.Stylesheet[] = (<any>cytoscape).stylesheet()
-    .selector('node')
-      .css({
-        'height': 32,
-        'width': 32,
-        'background-image': (element) =>
-          `url(${blockies({seed: (element.data().address || '#').toLowerCase(), size: 8, scale: 8}).toDataURL()})`,
-        'background-fit': 'cover',
-        'text-valign': (element) => ['bottom', 'center', 'top'][element.data().v + 1],
-        'text-halign': (element) => ['left', 'center', 'right'][element.data().h + 1],
-        'text-margin-y': (element) => element.data().v * -10,
-        'text-margin-x': (element) => element.data().h * 10,
-      })
-    .selector('edge')
-      .css({
-        'label': '•',
-        'color': '#7EA4D0',
-        'font-size': 40,
-        'font-family': 'arial',
-        'text-margin-y': 3,
-        'text-outline-color': '#fafafa', // Main background color
-        'text-outline-width': 4,
-        'curve-style': 'bezier',
-        'width': 3,
-        'target-arrow-shape': 'triangle',
-        'line-color': '#b3ccea',
-        'target-arrow-color': '#b3ccea',
-        'source-distance-from-node': 6,
-        'target-distance-from-node': 6,
-        'transition-property': 'color, line-color, target-arrow-color',
-        'transition-timing-function': 'ease',
-        'transition-duration': '.4s',
-        'z-index': 1,
-      })
-    .selector('.highlight')
-      .css({
-        'color': '#D5A302',
-        'line-color': '#FFD23A',
-        'target-arrow-color': '#FFD23A',
-        'z-index': 2,
-      })
-    .selector('.hover')
-      .css({
-        'color': '#7B6752',
-        'line-color': '#a58768',
-        'target-arrow-color': '#a58768',
-        'z-index': 3,
-      });
+  style: cytoscape.Stylesheet[];
 
-  edgeHover$ = new Subject<{x: number, rX: number, y: number, data: any, sourceMember: any, targetMember: any}>();
+  edgeHover$ = new Subject<{x: number, rX: number, y: number, rY:number, data: any, sourceMember: any, targetMember: any}>();
   edgeHoverBuffer$ = this.edgeHover$.filter(_ => !!_);
-  nodeHover$ = new Subject<{x: number, rX: number, y: number, data: any}>();
+  nodeHover$ = new Subject<{x: number, rX: number, y: number, rY:number, data: any}>();
   nodeHoverBuffer$ = this.nodeHover$.filter(_ => !!_);
   private cy: cytoscape.Core;
 
   constructor() { }
 
   ngOnInit() {
+    if (!this.edgesList || !this.nodes) {
+      return;
+    }
+    this.setStyle();
     this.initCytoscape();
-    this.initInterval();
+    if (!this.large) {
+      this.initInterval();
+    }
     this.initEdgeMouseEvents();
 
     const initRandomTimeout = setTimeout(() => this.initRandom(), 1000);
@@ -100,13 +61,14 @@ export class GraphComponent implements OnInit {
   }
 
   cyResize() {
+    const padding = this.large ? 40 : 0;
     this.cy.resize();
-    this.cy.fit();
+    this.cy.fit(undefined, padding);
     Array.from(new Array(10))
       .map((_, i) => i * 100)
       .forEach(time => setTimeout(() => {
         this.cy.resize();
-        this.cy.fit();
+        this.cy.fit(undefined, padding);
       }, time));
   }
 
@@ -129,10 +91,10 @@ export class GraphComponent implements OnInit {
       layout: {
         name: 'circle',
         directed: true,
-        padding: 0,
+        fit: this.large,
         avoidOverlap: true,
       },
-      autoungrabify: true,
+      autoungrabify: !this.large,
       autounselectify: true,
       userPanningEnabled: false,
       boxSelectionEnabled: false,
@@ -162,8 +124,9 @@ export class GraphComponent implements OnInit {
     setInterval(() => update(), 500);
   }
 
-  readonly getPosition = p => p / this.cy.container().clientWidth * 100;
+  readonly getPosition = (axis, p) => p / this.cy.container()[axis === 'x' ? 'clientWidth' : 'clientHeight'] * 100;
   readonly getPercentageX = (x: number) => Math.round(x / this.cy.container().clientWidth * 10);
+  readonly getPercentageY = (y: number) => Math.round(y / this.cy.container().clientHeight * 10);
   readonly getMember = id => this.nodes.find(_ => _.data.id === id).data;
   readonly getKudos = id => this.edgesList
     .filter(_ => _[1] === id)
@@ -194,7 +157,9 @@ export class GraphComponent implements OnInit {
       const data = event.target.data();
       this.showEdgeTooltip(position, data);
       this.cleanRandom();
-      // event.target.addClass('hover');
+      if (this.large) {
+        event.target.addClass('hover');
+      }
     });
 
     this.cy.on('mouseover', 'node', event => {
@@ -204,18 +169,21 @@ export class GraphComponent implements OnInit {
       this.cleanRandom();
     });
 
-    this.cy.on('mouseout', 'edge', event => {
+    this.cy.on('mouseout mousedown touchstart', 'edge', event => {
       this.edgeHover$.next(undefined);
-      // event.target.removeClass('hover');
+      if (this.large) {
+        event.target.removeClass('hover');
+      }
     });
-    this.cy.on('mouseout', 'node', () => this.nodeHover$.next(undefined));
+    this.cy.on('mouseout mousedown touchstart', 'node', () => this.nodeHover$.next(undefined));
   }
 
   showEdgeTooltip(position, data) {
     this.edgeHover$.next({
-      x: this.getPosition(position.x2 - position.w / 2),
+      x: this.getPosition('x', position.x2 - position.w / 2),
       rX: this.getPercentageX(position.x2 - position.w / 2),
-      y: this.getPosition(position.y2 - position.h / 2),
+      y: this.getPosition('y', position.y2 - position.h / 2),
+      rY: this.getPercentageY(position.y2 - position.h / 2),
       data,
       sourceMember: this.getMember(data.source),
       targetMember: this.getMember(data.target),
@@ -224,13 +192,61 @@ export class GraphComponent implements OnInit {
 
   showNodeTooltip(position, data) {
     this.nodeHover$.next({
-      x: this.getPosition(position.x2 - position.w / 2),
+      x: this.getPosition('x', position.x2 - position.w / 2),
       rX: this.getPercentageX(position.x2 - position.w / 2),
-      y: this.getPosition(position.y2 - position.h / 2),
+      y: this.getPosition('y', position.y2 - position.h / 2),
+      rY: this.getPercentageY(position.y2 - position.h / 2),
       data: {
         ...data,
         kudos: this.getKudos(data.id),
       },
     });
+  }
+
+  setStyle() {
+    this.style = (<any>cytoscape).stylesheet()
+      .selector('node')
+        .css({
+          'height': 32,
+          'width': 32,
+          'background-image': (element) =>
+            `url(${blockies({seed: (element.data().address || '#').toLowerCase(), size: 8, scale: 8}).toDataURL()})`,
+          'background-fit': 'cover',
+        })
+      .selector('edge')
+        .css({
+          'label': this.large ? '' : '•',
+          'color': '#7EA4D0',
+          'font-size': 40,
+          'font-family': 'arial',
+          'text-margin-y': 3,
+          'text-outline-color': '#fafafa', // Main background color
+          'text-outline-width': 4,
+          'curve-style': 'bezier',
+          'width': this.large ? 2 : 3,
+          'target-arrow-shape': 'triangle',
+          'line-color': '#b3ccea',
+          'target-arrow-color': '#b3ccea',
+          'source-distance-from-node': this.large ? 12 : 6,
+          'target-distance-from-node': this.large ? 12 : 6,
+          'transition-property': 'color, line-color, target-arrow-color',
+          'transition-timing-function': 'ease',
+          'transition-duration': '.4s',
+          'z-index': 1,
+        })
+      .selector('.highlight')
+        .css({
+          'color': '#D5A302',
+          'line-color': '#FFD23A',
+          'target-arrow-color': '#FFD23A',
+          'z-index': 2,
+        })
+      .selector('.hover')
+        .css({
+          'color': '#7B6752',
+          'line-color': '#a58768',
+          'target-arrow-color': '#a58768',
+          'z-index': 3,
+        });
   }
 }

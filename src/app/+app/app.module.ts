@@ -9,17 +9,18 @@ import { AppComponent } from './app.component';
 
 import { AdminComponent } from './admin';
 import { HomeComponent } from './home';
-import { PollActiveComponent, PollPreviousComponent } from './poll';
+import { PollActiveComponent, PollPreviousComponent, PollChartComponent } from './poll';
 import { FaqsOnAppComponent } from './faqs-on-app';
 
 @NgModule({
   declarations: [
-    AppComponent,
     AdminComponent,
+    AppComponent,
+    FaqsOnAppComponent,
     HomeComponent,
     PollActiveComponent,
+    PollChartComponent,
     PollPreviousComponent,
-    FaqsOnAppComponent,
   ],
   imports: [
     AppCommonModule,
