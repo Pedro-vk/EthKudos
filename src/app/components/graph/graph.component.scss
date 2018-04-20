@@ -11,6 +11,8 @@ $small-size: 280;
 $container-size: 380;
 $break-small: 900px;
 
+$arrow-size: 18px;
+
 :host,
 .graph {
   width: $container-size * 1px;
@@ -46,6 +48,9 @@ $break-small: 900px;
   height: 100%;
   width: 100%;
   transform: initial;
+  transform: initial;
+  top: 0;
+  left: 0;
 }
 
 .tooltip-wrapper {
@@ -104,17 +109,15 @@ $break-small: 900px;
   }
 
   &:before {
-    $size: 18px;
-
     content: '';
-    height: $size;
-    width: $size;
+    height: $arrow-size;
+    width: $arrow-size;
     background: #ffffff;
     position: absolute;
     top: 100%;
     left: 50%;
-    margin-top: ($size / -2) - 3px;
-    margin-left: $size / -2;
+    margin-top: ($arrow-size / -2) - 3px;
+    margin-left: $arrow-size / -2;
     transform: rotate(45deg);
     border-bottom-right-radius: 2px;
     box-shadow: 3px 3px 10px -4px rgba(#000000, .8);
@@ -130,22 +133,57 @@ $break-small: 900px;
 
   // for landing
   @media (min-width: 800px) and (max-width: 1300px) {
-    &--r-10 {@include offset(9)}
+    &--rx-10 {@include offset(9)}
     @for $i from 8 through 9 {
-      &--r-#{$i} {
+      &--rx-#{$i} {
         @include offset($i);
       }
     }
   }
 
   @media (max-width: 640px) {
-    &--r-10 {@include offset(9)}
-    &--r-0 {@include offset(1)}
+    &--rx-10 {@include offset(9)}
+    &--rx-0 {@include offset(1)}
 
     @for $i from 1 through 9 {
-      &--r-#{$i} {
+      &--rx-#{$i} {
         @include offset($i);
       }
     }
+  }
+
+
+  &--large#{&}--rx-10 {@include offset(9)}
+  &--large#{&}--rx-0 {@include offset(1)}
+
+  @for $i from 1 through 9 {
+    &--large#{&}--rx-#{$i} {
+      @include offset($i);
+    }
+  }
+
+  @mixin reverse($x, $n) {
+    &--large#{&}--rx-#{$x}#{&}--ry-0,
+    &--large#{&}--rx-#{$x}#{&}--ry-1,
+    &--large#{&}--rx-#{$x}#{&}--ry-2,
+    &--large#{&}--rx-#{$x}#{&}--ry-3 {
+      transform: translateY(0%) translateX($n * -10%);
+      margin-top: 20px;
+
+      &:before {
+        left: $n * 10%;
+        top: 0;
+        margin-top: ($arrow-size / -2) + 3px;
+        transform: rotate(-135deg);
+        box-shadow: 3px 3px 10px -4px rgba(#000000, .4);
+      }
+    }
+  }
+
+  @include reverse(10, 9);
+  @include reverse(0, 1);
+
+  @for $i from 1 through 9 {
+    @include reverse($i, $i);
   }
 }

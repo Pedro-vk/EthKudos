@@ -2,7 +2,13 @@
   <div
     [style.left.%]="(edgeHoverBuffer$ | async)?.x"
     [style.top.%]="(edgeHoverBuffer$ | async)?.y"
-    class="tooltip tooltip--edge tooltip--r-{{(edgeHoverBuffer$ | async)?.rX}}"
+    class="
+      tooltip
+      tooltip--{{large ? 'large' : ''}}
+      tooltip--edge
+      tooltip--rx-{{(edgeHoverBuffer$ | async)?.rX}}
+      tooltip--ry-{{(edgeHoverBuffer$ | async)?.rY}}
+    "
     [class.tooltip--visible]="edgeHover$ | async">
 
     <div class="tooltip__header">
@@ -20,7 +26,13 @@
   <div
     [style.left.%]="(nodeHoverBuffer$ | async)?.x"
     [style.top.%]="(nodeHoverBuffer$ | async)?.y"
-    class="tooltip tooltip--node tooltip--r-{{(nodeHoverBuffer$ | async)?.rX}}"
+    class="
+      tooltip
+      tooltip--{{large ? 'large' : ''}}
+      tooltip--node
+      tooltip--rx-{{(nodeHoverBuffer$ | async)?.rX}}
+      tooltip--ry-{{(nodeHoverBuffer$ | async)?.rY}}
+    "
     [class.tooltip--visible]="nodeHover$ | async">
 
     <div class="tooltip__header">

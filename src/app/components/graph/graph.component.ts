@@ -19,7 +19,7 @@ export class GraphComponent implements OnInit {
   mqSmall: MediaQueryList;
   randomly = true;
   activeRandom: any;
-  cleanRandom: Function;
+  cleanRandom: Function = () => {};
 
   @Input() large;
   @Input() nodes: (cytoscape.NodeDefinition | any)[];
@@ -42,13 +42,13 @@ export class GraphComponent implements OnInit {
     }
     this.setStyle();
     this.initCytoscape();
-    if (!this.large) {
-      this.initInterval();
-    }
     this.initEdgeMouseEvents();
 
-    const initRandomTimeout = setTimeout(() => this.initRandom(), 1000);
-    this.cleanRandom = () => clearTimeout(initRandomTimeout);
+    if (!this.large) {
+      this.initInterval();
+      const initRandomTimeout = setTimeout(() => this.initRandom(), 1000);
+      this.cleanRandom = () => clearTimeout(initRandomTimeout);
+    }
 
     this.graph.nativeElement.onmouseout = () => {
       this.edgeHover$.next(undefined);
