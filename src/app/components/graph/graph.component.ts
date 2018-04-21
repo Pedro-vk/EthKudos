@@ -19,7 +19,7 @@ export class GraphComponent implements OnInit {
   mqSmall: MediaQueryList;
   randomly = true;
   activeRandom: any;
-  cleanRandom: Function = () => {};
+  cleanRandom: Function = <any>(() => {});
 
   @Input() large;
   @Input() nodes: (cytoscape.NodeDefinition | any)[];
@@ -28,9 +28,9 @@ export class GraphComponent implements OnInit {
 
   style: cytoscape.Stylesheet[];
 
-  edgeHover$ = new Subject<{x: number, rX: number, y: number, rY:number, data: any, sourceMember: any, targetMember: any}>();
+  edgeHover$ = new Subject<{x: number, rX: number, y: number, rY: number, data: any, sourceMember: any, targetMember: any}>();
   edgeHoverBuffer$ = this.edgeHover$.filter(_ => !!_);
-  nodeHover$ = new Subject<{x: number, rX: number, y: number, rY:number, data: any}>();
+  nodeHover$ = new Subject<{x: number, rX: number, y: number, rY: number, data: any}>();
   nodeHoverBuffer$ = this.nodeHover$.filter(_ => !!_);
   private cy: cytoscape.Core;
 
@@ -149,7 +149,7 @@ export class GraphComponent implements OnInit {
   readonly getKudos = id => this.edgesList
     .filter(_ => _[1] === id)
     .map(_ => _[2])
-    .reduce((acc, _) => +acc + +_, 0);
+    .reduce((acc, _) => +acc + +_, 0)
 
   initRandom() {
     const edges = this.cy.edges();

@@ -1,10 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
@@ -24,6 +27,7 @@ export class PollChartComponent implements OnInit {
 
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
+    .filter(_ => !!_)
     .shareReplay();
   readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
 
@@ -46,6 +50,7 @@ export class PollChartComponent implements OnInit {
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
     .map(gratitudes => gratitudes.map(({from, to, kudos, message}) => [from, to, kudos, message]))
     .distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+    .catch(() => Observable.empty())
     .shareReplay();
   readonly gratitudesNodes$ = this.pollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.getMembers()))
@@ -65,7 +70,9 @@ export class PollChartComponent implements OnInit {
         }))
         .sort((a, b) => +a.address - +b.address)
         .map(data => ({data})),
-    );
+    )
+    .catch(() => Observable.empty())
+    .shareReplay();
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -77,9 +84,10 @@ export class PollChartComponent implements OnInit {
     this.gratitudesNodes$
       .combineLatest(this.gratitudesEdges$)
       .first()
+      .catch(() => Observable.empty())
       .delay(100)
       .subscribe(() => {
-        this.graph.ngOnInit()
+        this.graph.ngOnInit();
       });
   }
 

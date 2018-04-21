@@ -21,7 +21,6 @@ describe('BlockieComponent', () => {
       ],
       declarations: [
         BlockieComponent,
-        ...COMPONENTS,
       ],
       providers: [
         ...PROVIDERS,

@@ -22,8 +22,8 @@ import { Web3Service, KudosTokenFactoryService } from '../../../shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PollActiveComponent implements OnInit {
-  tokenDecimals: number = 0;
-  tokenStep: number = 0;
+  tokenDecimals = 0;
+  tokenStep = 0;
   reward: {member: string, kudos: number, message: string, working: boolean} = <any>{};
   maxKudos: number;
 

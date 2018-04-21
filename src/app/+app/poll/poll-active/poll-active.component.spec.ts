@@ -29,7 +29,7 @@ describe('PollActiveComponent', () => {
         {
           provide: ActivatedRoute, useValue: ((_: any) => {
             _.parent = {};
-            _.parent.params = _.parent.params = Observable.of({tokenAddress: `0x${'0'.repeat(40)}`});
+            _.params = _.parent.params = Observable.of({tokenAddress: `0x${'0'.repeat(40)}`});
             return _;
           })({}),
         }
