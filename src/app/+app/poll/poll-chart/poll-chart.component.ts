@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
@@ -83,4 +83,8 @@ export class PollChartComponent implements OnInit {
       });
   }
 
+  @HostListener('window:resize')
+  resize() {
+    this.graph.cyResize();
+  }
 }
