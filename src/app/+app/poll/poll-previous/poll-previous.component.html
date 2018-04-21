@@ -47,7 +47,16 @@
 </div>
 
 <div class="side" *ngIf="(pollContractResults$ | async)?.length !== 0">
-  <h2 class="heading" translate>Most awarded</h2>
+  <h2 class="heading heading--button">
+    <span translate>Most awarded</span>
+    <button
+      mat-button
+      color="primary"
+      [routerLink]="['../../', 'graph', (this.activatedRoute.params | async)?.address]">
+
+      {{'open graph' | translate}}
+    </button>
+  </h2>
 
   <mat-accordion>
     <mat-expansion-panel

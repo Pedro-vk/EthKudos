@@ -62,8 +62,12 @@
   "You have not installed MetaMask.": "You have not installed MetaMask.",
   "Your MetaMask is locked.": "Your MetaMask is locked.",
   "enter": "enter",
+  "from": "from",
   "go to admin": "go to admin",
+  "has": "has",
   "is going to receive:": "is going to receive:",
   "join": "join",
+  "open graph": "open graph",
+  "received": "received",
   "sent:": "sent:"
 }

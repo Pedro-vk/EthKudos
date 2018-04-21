@@ -62,8 +62,12 @@
   "You have not installed MetaMask.": "No tienes instalado MetaMask.",
   "Your MetaMask is locked.": "MetaMask está bloqueado.",
   "enter": "entrar",
+  "from": "desde",
   "go to admin": "ir a administración",
+  "has": "tiene",
   "is going to receive:": "va a recibir:",
   "join": "unirse",
+  "open graph": "abrir grafo",
+  "received": "recibió",
   "sent:": "envió:"
 }

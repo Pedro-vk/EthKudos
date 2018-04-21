@@ -38,7 +38,7 @@ const routes: Routes = [
       {path: 'admin', component: AdminComponent, canActivate: [IsOwnerGuard]},
       {path: 'active', component: PollActiveComponent},
       {path: 'closed/:address', component: PollPreviousComponent, canActivate: [IsPollGuard]},
-      {path: 'graph/:address', component: PollChartComponent/*, canActivate: [IsPollGuard]*/},
+      {path: 'graph/:address', component: PollChartComponent, canActivate: [IsPollGuard]},
       {path: 'faqs', component: FaqsOnAppComponent},
     ],
   },

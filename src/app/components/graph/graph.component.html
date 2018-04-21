@@ -13,12 +13,12 @@
 
     <div class="tooltip__header">
       <strong>{{(edgeHoverBuffer$ | async)?.targetMember?.name}}</strong>
-      received
+      {{'received' | translate}}
       <code>{{(edgeHoverBuffer$ | async)?.data?.kudos}}<span>{{symbol || 'KUDOS'}}</span></code>
     </div>
     <div class="tooltip__text">{{(edgeHoverBuffer$ | async)?.data?.message}}</div>
     <div class="tooltip__footer">
-      from
+      {{'from' | translate}}
       <strong>{{(edgeHoverBuffer$ | async)?.sourceMember?.name}}</strong>
     </div>
   </div>
@@ -37,7 +37,7 @@
 
     <div class="tooltip__header">
       <strong>{{(nodeHoverBuffer$ | async)?.data?.name}}</strong>
-      has
+      {{'has' | translate}}
       <code>{{(nodeHoverBuffer$ | async)?.data?.kudos}}<span>{{symbol || 'KUDOS'}}</span></code>
     </div>
   </div>

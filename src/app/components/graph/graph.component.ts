@@ -99,6 +99,7 @@ export class GraphComponent implements OnInit {
       userPanningEnabled: false,
       boxSelectionEnabled: false,
       userZoomingEnabled: false,
+      maxZoom: 1,
     });
   }
 

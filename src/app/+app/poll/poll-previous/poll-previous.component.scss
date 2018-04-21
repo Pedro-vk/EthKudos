@@ -44,3 +44,10 @@ mat-card-actions {
 .gratitude:not(:last-child) {
   margin-bottom: 20px;
 }
+
+.heading--button {
+  height: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
