@@ -75,7 +75,7 @@ export class PollChartComponent implements OnInit {
     .shareReplay();
 
   constructor(
-    private activatedRoute: ActivatedRoute,
+    public activatedRoute: ActivatedRoute,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private kudosPollFactoryService: KudosPollFactoryService,
   ) { }

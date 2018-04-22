@@ -118,6 +118,11 @@ export class GraphComponent implements OnInit {
       userZoomingEnabled: false,
       maxZoom: 1,
     });
+
+    this.cy
+      .nodes()
+      .filter((node: any) => node.connectedEdges(":visible").size() === 0)
+      .style('display', 'none');
   }
 
   initInterval() {

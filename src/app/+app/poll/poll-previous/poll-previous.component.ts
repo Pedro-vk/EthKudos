@@ -58,7 +58,7 @@ export class PollPreviousComponent {
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)));
 
   constructor(
-    private activatedRoute: ActivatedRoute,
+    public activatedRoute: ActivatedRoute,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private kudosPollFactoryService: KudosPollFactoryService,
   ) { }
