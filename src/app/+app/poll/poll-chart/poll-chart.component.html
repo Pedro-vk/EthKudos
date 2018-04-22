@@ -1,3 +1,10 @@
+<button
+  mat-icon-button
+  [routerLink]="['../../', 'closed', (this.activatedRoute.params | async)?.address]">
+
+  <mat-icon>close</mat-icon>
+</button>
+
 <eth-kudos-graph
   #graph
   [large]="true"
