@@ -281,15 +281,15 @@ $landing-header-size: 70px;
         }
       }
     }
-    [data-n='1'] &__balance {
+    [data-n='1']:not([data-kudos='0']) &__balance {
       color: #ffffff;
       background: #cfb53b;
     }
-    [data-n='2'] &__balance {
+    [data-n='2']:not([data-kudos='0']) &__balance {
       color: #ffffff;
       background: #b3ccea;
     }
-    [data-n='3'] &__balance {
+    [data-n='3']:not([data-kudos='0']) &__balance {
       color: #ffffff;
       background: #a58768;
     }

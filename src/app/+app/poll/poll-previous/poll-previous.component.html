@@ -66,7 +66,7 @@
 
       <mat-expansion-panel-header>
         <mat-panel-title class="ranking-wrapper">
-          <div class="ranking" [attr.data-n]="i + 1">
+          <div class="ranking" [attr.data-n]="i + 1" [attr.data-kudos]="result.kudos || 0">
             <span class="ranking__balance-wrapper">
               <span class="ranking__balance">{{result.kudos}}<code>{{(token$ | async)?.symbol}}</code></span>
             </span>
