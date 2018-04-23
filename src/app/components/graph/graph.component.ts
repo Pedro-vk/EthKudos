@@ -34,6 +34,31 @@ export class GraphComponent implements OnInit {
   nodeHoverBuffer$ = this.nodeHover$.filter(_ => !!_);
   private cy: cytoscape.Core;
 
+  private readonly coseLayout = {
+    name: 'cose',
+    idealEdgeLength: 100,
+    nodeOverlap: 20,
+    refresh: 20,
+    fit: true,
+    padding: 30,
+    randomize: false,
+    componentSpacing: 100,
+    nodeRepulsion: 3000000,
+    edgeElasticity: 100,
+    nestingFactor: 5,
+    gravity: 80,
+    numIter: 1000,
+    initialTemp: 200,
+    coolingFactor: 0.95,
+    minTemp: 1.0
+  };
+  private readonly circleLayout = {
+    name: 'circle',
+    directed: true,
+    fit: this.large,
+    avoidOverlap: true,
+  };
+
   constructor() { }
 
   ngOnInit() {
@@ -60,16 +85,18 @@ export class GraphComponent implements OnInit {
     this.cyResize();
   }
 
-  cyResize() {
+  cyResize(skipDelay?: boolean) {
     const padding = this.large ? 40 : 0;
     this.cy.resize();
     this.cy.fit(undefined, padding);
-    Array.from(new Array(10))
-      .map((_, i) => i * 100)
-      .forEach(time => setTimeout(() => {
-        this.cy.resize();
-        this.cy.fit(undefined, padding);
-      }, time));
+    if (!skipDelay) {
+      Array.from(new Array(10))
+        .map((_, i) => i * 100)
+        .forEach(time => setTimeout(() => {
+          this.cy.resize();
+          this.cy.fit(undefined, padding);
+        }, time));
+    }
   }
 
   initCytoscape() {
@@ -88,29 +115,7 @@ export class GraphComponent implements OnInit {
           })),
       },
       style: this.style,
-      layout: this.large ? {
-        name: 'cose',
-        idealEdgeLength: 100,
-        nodeOverlap: 20,
-        refresh: 20,
-        fit: true,
-        padding: 30,
-        randomize: false,
-        componentSpacing: 100,
-        nodeRepulsion: 1000000,
-        edgeElasticity: 100,
-        nestingFactor: 5,
-        gravity: 80,
-        numIter: 1000,
-        initialTemp: 200,
-        coolingFactor: 0.95,
-        minTemp: 1.0
-      } : {
-        name: 'circle',
-        directed: true,
-        fit: this.large,
-        avoidOverlap: true,
-      },
+      layout: this.circleLayout,
       autoungrabify: !this.large,
       autounselectify: true,
       userPanningEnabled: false,
@@ -145,6 +150,13 @@ export class GraphComponent implements OnInit {
 
     update();
     setInterval(() => update(), 500);
+  }
+
+  setLayout(layout: string) {
+    this.cy
+      .layout(layout === 'circle' ? this.circleLayout : this.coseLayout)
+      .run();
+    this.cyResize(true);
   }
 
   readonly getPosition = (axis, p) => p / this.cy.container()[axis === 'x' ? 'clientWidth' : 'clientHeight'] * 100;

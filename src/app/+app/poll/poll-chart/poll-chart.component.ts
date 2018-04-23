@@ -95,4 +95,8 @@ export class PollChartComponent implements OnInit {
   resize() {
     this.graph.cyResize();
   }
+
+  setLayout(layout: string) {
+    this.graph.setLayout(layout);
+  }
 }

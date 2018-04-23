@@ -23,5 +23,11 @@ button {
   color: #666666;
   cursor: pointer;
   z-index: 2;
+}
 
+mat-button-toggle-group {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
 }

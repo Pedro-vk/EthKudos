@@ -1,3 +1,12 @@
+<mat-button-toggle-group value="circle" (change)="setLayout($event.value)">
+  <mat-button-toggle value="circle" matTooltip="Circle graph">
+    <mat-icon>cached</mat-icon>
+  </mat-button-toggle>
+  <mat-button-toggle value="cose" matTooltip="COSE graph">
+    <mat-icon>compare_arrows</mat-icon>
+  </mat-button-toggle>
+</mat-button-toggle-group>
+
 <button
   mat-icon-button
   [routerLink]="['../../', 'closed', (this.activatedRoute.params | async)?.address]">
