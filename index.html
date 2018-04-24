@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>EthKudos - Let's thank</title><meta name="description" content="EthKudos is a dapp that connects the coworkers and bust its cooperation. All working through Ethereum network."><meta name="theme-color" content="#595959"><base href="/"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.png"><link href="styles.dfab9db5e0d8b1813e27.bundle.css" rel="stylesheet"/></head><body><eth-kudos-root></eth-kudos-root><style type="text/css">#loading-wrapper.hidden {
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>EthKudos - Time to reward</title><meta name="description" content="EthKudos is a dapp that connects the coworkers and busts its cooperation. All working through Ethereum network."><meta name="theme-color" content="#595959"><base href="/"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.png"><link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Roboto+Mono:300,400,500" rel="stylesheet"></head><body><eth-kudos-root></eth-kudos-root><style type="text/css">#loading-wrapper.hidden {
       display: none;
     }
     #loading-wrapper .loading {
@@ -6,12 +6,14 @@
       display: none;
       top: 50%;
       left: 50%;
-      transform: translateX(-50%) translateY(-50%);
+      transform: translateX(-50%) translateY(-20%);
+      opacity: 0;
       text-align: center;
+      transition: all .3s ease;
     }
     #loading-wrapper h1,
     #loading-wrapper h2 {
-      font-family: 'Roboto';
+      font-family: 'Roboto', arial, sans-serif;
       color: #444444;
       text-align: center;
     }
@@ -30,11 +32,12 @@
       margin: 0;
     }
     #loading-wrapper .load-bar {
+      transition: all .3s ease;
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 6px;
+      height: 12px;
       background-color: #fdba2c;
     }
     #loading-wrapper .bar {
@@ -62,11 +65,17 @@
       from {left: 50%; width: 0;z-index:100;}
       33.3333% {left: 0; width: 100%;z-index: 10;}
       to {left: 0; width: 100%;}
-    }</style><div id="loading-wrapper"><div class="loading"><h1>Eth<span>Kudos</span></h1><h2>Connecting coworkers</h2></div><div class="load-bar"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Roboto+Mono:300,400,500" rel="stylesheet"><style type="text/css">#loading-wrapper .loading {
+    }</style><div id="loading-wrapper"><div class="loading"><h1>Eth<span>Kudos</span></h1><h2>Connecting coworkers</h2></div><div class="load-bar"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div></div><style type="text/css">#loading-wrapper .loading {
       display: block;
-    }</style><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      transform: translateX(-50%) translateY(-50%);
+      opacity: 1;
+    }
+    #loading-wrapper .load-bar {
+      height: 8px;
+      opacity: 1;
+    }</style><script type="text/javascript" src="inline.b30c555ec93d5e8b24c8.bundle.js"></script><script type="text/javascript" src="polyfills.0cda82ed7df2459fb45d.bundle.js"></script><script type="text/javascript" src="main.5075557e6f9b51761f29.bundle.js"></script></body><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-    ga('create', 'UA-9283221-10', 'auto');</script><script type="text/javascript" src="inline.318b50c57b4eba3d437b.bundle.js"></script><script type="text/javascript" src="polyfills.0cda82ed7df2459fb45d.bundle.js"></script><script type="text/javascript" src="main.8c0d8ceb094a422d403e.bundle.js"></script></body></html>
+  ga('create', 'UA-9283221-10', 'auto');</script></html>

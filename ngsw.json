@@ -9,10 +9,9 @@
       "urls": [
         "/favicon.png",
         "/index.html",
-        "/inline.318b50c57b4eba3d437b.bundle.js",
-        "/main.8c0d8ceb094a422d403e.bundle.js",
-        "/polyfills.0cda82ed7df2459fb45d.bundle.js",
-        "/styles.dfab9db5e0d8b1813e27.bundle.css"
+        "/inline.b30c555ec93d5e8b24c8.bundle.js",
+        "/main.5075557e6f9b51761f29.bundle.js",
+        "/polyfills.0cda82ed7df2459fb45d.bundle.js"
       ],
       "patterns": []
     },
@@ -27,25 +26,28 @@
         "/assets/donation-qr.svg",
         "/assets/google-play-badge.png",
         "/assets/metamask-network.png",
-        "/assets/toshi.png"
+        "/assets/toshi.png",
+        "/i18n/en.json",
+        "/i18n/es.json"
       ],
       "patterns": []
     }
   ],
   "dataGroups": [],
   "hashTable": {
-    "/inline.318b50c57b4eba3d437b.bundle.js": "998c6060446975e566fd17509558ddc68d72eec3",
+    "/inline.b30c555ec93d5e8b24c8.bundle.js": "9798a251a65d32c2f61c5a4d02b7d8c6c04ae147",
     "/assets/app-store-badge.png": "83535d5978b467a35f873290534bde1b9c4d2d90",
-    "/main.8c0d8ceb094a422d403e.bundle.js": "6e0e6aa9309da9652ffcd58ce4608ef0aa6bff72",
+    "/main.5075557e6f9b51761f29.bundle.js": "3a155a748ccc65393a6675747d4405e65e7294e0",
     "/assets/bg-colorful.png": "779b8f1311edc7a700fb73486cefbab0a987de1b",
     "/polyfills.0cda82ed7df2459fb45d.bundle.js": "d092885fa14cbef62d7c47214b8953c01bfa0da4",
     "/assets/cipher.png": "5e1232ea6210f1f40d964513c3f02b0b024c59a1",
-    "/styles.dfab9db5e0d8b1813e27.bundle.css": "c1a6dd2d0ba473babfa35aa4bf1a35599b10c25e",
-    "/assets/donation-qr.svg": "35ea2d45cfcd2db20ece8c219777d7496c95c78a",
     "/favicon.png": "4f824570bd0b15ecafea6401d9673cad582a581e",
+    "/assets/donation-qr.svg": "35ea2d45cfcd2db20ece8c219777d7496c95c78a",
+    "/index.html": "1539b66bbcb4893b2da276079318ff08880e543d",
     "/assets/google-play-badge.png": "ca83b32b7518ad63bf3231aebf4cbfa467239d8a",
-    "/index.html": "6b6c893773325c0179d20f4eb98d9fb151028831",
     "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
-    "/assets/toshi.png": "5b364160253e9cec5c1af1db3eca14ec91f2cff7"
+    "/assets/toshi.png": "5b364160253e9cec5c1af1db3eca14ec91f2cff7",
+    "/i18n/en.json": "5f173f35ddf82d0f2a30bd69056ba181d3fc87cf",
+    "/i18n/es.json": "a89aae48d0fea95e4106fdd8ffbe9687b7fd4b17"
   }
 }

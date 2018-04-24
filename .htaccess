@@ -1,14 +1,4 @@
 <IfModule mod_rewrite.c>
-  <IfModule mod_proxy.c>
-    # <Location "/api/faucet">
-      ProxyPass "/api/faucet" "https://faucet.metamask.io/"
-      ProxyPassReverse "/api/faucet" "https://faucet.metamask.io/"
-      Header always set "Access-Control-Allow-Origin" "*"
-    # </Location>
-  </IfModule>
-</IfModule>
-
-<IfModule mod_rewrite.c>
   RewriteEngine On
   RequestHeader set X-Prerender-Token "PB8alNRUNSNovPvRFmv7"
   RewriteBase /
