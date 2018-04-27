@@ -19,5 +19,6 @@
   [large]="true"
   [nodes]="gratitudesNodes$ | async"
   [edgesList]="gratitudesEdges$ | async"
-  [symbol]="(token$ | async)?.symbol">
+  [symbol]="(token$ | async)?.symbol"
+  [decimals]="(token$ | async)?.decimals">
 </eth-kudos-graph>

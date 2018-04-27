@@ -25,6 +25,7 @@ export class GraphComponent implements OnInit {
   @Input() nodes: (cytoscape.NodeDefinition | any)[];
   @Input() edgesList;
   @Input() symbol;
+  @Input() decimals;
 
   style: cytoscape.Stylesheet[];
 
