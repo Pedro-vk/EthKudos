@@ -44,8 +44,8 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
       .merge(this.web3Service.changes$, this.onInitialized)
       .filter(() => this.initialized)
       .mergeMap(() => Observable.fromPromise(fn(this)))
-      .catch(e => console.warn('checkUpdates error: ', {fn, e}) || Observable.empty<any>())
       .distinctUntilChanged()
+      .catch(e => console.warn('checkUpdates error: ', {fn, e}) || Observable.empty<any>())
       .share();
   }
 
