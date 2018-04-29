@@ -127,7 +127,7 @@ export class GraphComponent implements OnInit {
 
     this.cy
       .nodes()
-      .filter((node: any) => node.connectedEdges(":visible").size() === 0)
+      .filter((node: any) => node.connectedEdges(':visible').size() === 0)
       .style('display', 'none');
   }
 
