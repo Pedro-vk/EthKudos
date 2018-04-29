@@ -165,7 +165,7 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
 
   async allGratitudes(): Promise<(Gratitude & {to: string})[]> {
     const members = await this.getMembers();
-    const gratidudesByMember = members
+    const gratidudesByMember = (members || [])
       .map(async member =>
         (await this.getGratitudesOf(member))
           .map(gratitude => ({...gratitude, to: member})),
@@ -175,7 +175,7 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
     return allGratitudes;
   }
 
-  async gratitudesNumberByMember(): Promise<{received: {[to: string]: number}, sent: {[to: string]: number}}> {
+  async gratitudesNumberByMember(): Promise<{received: {[to: string]: number}, sent: {[from: string]: number}}> {
     const allGratitudes = (await this.allGratitudes())
       .reduce(({received, sent}, {from, to}) => ({
         received: {

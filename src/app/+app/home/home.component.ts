@@ -30,7 +30,39 @@ export class HomeComponent {
         .checkUpdates(_ => _.getBalances())
         .map(balances => balances.sort((a, b) => b.balance - a.balance))
         .map(balances => balances.map(async _ => ({..._, balance: await kudosTokenService.fromInt(_.balance)})))
-        .mergeMap(_ => Observable.fromPromise(Promise.all(_))),
+        .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
+        .combineLatest(
+          Observable.fromPromise(kudosTokenService.getPreviousPollsContracts())
+            .filter(polls => polls.length !== 0)
+            .map(polls =>
+              polls.map(async poll => await poll.gratitudesNumberByMember())
+            )
+            .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
+            .map(gratitudesByPoll => {
+              const mix = (a, b) => {
+                return Object.keys({...a, ...b})
+                  .filter((_, i, list) => list.indexOf(_) === i)
+                  .reduce((acc, _) => ({
+                    ...acc,
+                    [_]: (a[_] || 0) + (b[_] || 0),
+                  }), {});
+              };
+              return gratitudesByPoll
+                .reduce((acc, _) => ({
+                  received: mix(acc.received, _.received),
+                  sent: mix(acc.sent, _.sent),
+                }), {received: {}, sent: {}});
+            })
+            .startWith(undefined),
+        )
+        .map(([ranking, gratitudesNumber]) =>
+          ranking
+            .map(_ => ({
+              ..._,
+              gratitudesReceived: gratitudesNumber ? gratitudesNumber.received[_.member] || 0 : undefined,
+              gratitudesSent: gratitudesNumber ? gratitudesNumber.sent[_.member] || 0 : undefined,
+            })),
+        ),
     );
   readonly getActivePollContract$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getActivePollContract()))
     .shareReplay();

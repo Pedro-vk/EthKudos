@@ -94,6 +94,16 @@
             <eth-kudos-blockie [address]="balance.member"></eth-kudos-blockie>
 
             <span class="ranking__name">{{balance.name}}</span>
+
+            <span class="ranking__extra" *ngIf="balance.gratitudesReceived !== undefined" [matTooltip]="'Gratitudes received' | translate">
+              <mat-icon class="ranking__extra-icon--in">call_received</mat-icon>
+              {{balance.gratitudesReceived}}
+            </span>
+            <span class="ranking__extra" *ngIf="balance.gratitudesSent !== undefined" [matTooltip]="'Gratitudes sent' | translate">
+              <mat-icon class="ranking__extra-icon--out">call_made</mat-icon>
+              {{balance.gratitudesSent}}
+            </span>
+
           </div>
         </mat-panel-title>
       </mat-expansion-panel-header>
