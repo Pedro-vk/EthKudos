@@ -336,6 +336,10 @@ $landing-header-size: 70px;
       font-weight: 300;
       padding-left: 20px;
 
+      @media (max-width: 460px) {
+        padding-left: 4px;
+      }
+
       &-icon {
         &--in {
           color: #009688;
