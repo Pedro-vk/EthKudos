@@ -75,9 +75,13 @@
 
             <span class="ranking__name" [class.ranking__name--address]="!result.name">{{result.name || result.member}}</span>
 
-            <span class="ranking__extra" [matTooltip]="'Gratitudes received' | translate">
-              <mat-icon>call_received</mat-icon>
-              {{result.gratitudes}}
+            <span class="ranking__extra" *ngIf="result.gratitudesReceived !== undefined" [matTooltip]="'Gratitudes received' | translate">
+              <mat-icon class="ranking__extra-icon--in">call_received</mat-icon>
+              {{result.gratitudesReceived}}
+            </span>
+            <span class="ranking__extra" *ngIf="result.gratitudesSent !== undefined" [matTooltip]="'Gratitudes sent' | translate">
+              <mat-icon class="ranking__extra-icon--out">call_made</mat-icon>
+              {{result.gratitudesSent}}
             </span>
           </div>
         </mat-panel-title>

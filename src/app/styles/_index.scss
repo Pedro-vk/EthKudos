@@ -336,6 +336,15 @@ $landing-header-size: 70px;
       font-weight: 300;
       padding-left: 20px;
 
+      &-icon {
+        &--in {
+          color: #009688;
+        }
+        &--out {
+          color: #FF9800;
+        }
+      }
+
       mat-icon.mat-icon {
         vertical-align: middle;
         font-size: 16px;

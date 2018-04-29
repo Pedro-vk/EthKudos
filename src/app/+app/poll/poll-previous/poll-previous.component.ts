@@ -51,12 +51,16 @@ export class PollPreviousComponent {
   readonly pollContractResults$ = this.pollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.getPollResults()))
     .map(results => results.sort((a, b) => b.kudos - a.kudos))
-    .combineLatest(this.kudosTokenService$, this.pollContractGrastitudesNumberByMember$)
-    .map(([results, kudosTokenService, gratitudesNumberByMember]) => results.map(async _ => ({
+    .combineLatest(
+      this.kudosTokenService$,
+      this.pollContractGrastitudesNumberByMember$.startWith(undefined),
+    )
+    .map(([results, kudosTokenService, gratitudesNumber]) => results.map(async _ => ({
       ..._,
       name: await kudosTokenService.getContact(_.member),
       kudos: await kudosTokenService.fromInt(_.kudos),
-      gratitudes: gratitudesNumberByMember[_.member],
+      gratitudesReceived: gratitudesNumber ? gratitudesNumber.received[_.member] || 0 : undefined,
+      gratitudesSent: gratitudesNumber ? gratitudesNumber.sent[_.member] || 0 : undefined,
     })))
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
     .shareReplay();
