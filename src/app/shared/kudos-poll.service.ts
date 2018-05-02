@@ -180,11 +180,11 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
       .reduce(({received, sent}, {from, to}) => ({
         received: {
           ...received,
-          [to]: (received[to] || 0) + 1,
+          [to.toLowerCase()]: (received[to.toLowerCase()] || 0) + 1,
         },
         sent: {
           ...sent,
-          [from]: (received[from] || 0) + 1,
+          [from.toLowerCase()]: (sent[from.toLowerCase()] || 0) + 1,
         }
       }), {received: {}, sent: {}});
     return allGratitudes;

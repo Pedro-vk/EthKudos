@@ -1,9 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
@@ -53,7 +56,10 @@ export class PollPreviousComponent {
     .map(results => results.sort((a, b) => b.kudos - a.kudos))
     .combineLatest(
       this.kudosTokenService$,
-      this.pollContractGrastitudesNumberByMember$.startWith(undefined),
+      this.pollContractGrastitudesNumberByMember$
+        .first()
+        .catch(() => Observable.empty<any>())
+        .startWith(undefined),
     )
     .map(([results, kudosTokenService, gratitudesNumber]) => results.map(async _ => ({
       ..._,

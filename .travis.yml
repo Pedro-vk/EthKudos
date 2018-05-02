@@ -14,6 +14,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_ed587a115bcb_key -iv $encrypted_ed587a115bcb_iv
   -in .travisGitHub.enc -out .travisGitHub -d
 script:
+- npm test
 - npm run lint
 - npm run build
 after_success:
