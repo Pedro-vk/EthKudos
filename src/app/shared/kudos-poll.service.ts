@@ -123,6 +123,8 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
       .filter(status => status === ConnectionStatus.Total)
       .first()
       .subscribe(() => {
+        this.web3Contract = this.getWeb3Contract(KudosPollDefinition.abi, address);
+
         const kudosPoll = this.getContract(KudosPollDefinition);
 
         kudosPoll.at(address)

@@ -268,13 +268,16 @@ $header--secondary---height: 48px !default;
       font-size: 18px;
       height: 18px;
       width: 18px;
-      margin-right: 8px;
       opacity: .6;
     }
     &__hash {
       overflow: hidden;
+      margin-left: 8px;
       padding-right: 10px;
       text-overflow: ellipsis;
+    }
+    &__confirmations {
+      padding-left: 4px;
     }
     &__info {
       display: inline-block;
@@ -282,6 +285,23 @@ $header--secondary---height: 48px !default;
       border-radius: 12px;
       background: rgba(255, 255, 255, .6);
     }
+
+    &__icon--spinner {
+      animation: spinner 1.2s ease-in-out infinite;
+    }
+    &__icon--mined,
+    &__confirmations--mined {
+      color: #2578FF;
+    }
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 

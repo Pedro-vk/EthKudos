@@ -129,8 +129,10 @@ export class KudosTokenService
           this._onIsValid.next(this.isValid = false);
           return;
         }
-        const kudosToken = this.getContract(KudosTokenDefinition);
 
+        this.web3Contract = this.getWeb3Contract(KudosTokenDefinition.abi, address);
+
+        const kudosToken = this.getContract(KudosTokenDefinition);
         kudosToken.at(address)
           .then(contract => {
             this.contract = contract;

@@ -116,7 +116,7 @@ export class PollActiveComponent implements OnInit {
   }
 
   sendReward(form?: NgForm) {
-    const done = (success?) => console.log({success}) || this.onActionFinished(success, this.reward, _ => this.reward = _, form);
+    const done = (success?) => this.onActionFinished(success, this.reward, _ => this.reward = _, form);
 
     this.reward.working = true;
     this.getActivePollContract$

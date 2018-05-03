@@ -57,6 +57,8 @@ export class KudosOrganisationsService
 
         kudosOrganisation.deployed()
           .then(contract => {
+            this.web3Contract = this.getWeb3Contract(KudosOrganisationsDefinition.abi, contract.address);
+
             this.contract = contract;
             this.initialized = true;
           });

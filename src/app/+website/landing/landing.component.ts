@@ -180,7 +180,7 @@ export class LandingComponent implements OnInit {
         this.newOrg.toDirectory || false,
       )
       .then((tx: any) => {
-        const newKudosTokenAddress = tx.logs.filter(_ => _.event === 'NewOrganisation').pop().args.kudosToken;
+        const newKudosTokenAddress = tx.events.NewOrganisation.returnValues.kudosToken;
         this.newKudosTokenAddress.next(newKudosTokenAddress);
         done(true);
       })

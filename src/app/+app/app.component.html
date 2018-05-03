@@ -71,7 +71,9 @@
       (click)="goToEtherscan(transaction.hash)"
       *ngFor="let transaction of pendingTransactions$ | async; trackBy: trackTransaction">
 
-      <mat-icon>open_in_new</mat-icon>
+      <mat-icon *ngIf="transaction.confirmations === undefined" class="tx__icon--spinner">autorenew</mat-icon>
+      <mat-icon *ngIf="transaction.confirmations !== undefined" class="tx__icon--mined">check</mat-icon>
+      <span *ngIf="transaction.confirmations !== undefined" class="tx__confirmations tx__confirmations--mined">{{transaction.confirmations > 12 ? '+12' : transaction.confirmations}}</span>
       <span class="tx__hash">{{transaction.hash}}</span>
       <span class="tx__info" *ngIf="transaction.methodName">
         {{transaction.methodName | titlecase}}

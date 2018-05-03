@@ -6,12 +6,15 @@ import * as abiDecoder from 'abi-decoder';
 import * as contract from 'truffle-contract';
 import { detect } from 'detect-browser';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/empty';
+import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/concat';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
@@ -20,6 +23,7 @@ import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/takeWhile';
 
 import * as Migrations from '../../../build/contracts/Migrations.json';
 
@@ -49,6 +53,8 @@ export class Web3Service {
   networkType: networkType;
   private _web3: Web3;
   private existInNetwork: boolean;
+
+  private readonly _newPendingTransaction$: Subject<{tx: string, confirmations: number}> = new Subject();
 
   private readonly interval$: Observable<any> = Observable
     .interval(100)
@@ -83,6 +89,20 @@ export class Web3Service {
     })
     .distinctUntilChanged()
     .shareReplay(1);
+  readonly activePendingTransactions$: Observable<{tx: string, confirmations: number, raw: Transaction}[]> = this._newPendingTransaction$
+    .scan((acc, {tx, confirmations}) => {
+      acc[tx] = {tx, confirmations};
+      if (confirmations === 24) {
+        delete acc[tx];
+      }
+      return acc;
+    }, {} as {[tx: string]: any})
+    .map(transactions => Object.values(transactions))
+    .map(transactions => transactions.map(async transaction => ({
+      ...transaction,
+      raw: await this.web3.eth.getTransaction(transaction.tx),
+    })))
+    .mergeMap(_ => Observable.fromPromise(Promise.all(_)));
   readonly pendingTransactions$: Observable<FullTransaction[]> = this.account$
     .mergeMap(account =>
       Observable
@@ -104,20 +124,31 @@ export class Web3Service {
         .map(transactions => transactions.map(async tx => await this.web3.eth.getTransaction(tx)))
         .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
         .map(transactions => transactions.filter(tx => tx && !tx.blockNumber))
+        .mergeMap(transactions => {
+          if (transactions.length) {
+            return Observable.of<Transaction[]>(transactions);
+          }
+          return Observable.from<Transaction[]>([transactions, <any>false]);
+        })
+        .takeWhile((flag: any) => flag !== false)
         .distinctUntilChanged((a, b) => a.map(_ => _.hash).join('|') === b.map(_ => _.hash).join('|'))
+        .map(transactions => transactions.map(transaction => ({raw: transaction})))
+        .concat(this.activePendingTransactions$)
         .map(transactions =>
           transactions
             .map(transaction => {
-              const {name, params} = abiDecoder.decodeMethod(transaction.input) || <any>{name: '', params: []};
+              const {name, params} = abiDecoder.decodeMethod(transaction.raw.input) || <any>{name: '', params: []};
               return {
-                ...transaction,
+                ...transaction.raw,
                 method: name,
                 methodName: name.replace(/([A-Z])/g, ' $1').toLowerCase(),
                 params,
+                confirmations: transaction.confirmations,
               };
             }),
         ),
     )
+    .startWith([])
     .shareReplay();
 
   get web3(): Web3 {
@@ -152,6 +183,10 @@ export class Web3Service {
     } else {
       this.existInNetwork = false;
     }
+  }
+
+  newPendingTransaction(tx: string, confirmations: number): void {
+    this._newPendingTransaction$.next({tx, confirmations});
   }
 
   getAccount(): Observable<string> {

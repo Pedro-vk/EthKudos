@@ -1,5 +1,5 @@
 import * as Web3Module from 'web3';
-import { Tx } from 'web3/types';
+import { Tx, ABIDefinition, TransactionReceipt, Contract as Web3Contract } from 'web3/types';
 import * as truffleContract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -22,6 +22,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   protected readonly _onInitialized: BehaviorSubject<any> = new BehaviorSubject(undefined);
   readonly onInitialized: Observable<any> = this._onInitialized.filter(_ => !!_);
   protected contract: TruffleContract<C, CI, A, E>;
+  protected web3Contract: Web3Contract;
   private readonly isBigNumber = (new (<any>Web3Module)()).utils.isBigNumber;
 
   get initialized(): boolean {
@@ -67,6 +68,10 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
     return contractLoader;
   }
 
+  protected getWeb3Contract(abi: ABIDefinition[], address: string): Web3Contract {
+    return new this.web3Service.web3.eth.Contract(abi, address);
+  }
+
   protected generateConstant<P extends keyof TruffleContractConstantMethods<C>>(
     constant: P,
     mapper?: (response: any) => C[P]
@@ -105,14 +110,25 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
 
   protected generateAction<P extends keyof TruffleContractActionMethods<A>>(
     action: P,
-  ): ((...args) => Promise<Tx>) & {sync: (...args) => Promise<string>} {
+  ): ((...args) => Promise<TransactionReceipt>) {
 
-    const fn: any = (...args) => (<any>this.contract)[action](...args, {from: this.web3Service.account});
-    fn.sync = (...args) =>
-      (<any>this.contract)[action].sendTransaction(...args, {
-        from: this.web3Service.account,
+    return (...args) =>
+      new Promise((resolve, reject) => {
+        let tx;
+        this.web3Contract.methods[action](...args)
+          .send({from: this.web3Service.account})
+          .on('transactionHash', txHash => {
+            tx = txHash;
+            this.web3Service.newPendingTransaction(tx, undefined);
+          })
+          .on('confirmation', confirmations => {
+            this.web3Service.newPendingTransaction(tx, confirmations);
+          })
+          .on('error', error => reject({error}))
+          .then(receipt => {
+            resolve(receipt);
+          });
       });
-    return fn;
   }
 
   protected generateEventObservable<P extends keyof TruffleContractEventMethods<E>>(event: P): Observable<E[P]> {
