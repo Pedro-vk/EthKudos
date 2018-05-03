@@ -66,7 +66,7 @@ export class AppWrapperComponent implements OnInit {
 
           this.setTitleByUrl(event.urlAfterRedirects)
             .then(() => {
-              if (environment.production) {
+              if (environment.production && (<any>window).ga) {
                 (<any>window).ga('set', 'page', event.urlAfterRedirects);
                 (<any>window).ga('send', 'pageview');
               }
