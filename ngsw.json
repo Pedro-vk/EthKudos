@@ -10,7 +10,7 @@
         "/favicon.png",
         "/index.html",
         "/inline.b30c555ec93d5e8b24c8.bundle.js",
-        "/main.d1a5f881e9d5382f0c6d.bundle.js",
+        "/main.3b7c779dac28666fb4f5.bundle.js",
         "/polyfills.0cda82ed7df2459fb45d.bundle.js"
       ],
       "patterns": []
@@ -37,13 +37,13 @@
   "hashTable": {
     "/inline.b30c555ec93d5e8b24c8.bundle.js": "9798a251a65d32c2f61c5a4d02b7d8c6c04ae147",
     "/assets/app-store-badge.png": "83535d5978b467a35f873290534bde1b9c4d2d90",
-    "/main.d1a5f881e9d5382f0c6d.bundle.js": "920c18a7d357e0cc76e6c263f6f27e3aa03b173f",
+    "/main.3b7c779dac28666fb4f5.bundle.js": "899eb889d8f3965cd0408e298f4af24815b1a37d",
     "/assets/bg-colorful.png": "779b8f1311edc7a700fb73486cefbab0a987de1b",
     "/polyfills.0cda82ed7df2459fb45d.bundle.js": "d092885fa14cbef62d7c47214b8953c01bfa0da4",
     "/assets/cipher.png": "5e1232ea6210f1f40d964513c3f02b0b024c59a1",
     "/favicon.png": "4f824570bd0b15ecafea6401d9673cad582a581e",
     "/assets/donation-qr.svg": "35ea2d45cfcd2db20ece8c219777d7496c95c78a",
-    "/index.html": "05d7fba2bcd020dec1df1a89e1c2f9a8c8d4f812",
+    "/index.html": "e3728b0dc5188934066c1fc404b1a45563c523bb",
     "/assets/google-play-badge.png": "ca83b32b7518ad63bf3231aebf4cbfa467239d8a",
     "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
     "/assets/toshi.png": "5b364160253e9cec5c1af1db3eca14ec91f2cff7",
