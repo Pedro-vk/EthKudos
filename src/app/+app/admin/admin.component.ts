@@ -41,7 +41,8 @@ export class AdminComponent implements OnInit {
 
   readonly activePollContract$ = this.web3Service.changes$
     .startWith(undefined)
-    .mergeMap(() => this.kudosTokenService$.mergeMap(s => Observable.fromPromise(s.getActivePollContract())));
+    .mergeMap(() => this.kudosTokenService$.mergeMap(s => Observable.fromPromise(s.getActivePollContract())))
+    .filter(_ => !!_);
   readonly activePollCanBeClosed$ = this.activePollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.canBeClosed()))
     .catch(() => Observable.of(false))

@@ -10,10 +10,18 @@
             {{'MEMBERS_SHORT' | translate : {NUMBER: (getActivePollMembersNumber$ | async) || ''} }}
           </span>
         </div>
-        <div class="icon-block bp-l">
-          <mat-icon>date_range</mat-icon>
+        <div class="icon-block bp-l" *ngIf="canBeClosed$ | async" [matTooltip]="'The owner can close the polling at any time' | translate">
+          <mat-icon>timer</mat-icon>
+          <span translate>Can be closed</span>
+        </div>
+        <div
+          class="icon-block bp-l"
+          [matTooltip]="'CLOSABLE_REMAINING_DATE_LONG' | translate : {DATE: (activePollRemaining$ | async | date : 'short') || ''}"
+          *ngIf="!(canBeClosed$ | async)">
+
+          <mat-icon>timer</mat-icon>
           <span>
-            {{'AT_DATE' | translate : {DATE: ((getActivePollCreation$ | async) * 1000 | date : 'short') || ''} }}
+            {{'CLOSABLE_REMAINING_DATE' | translate : {DATE: (activePollRemaining$ | async | date : 'short') || ''} }}
           </span>
         </div>
       </mat-card-subtitle>

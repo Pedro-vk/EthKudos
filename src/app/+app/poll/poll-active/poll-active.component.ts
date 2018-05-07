@@ -75,6 +75,14 @@ export class PollActiveComponent implements OnInit {
     )
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
     .shareReplay();
+  readonly canBeClosed$ = this.getActivePollContract$
+    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.canBeClosed()))
+    .share();
+  readonly activePollRemaining$ = this.getActivePollContract$
+    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.minDeadline()))
+    .map(_ => _ * 1000)
+    .catch(() => Observable.empty())
+    .share();
 
   constructor(
     private web3Service: Web3Service,
