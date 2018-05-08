@@ -58,7 +58,7 @@ export class PollPreviousComponent {
       this.kudosTokenService$,
       this.pollContractGrastitudesNumberByMember$
         .first()
-        .catch(() => Observable.empty<any>())
+        .catch(() => Observable.empty())
         .startWith(undefined),
     )
     .map(([results, kudosTokenService, gratitudesNumber]) => results.map(async _ => ({

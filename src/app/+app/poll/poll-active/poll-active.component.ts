@@ -99,7 +99,7 @@ export class PollActiveComponent implements OnInit {
       .subscribe(() => this.router.navigate(['/']));
     this.token$
       .first()
-      .catch(() => Observable.empty<any>())
+      .catch(() => Observable.empty())
       .subscribe(({decimals}) => {
         this.tokenDecimals = decimals;
         this.tokenStep = 10 ** -decimals;
