@@ -24,16 +24,6 @@ import { ShareDialogComponent } from '../components';
       transition(':leave', [
         style({opacity: 1}),
         animate('.3s ease-in-out', style({opacity: 0})),
-      ])
-    ]),
-    trigger('buttonFade', [
-      state('*', style({transform: 'scale(1)', width: '*', margin: '*'})),
-      transition(':enter', [
-        style({transform: 'scale(0)', width: 0, margin: 0}),
-        animate('.26s ease'),
-      ]),
-      transition(':leave', [
-        animate('.26s ease', style({transform: 'scale(0)', width: 0, margin: 0})),
       ]),
     ]),
   ],

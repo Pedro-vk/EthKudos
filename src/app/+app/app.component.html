@@ -1,11 +1,15 @@
 <mat-toolbar [class.visible]="(status$ | async) === 'total'" class="header header--primary">
   <div class="title">
-    <button @buttonFade mat-icon-button routerLink="./" *ngIf="!routeIs('/')">
-      <mat-icon>keyboard_arrow_left</mat-icon>
-    </button><!--
- --><button @buttonFade mat-icon-button routerLink="./admin" *ngIf="(imOwner$ | async) && !routeIs('/admin')">
-      <mat-icon>settings</mat-icon>
-    </button><!--
+    <div class="icon-wrapper" [class.icon-wrapper--visible]="!routeIs('/')">
+      <button mat-icon-button routerLink="./">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+    </div><!--
+ --><div class="icon-wrapper" [class.icon-wrapper--visible]="(imOwner$ | async) && !routeIs('/admin')">
+      <button mat-icon-button routerLink="./admin">
+        <mat-icon>settings</mat-icon>
+      </button><!--
+ --></div><!--
  --><span>{{(organisationName$ | async) || (token$ | async)?.name}}</span>
   </div>
   <span>

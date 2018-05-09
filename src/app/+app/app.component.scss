@@ -36,6 +36,22 @@ $header--secondary---height: 48px !default;
   }
 }
 
+.icon-wrapper {
+  @include transition;
+
+  max-width: 0;
+  transform: scale(0);
+
+  &--visible {
+    transform: scale(1);
+    max-width: 48px;
+
+    @media (max-width: 460px) {
+      max-width: 38px;
+    }
+  }
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -55,6 +71,7 @@ $header--secondary---height: 48px !default;
     font-weight: 300;
     display: flex;
     align-items: center;
+    padding: 2px 0;
 
     &,
     span {
