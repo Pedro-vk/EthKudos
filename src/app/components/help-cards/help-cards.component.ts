@@ -28,20 +28,9 @@ export class HelpCardsComponent implements AfterViewChecked {
           pxNotRatio: true,
           width: 80,
           height: 80,
-          followMouse: false,
+          followMouse: true,
           slowDrift: false,
         });
-        const changeView = () => {
-          const maxDistance = 60;
-          const getRandom = (offset = 0.5) => (offset - Math.random()) * maxDistance * 2;
-          const {x, y, width, height} = this.metamaskLogoViewer.container.getBoundingClientRect();
-
-          this.metamaskLogoViewer.lookAt({
-            x: x + (width / 2) + getRandom(),
-            y: y + (height / 2) + (getRandom(0.7) * 0.8),
-          });
-        };
-        setInterval(() => changeView(), 5000);
       }
       this.metamaskLogo.nativeElement.appendChild(this.metamaskLogoViewer.container);
     }
