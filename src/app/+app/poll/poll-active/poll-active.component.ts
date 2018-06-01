@@ -136,8 +136,15 @@ export class PollActiveComponent implements OnInit {
             await kudosPollService.fromDecimals(this.reward.kudos),
             this.reward.message,
           )
-          .then(() => done(true))
-          .catch(() => done());
+          .$observable
+          .subscribe(status => {
+            if (status === 'waiting') {
+              setTimeout(() => done(true), 2000);
+            }
+            if (status === 'error') {
+              done();
+            }
+          });
       });
   }
 

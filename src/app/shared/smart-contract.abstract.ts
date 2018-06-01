@@ -138,7 +138,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
       });
       promise.$observable = subject.asObservable();
       return promise;
-    }
+    };
   }
 
   protected generateEventObservable<P extends keyof TruffleContractEventMethods<E>>(event: P): Observable<E[P]> {
