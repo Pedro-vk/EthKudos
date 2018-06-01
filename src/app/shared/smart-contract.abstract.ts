@@ -2,6 +2,7 @@ import * as Web3Module from 'web3';
 import { Tx, ABIDefinition, TransactionReceipt, Contract as Web3Contract } from 'web3/types';
 import * as truffleContract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
@@ -110,25 +111,34 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
 
   protected generateAction<P extends keyof TruffleContractActionMethods<A>>(
     action: P,
-  ): ((...args) => Promise<TransactionReceipt>) {
+  ): ((...args) => (Promise<TransactionReceipt> & {$observable: Observable<'error' | 'done' | 'waiting'>})) {
 
-    return (...args) =>
-      new Promise((resolve, reject) => {
+    return (...args) => {
+      const subject = new Subject<'error' | 'done' | 'waiting'>();
+      const promise = <any>new Promise<TransactionReceipt>((resolve, reject) => {
         let tx;
         this.web3Contract.methods[action](...args)
           .send({from: this.web3Service.account})
           .on('transactionHash', txHash => {
             tx = txHash;
+            subject.next('waiting');
             this.web3Service.newPendingTransaction(tx, undefined);
           })
           .on('confirmation', confirmations => {
             this.web3Service.newPendingTransaction(tx, confirmations);
           })
-          .on('error', error => reject({error}))
+          .on('error', error => {
+            subject.next('error');
+            reject({error});
+          })
           .then(receipt => {
+            subject.next('done');
             resolve(receipt);
           });
       });
+      promise.$observable = subject.asObservable();
+      return promise;
+    }
   }
 
   protected generateEventObservable<P extends keyof TruffleContractEventMethods<E>>(event: P): Observable<E[P]> {
