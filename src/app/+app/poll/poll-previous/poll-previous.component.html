@@ -75,6 +75,30 @@
 
             <span class="ranking__name" [class.ranking__name--address]="!result.name">{{result.name || result.member}}</span>
 
+            <mat-icon
+              class="ranking__extra ranking__icon--top-sender"
+              [matTooltip]="'The most grateful' | translate"
+              *ngIf="result?.achievements?.topSender">
+
+              whatshot
+            </mat-icon>
+
+            <mat-icon
+              class="ranking__extra ranking__icon--on-top"
+              [matTooltip]="'One of the most grateful' | translate"
+              *ngIf="result?.achievements?.onTop && !result?.achievements?.topSender">
+
+              whatshot
+            </mat-icon>
+
+            <mat-icon
+              class="ranking__extra ranking__icon--no-participation"
+              [matTooltip]="'No participation' | translate"
+              *ngIf="result?.achievements?.noParticipation">
+
+              ac_unit
+            </mat-icon>
+
             <span class="ranking__extra" *ngIf="result.gratitudesReceived !== undefined" [matTooltip]="'Gratitudes received' | translate">
               <mat-icon class="ranking__extra-icon--in">call_received</mat-icon>
               {{result.gratitudesReceived}}

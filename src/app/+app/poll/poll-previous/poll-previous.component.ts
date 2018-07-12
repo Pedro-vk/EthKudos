@@ -69,6 +69,19 @@ export class PollPreviousComponent {
       gratitudesSent: gratitudesNumber ? gratitudesNumber.sent[_.member] || 0 : undefined,
     })))
     .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
+    .map(balances => {
+      const maxGratitudesSent = Math.max(...balances.map(_ => _.gratitudesSent));
+      const topSenders = 0.8;
+      return balances
+        .map(balance => ({
+          ...balance,
+          achievements: {
+            topSender: balance.gratitudesSent === maxGratitudesSent,
+            onTop: (balance.gratitudesSent > (maxGratitudesSent * topSenders)),
+            noParticipation: balance.gratitudesSent === 0,
+          },
+        }));
+    })
     .shareReplay();
 
   constructor(
