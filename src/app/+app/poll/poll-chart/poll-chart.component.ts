@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
@@ -23,6 +23,7 @@ import { GraphComponent } from '../../../components';
   styleUrls: ['./poll-chart.component.scss']
 })
 export class PollChartComponent implements OnInit {
+  loaded = false;
   @ViewChild('graph') graph: GraphComponent;
   @ViewChild('wrapper') wrapper: ElementRef;
 
@@ -79,6 +80,7 @@ export class PollChartComponent implements OnInit {
     public activatedRoute: ActivatedRoute,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private kudosPollFactoryService: KudosPollFactoryService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -86,9 +88,11 @@ export class PollChartComponent implements OnInit {
       .combineLatest(this.gratitudesEdges$)
       .first()
       .catch(() => Observable.empty())
-      .delay(100)
+      .delay(10)
       .subscribe(() => {
+        this.loaded = true;
         this.graph.ngOnInit();
+        this.changeDetectorRef.markForCheck();
       });
   }
 

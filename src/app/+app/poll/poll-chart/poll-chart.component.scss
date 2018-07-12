@@ -1,3 +1,5 @@
+@import '../../../styles/index';
+
 :host {
   $padding: 0px;
 
@@ -25,9 +27,40 @@ button {
   z-index: 2;
 }
 
+.loading-message {
+  position: absolute;
+  top: 50%;
+  text-align: center;
+  padding: 0 20px;
+  width: 100%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  font-weight: 300;
+  opacity: .5;
+  box-sizing: border-box;
+  z-index: 2;
+
+  @media (max-width: 800px) {
+    font-size: 20px;
+  }
+  @media (max-width: 500px) {
+    font-size: 16px;
+  }
+  @media (max-width: 380px) {
+    font-size: 14px;
+  }
+}
+
 mat-button-toggle-group {
+  @include transition;
+
   position: absolute;
   top: 20px;
   left: 20px;
   z-index: 2;
+
+  &.disabled {
+    opacity: .7;
+    pointer-events: none;
+  }
 }

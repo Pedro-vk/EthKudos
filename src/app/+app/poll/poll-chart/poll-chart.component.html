@@ -1,4 +1,4 @@
-<mat-button-toggle-group value="circle" (change)="setLayout($event.value)">
+<mat-button-toggle-group value="circle" (change)="setLayout($event.value)" [class.disabled]="!loaded">
   <mat-button-toggle value="circle" matTooltip="Circle graph">
     <mat-icon>cached</mat-icon>
   </mat-button-toggle>
@@ -13,6 +13,8 @@
 
   <mat-icon>close</mat-icon>
 </button>
+
+<div *ngIf="!loaded" class="loading-message" translate>Getting all the data to generate the graph...</div>
 
 <eth-kudos-graph
   #graph
