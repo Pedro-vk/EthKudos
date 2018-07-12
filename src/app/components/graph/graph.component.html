@@ -4,22 +4,26 @@
     [style.top.%]="(edgeHoverBuffer$ | async)?.y"
     class="
       tooltip
+      {{large ? 'tooltip--large' : ''}}
       tooltip--edge
       tooltip--rx-{{(edgeHoverBuffer$ | async)?.rX}}
       tooltip--ry-{{(edgeHoverBuffer$ | async)?.rY}}
     "
-    [class.tooltip--large]="large"
     [class.tooltip--visible]="edgeHover$ | async">
 
     <div class="tooltip__header">
-      <strong>{{(edgeHoverBuffer$ | async)?.targetMember?.name}}</strong>
+      <strong [class.address]="!((edgeHoverBuffer$ | async)?.targetMember?.name)">
+        {{(edgeHoverBuffer$ | async)?.targetMember?.name || (edgeHoverBuffer$ | async)?.targetMember?.address}}
+      </strong>
       {{'received' | translate}}
       <code>{{(edgeHoverBuffer$ | async)?.data?.kudos | number : '.0-' + (decimals || 2)}}<span>{{symbol || 'KUDOS'}}</span></code>
     </div>
     <div class="tooltip__text">{{(edgeHoverBuffer$ | async)?.data?.message}}</div>
     <div class="tooltip__footer">
       {{'from' | translate}}
-      <strong>{{(edgeHoverBuffer$ | async)?.sourceMember?.name}}</strong>
+      <strong [class.address]="!(edgeHoverBuffer$ | async)?.sourceMember?.name">
+        {{(edgeHoverBuffer$ | async)?.sourceMember?.name || (edgeHoverBuffer$ | async)?.sourceMember?.address}}
+      </strong>
     </div>
   </div>
 
@@ -28,15 +32,17 @@
     [style.top.%]="(nodeHoverBuffer$ | async)?.y"
     class="
       tooltip
+      {{large ? 'tooltip--large' : ''}}
       tooltip--node
       tooltip--rx-{{(nodeHoverBuffer$ | async)?.rX}}
       tooltip--ry-{{(nodeHoverBuffer$ | async)?.rY}}
     "
-    [class.tooltip--large]="large"
     [class.tooltip--visible]="nodeHover$ | async">
 
     <div class="tooltip__header">
-      <strong>{{(nodeHoverBuffer$ | async)?.data?.name}}</strong>
+      <strong [class.address]="!((nodeHoverBuffer$ | async)?.data?.name)">
+        {{(nodeHoverBuffer$ | async)?.data?.name || (nodeHoverBuffer$ | async)?.data?.address}}
+      </strong>
       {{'has' | translate}}
       <code>{{(nodeHoverBuffer$ | async)?.data?.kudos | number : '.0-' + (decimals || 2)}}<span>{{symbol || 'KUDOS'}}</span></code>
     </div>
