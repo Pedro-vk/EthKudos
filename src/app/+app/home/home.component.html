@@ -95,6 +95,38 @@
 
             <span class="ranking__name">{{balance.name}}</span>
 
+            <mat-icon
+              class="ranking__extra ranking__icon--top-sender"
+              [matTooltip]="'The most grateful' | translate"
+              *ngIf="balance?.achievements?.topSender">
+
+              whatshot
+            </mat-icon>
+
+            <mat-icon
+              class="ranking__extra ranking__icon--on-top"
+              [matTooltip]="'One of the most grateful' | translate"
+              *ngIf="balance?.achievements?.onTop && !balance?.achievements?.topSender">
+
+              whatshot
+            </mat-icon>
+
+            <mat-icon
+              class="ranking__extra ranking__icon--no-participation"
+              [matTooltip]="'No participation yet' | translate"
+              *ngIf="balance?.achievements?.noParticipation">
+
+              ac_unit
+            </mat-icon>
+
+            <mat-icon
+              class="ranking__extra ranking__icon--beginner"
+              [matTooltip]="'Beginner' | translate"
+              *ngIf="balance?.achievements?.beginner">
+
+              fiber_new
+            </mat-icon>
+
             <span class="ranking__extra" *ngIf="balance.gratitudesReceived !== undefined" [matTooltip]="'Gratitudes received' | translate">
               <mat-icon class="ranking__extra-icon--in">call_received</mat-icon>
               {{balance.gratitudesReceived}}

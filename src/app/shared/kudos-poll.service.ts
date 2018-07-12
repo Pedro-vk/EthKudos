@@ -178,6 +178,8 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
   }
 
   async gratitudesNumberByMember(): Promise<{received: {[to: string]: number}, sent: {[from: string]: number}}> {
+    const members = await this.getMembers();
+    const initial = (members || []).reduce((acc, _) => ({...acc, [_]: 0}), {});
     const allGratitudes = (await this.allGratitudes())
       .reduce(({received, sent}, {from, to}) => ({
         received: {
@@ -187,8 +189,8 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
         sent: {
           ...sent,
           [from.toLowerCase()]: (sent[from.toLowerCase()] || 0) + 1,
-        }
-      }), {received: {}, sent: {}});
+        },
+      }), {received: {...initial}, sent: {...initial}});
     return allGratitudes;
   }
 

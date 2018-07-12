@@ -331,6 +331,21 @@ $landing-header-size: 70px;
       width: 100%;
     }
 
+    &__icon {
+      &--no-participation {
+        color: #64bce4;
+      }
+      &--on-top {
+        color: #009688;
+      }
+      &--top-sender {
+        color: #FF9800;
+      }
+      &--beginner {
+        color: #999999;
+      }
+    }
+
     &__extra {
       opacity: .8;
       font-weight: 300;

@@ -49,11 +49,13 @@ export class HomeComponent {
                     [_]: (a[_] || 0) + (b[_] || 0),
                   }), {});
               };
+              const clean = obj => Object.keys(obj).reduce((acc, _) => ({...acc, [_]: 1}), {});
               return gratitudesByPoll
-                .reduce((acc, _) => ({
+                .reduce<{received: any, sent: any, poll: any}>((acc, _) => ({
                   received: mix(acc.received, _.received),
                   sent: mix(acc.sent, _.sent),
-                }), {received: {}, sent: {}});
+                  poll: mix(acc.poll, clean(_.received)),
+                }), {received: {}, sent: {}, poll: {}});
             })
             .startWith(undefined),
         )
@@ -63,9 +65,24 @@ export class HomeComponent {
               ..._,
               gratitudesReceived: gratitudesNumber ? gratitudesNumber.received[_.member] || 0 : undefined,
               gratitudesSent: gratitudesNumber ? gratitudesNumber.sent[_.member] || 0 : undefined,
+              entries: gratitudesNumber ? gratitudesNumber.poll[_.member] || 0 : undefined,
             })),
         ),
-    );
+    )
+    .map(balances => {
+      const maxGratitudesSent = Math.max(...balances.map(_ => _.gratitudesSent));
+      const topSenders = 0.8;
+      return balances
+        .map(balance => ({
+          ...balance,
+          achievements: {
+            topSender: balance.entries && balance.gratitudesSent === maxGratitudesSent,
+            onTop: balance.entries && (balance.gratitudesSent > (maxGratitudesSent * topSenders)),
+            noParticipation: balance.entries && balance.gratitudesSent === 0,
+            beginner: balance.entries === 0,
+          },
+        }));
+    });
   readonly getActivePollContract$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getActivePollContract()))
     .shareReplay();
   readonly getActivePollMembersNumber$ = this.getActivePollContract$
