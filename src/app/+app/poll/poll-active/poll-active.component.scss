@@ -110,3 +110,43 @@ mat-card-actions {
 .gratitude:not(:last-child) {
   margin-bottom: 20px;
 }
+
+.input-and-selector {
+  display: flex;
+  align-items: center;
+
+  mat-form-field {
+    flex: 1;
+  }
+  mat-button-toggle-group {
+    margin-left: 30px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+    .multi-star {
+      mat-icon {
+        position: relative;
+        font-size: 12px;
+        width: 12px;
+        height: 12px;
+      }
+      mat-icon:nth-child(1),
+      mat-icon:nth-child(3) {
+        top: 4px;
+
+        & ~ mat-icon {
+          margin-left: -5px;
+        }
+      }
+      mat-icon:nth-child(2) {
+        top: -6px;
+      }
+    }
+  }
+  /deep/ .mat-button-toggle-label-content {
+    padding: 0 10px;
+  }
+}

@@ -74,21 +74,6 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field class="input-address kudos-input">
-        <input
-          matInput
-          [ngModel]="reward.kudos"
-          (blur)="setRewardKudos($event.target)"
-          type="number"
-          [max]="maxKudosToSend$ | async"
-          [min]="0"
-          [step]="tokenStep"
-          name="rewardKudos"
-          [placeholder]="'HOW_MANY_KUDOS_SEND'  | translate : {SYMBOL: (token$ | async)?.symbol || ''}"
-          required>
-        <span class="symbol-suffix" matSuffix>{{(token$ | async)?.symbol}}</span>
-      </mat-form-field>
-
       <mat-form-field>
         <input
           matInput
@@ -98,6 +83,51 @@
           [placeholder]="'Message of gratitude' | translate"
           required>
       </mat-form-field>
+
+      <div class="input-and-selector">
+        <mat-form-field class="input-address kudos-input">
+          <input
+            matInput
+            #rewardInput
+            [ngModel]="reward.kudos"
+            (blur)="setRewardKudos($event.target)"
+            (change)="setRewardKudosType($event.target.value)"
+            (click)="setRewardKudosType($event.target.value)"
+            (keyup)="setRewardKudosType($event.target.value)"
+            type="number"
+            [max]="maxKudosToSend$ | async"
+            [min]="0"
+            [step]="tokenStep"
+            name="rewardKudos"
+            [placeholder]="'HOW_MANY_KUDOS_SEND'  | translate : {SYMBOL: (token$ | async)?.symbol || ''}"
+            required>
+          <span class="symbol-suffix" matSuffix>{{(token$ | async)?.symbol}}</span>
+        </mat-form-field>
+
+        <mat-button-toggle-group
+          [(value)]="suggested"
+          (change)="setSuggestedReward($event.value)"
+          *ngIf="tokenDecimals !== 0 || maxKudos !== 1">
+
+          <mat-button-toggle value="custom" matTooltip="Free amount">
+            <mat-icon>edit</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle [value]=".1" matTooltip="Small gratitude">
+            <mat-icon>star_border</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle [value]=".25" matTooltip="Good gratitude" *ngIf="tokenDecimals !== 1 || maxKudos !== 1">
+            <mat-icon>star_half</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle [value]=".5" matTooltip="Big gratitude">
+            <mat-icon>star</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle class="multi-star" [value]="1" matTooltip="Maximum gratitude">
+            <mat-icon>star</mat-icon><!--
+         --><mat-icon>star</mat-icon><!--
+         --><mat-icon>star</mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
 
       <span class="warning">
         <mat-icon>warning</mat-icon>

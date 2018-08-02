@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -15,6 +15,8 @@ import 'rxjs/add/operator/shareReplay';
 
 import { Web3Service, KudosTokenFactoryService } from '../../../shared';
 
+type suggestedReward = 'custom' | 1 | .5 | .25 | .1;
+
 @Component({
   selector: 'eth-kudos-poll-active',
   templateUrl: './poll-active.component.html',
@@ -26,6 +28,8 @@ export class PollActiveComponent implements OnInit {
   tokenStep = 0;
   reward: {member: string, kudos: number, message: string, working: boolean} = <any>{};
   maxKudos: number;
+  suggested: suggestedReward = 'custom';
+  @ViewChild('rewardInput') rewardInput: ElementRef;
 
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .filter(({tokenAddress}) => !!tokenAddress)
@@ -108,8 +112,8 @@ export class PollActiveComponent implements OnInit {
       .subscribe(maxKudos => this.maxKudos = maxKudos);
   }
 
-  setRewardKudos(inputNumber: {value: number}) {
-    const cleanNumber = +(+inputNumber.value || 0).toFixed(this.tokenDecimals);
+  setRewardKudos(inputNumber: {value: number}, value?: number) {
+    const cleanNumber = +(+value || +inputNumber.value || 0).toFixed(this.tokenDecimals);
     let number = cleanNumber;
     if (number <= 0) {
       number = undefined;
@@ -121,6 +125,21 @@ export class PollActiveComponent implements OnInit {
       this.reward.kudos = number;
       inputNumber.value = number;
     }
+    this.setRewardKudosType(+number);
+  }
+
+  setRewardKudosType(value: number) {
+    const cleanNumber = +(+value || 0).toFixed(this.tokenDecimals);
+    const percentage = cleanNumber / this.maxKudos;
+    this.suggested = [1, .5, .25, .1].indexOf(percentage) !== -1 ? <suggestedReward>percentage : 'custom';
+  }
+
+  setSuggestedReward(reward: suggestedReward): void {
+    if (reward === 'custom') {
+      this.rewardInput.nativeElement.focus();
+      return;
+    }
+    this.setRewardKudos(this.rewardInput.nativeElement, reward * this.maxKudos);
   }
 
   sendReward(form?: NgForm) {
