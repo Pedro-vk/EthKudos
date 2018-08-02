@@ -1,27 +1,41 @@
-# EthKudos
+# EthKudos [![Build Status](https://travis-ci.org/Pedro-vk/EthKudos.svg?branch=master)](https://travis-ci.org/Pedro-vk/EthKudos) [![Coverage Status](https://coveralls.io/repos/github/Pedro-vk/EthKudos/badge.svg?branch=master)](https://coveralls.io/github/Pedro-vk/EthKudos?branch=master)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.5.
+EthKudos is a gratitudes/kudos system that provides to companies, organisations or teams to boost the cooperation between the coworkers.
 
-## Development server
+EthKudos allows to create a new organisation over Ethereum, this organisation is owned by the creator. Ethereum is the technology that ensures that the owner of the organisation and the members are who can interact with this organisation.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Technologies
 
-## Code scaffolding
+EthKudos, as a dapp, is built with Angular, Angular Material, Web3 and Truffle contract.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The smart contract, wrote in Solidity for Ethereum, provides the "backend side" as other dapps. To help with the coding of these smart contracts is used Truffle to deploy and test them.
 
-## Build
+## Collaborate
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+EthKudos is open to everyone that wants to improve the dapp. Feel free to collaborate opening [issues](https://github.com/Pedro-vk/EthKudos/issues) or coding.
 
-## Running unit tests
+### Work on dapp
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+#### Development server
 
-## Running end-to-end tests
+Run `npm start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+#### Build
 
-## Further help
+Run `npm run build` to build the project. The build artefacts will be stored in the `dist/` directory.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+#### Running unit tests
+
+Run `npm test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+### Work on smart contracts
+
+#### Development server
+
+Install and open [Ganache](https://truffleframework.com/ganache), it provides an Ethereum network quickly and it's fast to develop on it.
+
+Run `npm run deploy:dev` to deploy the smart contracts on Ganache, it is going to define the new contract address on the schema of each contract.
+
+#### Test
+
+Run `npm run test:sol` to run the unit test and generate the coverage.
