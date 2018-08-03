@@ -120,6 +120,7 @@ mat-card-actions {
   }
   mat-button-toggle-group {
     margin-left: 30px;
+    overflow-x: overlay;
 
     mat-icon {
       font-size: 16px;

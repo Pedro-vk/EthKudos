@@ -109,19 +109,19 @@
           (change)="setSuggestedReward($event.value)"
           *ngIf="tokenDecimals !== 0 || maxKudos !== 1">
 
-          <mat-button-toggle value="custom" matTooltip="Free amount">
+          <mat-button-toggle value="custom" [matTooltip]="'Free amount' | translate">
             <mat-icon>edit</mat-icon>
           </mat-button-toggle>
-          <mat-button-toggle [value]=".1" matTooltip="Small gratitude">
+          <mat-button-toggle [value]=".1" [matTooltip]="'Small gratitude' | translate">
             <mat-icon>star_border</mat-icon>
           </mat-button-toggle>
-          <mat-button-toggle [value]=".25" matTooltip="Good gratitude" *ngIf="tokenDecimals !== 1 || maxKudos !== 1">
+          <mat-button-toggle [value]=".25" [matTooltip]="'Good gratitude' | translate" *ngIf="tokenDecimals !== 1 || maxKudos !== 1">
             <mat-icon>star_half</mat-icon>
           </mat-button-toggle>
-          <mat-button-toggle [value]=".5" matTooltip="Big gratitude">
+          <mat-button-toggle [value]=".5" [matTooltip]="'Big gratitude' | translate">
             <mat-icon>star</mat-icon>
           </mat-button-toggle>
-          <mat-button-toggle class="multi-star" [value]="1" matTooltip="Maximum gratitude">
+          <mat-button-toggle class="multi-star" [value]="1" [matTooltip]="'Maximum gratitude' | translate">
             <mat-icon>star</mat-icon><!--
          --><mat-icon>star</mat-icon><!--
          --><mat-icon>star</mat-icon>
