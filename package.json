@@ -51,7 +51,7 @@
     "@ngx-translate/core": "^10.0.1",
     "blockies": "0.0.2",
     "core-js": "^2.5.4",
-    "detect-browser": "^2.2.0",
+    "detect-browser": "^3.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "lcov-result-merger": "^2.0.0",
     "messageformat": "^2.0.2",
