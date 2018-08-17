@@ -34,15 +34,15 @@
   "hashTable": {
     "/favicon.png": "75d5ba3d1973c0a65dd96d20456c23c110cee8d8",
     "/assets/app-store-badge.png": "f573798aa1e1106c4ad3e3a593d7785287b375d1",
-    "/index.html": "2e7dce8347eaad4fdb521e7ec24adca724789032",
+    "/index.html": "d40f1c841160770e60aa61ff78c74e8561f335b3",
     "/assets/bg-colorful.png": "a76d79d85e272def58628f8bb6128a3129b2f158",
     "/assets/cipher.png": "9d68ca2d08a26dac20b5fd34d6a8394e65e8c0bb",
     "/assets/donation-qr.svg": "35ea2d45cfcd2db20ece8c219777d7496c95c78a",
     "/assets/google-play-badge.png": "dcb52ad53369d3388215d2a6d0c2895a733f7bf8",
     "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
     "/assets/toshi.png": "7caff517a62f64857544f555d1fee96b3e173828",
-    "/i18n/en.json": "68a0ebd88a52606b20cd378877401e3e3a645e02",
-    "/i18n/es.json": "ea6ae120b97287b10dbc49b861946d7b309c9784"
+    "/i18n/en.json": "1b8f19f89ba6e1ba3d97c8d9630e9697047ae0bd",
+    "/i18n/es.json": "ea68c4c40af2749fc888474261e6c75b9ccf709e"
   },
   "navigationUrls": [
     {
