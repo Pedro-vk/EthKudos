@@ -46,7 +46,7 @@
     <table>
       <tr>
         <td class="logo">
-          <img src="assets/toshi.png">
+          <img src="assets/toshi.png" [attr.alt]="'Toshi logo' | translate">
           <span class="app-name">Toshi</span>
         </td>
         <td><a href="https://play.google.com/store/apps/details?id=org.toshi" target="_blank"><img src="assets/google-play-badge.png"></a></td>
@@ -54,11 +54,19 @@
       </tr>
       <tr>
         <td class="logo">
-          <img src="assets/cipher.png">
+          <img src="assets/cipher.png"  [attr.alt]="'Chiper logo' | translate">
           <span class="app-name">Cipher</span>
         </td>
-        <td><a href="https://play.google.com/store/apps/details?id=com.cipherbrowser.cipher" target="_blank"><img src="assets/google-play-badge.png"></a></td>
-        <td><a href="http://appstore.com/hardfork-inc/cipher-browser-ethereum" target="_blank"><img src="assets/app-store-badge.png"></a></td>
+        <td>
+          <a href="https://play.google.com/store/apps/details?id=com.cipherbrowser.cipher" target="_blank">
+            <img src="assets/google-play-badge.png" [attr.alt]="'Google Play logo' | translate">
+          </a>
+        </td>
+        <td>
+          <a href="http://appstore.com/hardfork-inc/cipher-browser-ethereum" target="_blank">
+            <img src="assets/app-store-badge.png" [attr.alt]="'Apple store logo' | translate">
+          </a>
+        </td>
       </tr>
     </table>
   </mat-expansion-panel>

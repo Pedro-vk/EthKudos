@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -14,6 +15,7 @@ describe('FaqsComponent', () => {
       imports: [
         AppMaterialModule,
         NoopAnimationsModule,
+        TranslateModule.forRoot(),
       ],
       declarations: [ FaqsComponent ]
     })

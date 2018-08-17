@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AppMaterialModule } from '../../app-common.module';
 import { PROVIDERS } from '../../shared';
@@ -15,6 +16,7 @@ describe('HelpCardsComponent', () => {
       imports: [
         AppMaterialModule,
         NoopAnimationsModule,
+        TranslateModule.forRoot(),
       ],
       providers: [
         ...PROVIDERS,
