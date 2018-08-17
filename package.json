@@ -83,7 +83,7 @@
     "gh-pages-travis": "^1.0.4",
     "jasmine-core": "~3.1.0",
     "jasmine-spec-reporter": "~4.2.1",
-    "jq-cli-wrapper": "^0.4.0",
+    "jq-cli-wrapper": "^1.0.2",
     "karma": "^2.0.2",
     "karma-cli": "~1.0.1",
     "karma-coverage-istanbul-reporter": "^1.2.1",
