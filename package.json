@@ -89,7 +89,7 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^1.0.0",
-    "protractor": "^5.3.1",
+    "protractor": "^5.4.0",
     "rxjs": "^6.1.0",
     "rxjs-tslint-rules": "^3.16.1",
     "solidity-coverage": "^0.4.15",
