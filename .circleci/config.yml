@@ -1,0 +1,149 @@
+version: 2
+
+node-defaults: &NODE
+  working_directory: ~/eth-kudos
+  docker:
+    - image: circleci/node:9.11.2-browsers
+
+checkout-workspace-defaults:
+  - &CHECKOUT-WORKSPACE
+    attach_workspace:
+      at: ~/eth-kudos
+
+jobs:
+  # NPM install
+  npm-install:
+    <<: *NODE
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - ethkudos-dependencies-{{ checksum "package.json" }}
+          - ehtkudos-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: ehtkudos-dependencies-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+  # Tests
+  test-ng:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run test:ng
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage-ng
+  test-sol:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run test:sol
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage-sol
+  # Tests coverage
+  coveralls:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: |
+          npx lcov-result-merger "coverage-*/lcov.info" lcov.info
+          cat ./lcov.info | node_modules/coveralls/bin/coveralls.js
+  # Code quality
+  lint-ng:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run lint:ng
+  lint-sol:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run lint:sol
+  # Build
+  build-app:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+  # Deploy
+  deploy-github:
+    <<: *NODE
+    environment:
+      SSH_KEY: .travisGitHub
+      GIT_NAME: Pedro Gutiérrez
+      GIT_EMAIL: pedrogp9_6_93@hotmail.com
+      SOURCE_DIR: dist
+      DEPLOY_BRANCH: master
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run deploy
+  cleanup-cloudflare:
+    <<: *NODE
+    steps:
+      - run: |
+          curl -X DELETE "https://api.cloudflare.com/client/v4/zones/${cloudflare_zone}/purge_cache" \
+            -H "X-Auth-Email: ${cloudflare_email}" \
+            -H "X-Auth-Key: ${cloudflare_key}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
+workflows:
+  version: 2
+  CI:
+    jobs:
+      - npm-install
+      - test-ng:
+          requires:
+            - npm-install
+      - test-sol:
+          requires:
+            - npm-install
+      - coveralls:
+          requires:
+            - test-ng
+            - test-sol
+      - lint-ng:
+          requires:
+            - npm-install
+      - lint-sol:
+          requires:
+            - npm-install
+      - build-app:
+          requires:
+            - npm-install
+      - deploy-github:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - test-ng
+            - test-sol
+            - lint-ng
+            - lint-sol
+            - build-app
+      - cleanup-cloudflare:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - deploy-github
