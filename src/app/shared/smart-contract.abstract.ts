@@ -73,7 +73,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
     return new this.web3Service.web3.eth.Contract(abi, address);
   }
 
-  protected generateConstant<P extends keyof TruffleContractConstantMethods<C>>(
+  protected generateConstant<P extends string & keyof TruffleContractConstantMethods<C>>(
     constant: P,
     mapper?: (response: any) => C[P]
   ): (...args) => Promise<C[P]> {
@@ -97,7 +97,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
       });
   }
 
-  protected async generateConstantIteration<P extends keyof TruffleContractConstantIteratorMethods<CI>>(
+  protected async generateConstantIteration<P extends string & keyof TruffleContractConstantIteratorMethods<CI>>(
     lengthFn: () => Promise<number>,
     getter: (i: number) => Promise<CI[P][0]>
   ): Promise<CI[P]> {
@@ -109,7 +109,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
     );
   }
 
-  protected generateAction<P extends keyof TruffleContractActionMethods<A>>(
+  protected generateAction<P extends string & keyof TruffleContractActionMethods<A>>(
     action: P,
   ): ((...args) => (Promise<TransactionReceipt> & {$observable: Observable<'error' | 'done' | 'waiting'>})) {
 
@@ -141,7 +141,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
     };
   }
 
-  protected generateEventObservable<P extends keyof TruffleContractEventMethods<E>>(event: P): Observable<E[P]> {
+  protected generateEventObservable<P extends string & keyof TruffleContractEventMethods<E>>(event: P): Observable<E[P]> {
     return this.onInitialized
       .mergeMap(() =>
         Observable
