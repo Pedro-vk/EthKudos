@@ -1,4 +1,4 @@
-# EthKudos [![CircleCI](https://circleci.com/gh/Pedro-vk/EthKudos/tree/master.svg?style=svg)](https://circleci.com/gh/Pedro-vk/workflows/EthKudos/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Pedro-vk/EthKudos/badge.svg?branch=master)](https://coveralls.io/github/Pedro-vk/EthKudos?branch=master)
+# EthKudos [![CircleCI](https://circleci.com/gh/Pedro-vk/EthKudos/tree/master.svg?style=shield)](https://circleci.com/gh/Pedro-vk/workflows/EthKudos/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Pedro-vk/EthKudos/badge.svg?branch=master)](https://coveralls.io/github/Pedro-vk/EthKudos?branch=master)
 
 EthKudos is a gratitudes/kudos system that provides to companies, organisations or teams to boost the cooperation between the coworkers.
 
