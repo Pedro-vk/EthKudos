@@ -7,10 +7,10 @@ import * as translationEn from '../../i18n/en.json';
 
 @Injectable()
 export class TranslationLoaderService {
-  getTranslation(lang: string): Observable<any> {
+  getTranslation(lang?: string): Observable<{[key: string]: string} & {$lang: string}> {
     switch (lang) {
-      case 'es': return Observable.of(translationEs);
-      default: return Observable.of(translationEn);
+      case 'es': return Observable.of({...translationEs, $lang: 'es'});
+      default: return Observable.of({...translationEn, $lang: 'en'});
     }
   }
 }
