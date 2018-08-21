@@ -51,13 +51,14 @@ export class Web3Service {
   status: ConnectionStatus;
   account: string;
   networkType: networkType;
-  private _web3: Web3;
   private existInNetwork: boolean;
+  private _web3: Web3;
+  private _intervalMock: Function;
 
   private readonly _newPendingTransaction$: Subject<{tx: string, confirmations: number}> = new Subject();
 
-  private readonly interval$: Observable<any> = Observable
-    .interval(100)
+  private readonly interval$: Observable<any> = Observable.of(undefined)
+    .mergeMap(() => (this._intervalMock && this._intervalMock()) || Observable.interval(100))
     .share()
     .startWith(undefined);
   readonly newBlock$: Observable<number> = this.interval$
@@ -157,13 +158,19 @@ export class Web3Service {
 
   constructor() {
     this.checkContractInNetwork();
-    this.status$.subscribe(status => this.status = status);
-    this.account$.subscribe(account => this.account = account);
-    this.getNetworkType().subscribe(type => this.networkType = type);
+    setTimeout(() => this.listenChanges(), 100);
   }
 
   static addABI(abi: any): void {
     abiDecoder.addABI(abi);
+  }
+
+  private listenChanges(): void {
+    if (!this._intervalMock) {
+      this.status$.subscribe(status => this.status = status);
+      this.account$.subscribe(account => this.account = account);
+      this.getNetworkType().subscribe(type => this.networkType = type);
+    }
   }
 
   private initWeb3(): Web3 {

@@ -84,6 +84,7 @@
     "cytoscape": "^3.2.16",
     "gh-pages": "^1.2.0",
     "jasmine-core": "~3.2.1",
+    "jasmine-marbles": "^0.3.1",
     "jasmine-spec-reporter": "~4.2.1",
     "jq-cli-wrapper": "^1.0.2",
     "karma": "^3.0.0",
