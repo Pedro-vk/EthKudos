@@ -24,7 +24,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   readonly onInitialized: Observable<any> = this._onInitialized.filter(_ => !!_);
   protected contract: TruffleContract<C, CI, A, E>;
   protected web3Contract: Web3Contract;
-  private readonly isBigNumber = (new (<any>Web3Module)()).utils.isBigNumber;
+  private readonly isBigNumber = _ => (new (<any>Web3Module)()).utils.isBigNumber(_) || (new (<any>Web3Module)()).utils.isBN(_);
 
   get initialized(): boolean {
     return !!this.contract;
