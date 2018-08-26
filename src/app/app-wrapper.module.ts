@@ -15,7 +15,7 @@ import { AppWrapperComponent } from './app-wrapper.component';
 
 import { environment } from '../environments/environment';
 
-import { PROVIDERS, TranslationLoaderService } from './shared';
+import { PROVIDERS, TranslationLoaderService, WEB3_PROVIDER } from './shared';
 
 import { AppModule } from './+app/app.module';
 import { WebsiteModule } from './+website/website.module';
@@ -61,6 +61,7 @@ export function getCurrentValidLocale() {
     ...PROVIDERS,
     Title,
     {provide: LOCALE_ID, useValue: getCurrentValidLocale()},
+    {provide: WEB3_PROVIDER, useValue: environment.web3Provider || (<any>window).web3.currentProvider}
   ],
   bootstrap: [AppWrapperComponent]
 })

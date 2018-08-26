@@ -47,6 +47,14 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "e2e": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.e2e.ts"
+                }
+              ]
             }
           }
         },
@@ -59,7 +67,8 @@
             "production": {
               "browserTarget": "eth-kudos:build:production"
             },
-            "ci": {
+            "e2e": {
+              "browserTarget": "eth-kudos:build:e2e",
               "progress": false
             }
           }
@@ -118,8 +127,8 @@
             "production": {
               "devServerTarget": "eth-kudos:serve:production"
             },
-            "ci": {
-              "devServerTarget": "eth-kudos:serve:ci"
+            "e2e": {
+              "devServerTarget": "eth-kudos:serve:e2e"
             }
           }
         },
