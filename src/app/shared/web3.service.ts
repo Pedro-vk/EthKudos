@@ -1,4 +1,4 @@
-import { Injectable, Inject, InjectionToken } from '@angular/core';
+import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import Web3 from 'web3';
 import * as Web3Module from 'web3';
 import { Transaction, ABIDataTypes } from 'web3/types';
@@ -158,7 +158,7 @@ export class Web3Service {
     return this._web3 || this.initWeb3();
   }
 
-  constructor(@Inject(WEB3_PROVIDER) private _web3Provider: any) {
+  constructor(@Optional() @Inject(WEB3_PROVIDER) private _web3Provider: any) {
     this.checkContractInNetwork();
     this.listenChanges();
   }

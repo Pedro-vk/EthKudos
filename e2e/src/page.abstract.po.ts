@@ -25,8 +25,8 @@ export abstract class Page {
     return url;
   }
 
-  async isPresent(element: ElementFinder): Promise<boolean> {
-    return browser.isElementPresent(element);
+  async isPresent(elementFinder: ElementFinder): Promise<boolean> {
+    return browser.isElementPresent(elementFinder);
   }
 
   protected async goToPath(path: string) {
@@ -34,9 +34,9 @@ export abstract class Page {
     return await browser.get(path);
   }
 
-  protected async waitUntilElement(element: ElementFinder, timeout: number = 5000): Promise<ElementFinder> {
-    await browser.wait(until.presenceOf(element), timeout, `Element '${element.locator()}' not found in DOM`);
-    return element;
+  protected async waitUntilElement(elementFinder: ElementFinder, timeout: number = 5000): Promise<ElementFinder> {
+    await browser.wait(until.presenceOf(elementFinder), timeout, `Element '${elementFinder.locator()}' not found in DOM`);
+    return elementFinder;
   }
 
   protected async whiteUntilCss(selector: string, timeout: number = 5000) {
