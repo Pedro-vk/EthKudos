@@ -176,7 +176,7 @@ export class Web3Service {
   }
 
   private initWeb3(): Web3 {
-    if ((<any>window).web3) {
+    if (this._web3Provider) {
       return this._web3 = new (<any>Web3Module)(this._web3Provider);
     }
   }

@@ -6,4 +6,5 @@
 export const environment = {
   production: false,
   web3Provider: undefined,
+  defaultGasLimit: undefined,
 };
