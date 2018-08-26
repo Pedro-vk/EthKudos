@@ -25,13 +25,22 @@ export abstract class Page {
     return url;
   }
 
+  async isPresent(element: ElementFinder): Promise<boolean> {
+    return browser.isElementPresent(element);
+  }
+
   protected async goToPath(path: string) {
     await browser.waitForAngularEnabled(false);
     return await browser.get(path);
   }
 
+  protected async waitUntilElement(element: ElementFinder, timeout: number = 5000): Promise<ElementFinder> {
+    await browser.wait(until.presenceOf(element), timeout, `Element '${element.locator()}' not found in DOM`);
+    return element;
+  }
+
   protected async whiteUntilCss(selector: string, timeout: number = 5000) {
-    return await browser.wait(until.presenceOf(element(by.css(selector))), timeout, 'Element not found in DOM.');
+    return await this.waitUntilElement(element(by.css(selector)), timeout);
   }
 
   protected async getAllBySelector(selector: string, ofElement: ElementFinder = <any>element): Promise<ElementArrayFinder> {
