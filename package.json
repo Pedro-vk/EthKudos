@@ -26,6 +26,8 @@
     "test:sol": "solidity-coverage && mv coverage coverage-sol",
     "test:sol:dev": "truffle test --network dev",
     "test:sol:live": "truffle test --network ropsten",
+    "e2e": "ng e2e",
+    "e2e:dev": "ng e2e --dev-server-target",
     "merge:sol:build": "sol-merger \"./contracts/*.sol\" ./build/merged",
     "clean:sol:build": "for i in build/contracts/*.json; do npx jq '{contractName, abi, bytecode, deployedBytecode, compiler, networks, schemaVersion}' \"$i\" > \"$i.tmp\" && mv \"$i.tmp\" \"$i\"; done",
     "i18n:extract": "ngx-translate-extract -i ./src -o ./src/i18n/*.json --format-indentation '  ' --sort && npm run i18n:duplicate-base",
