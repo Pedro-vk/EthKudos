@@ -14,7 +14,9 @@
         <button mat-button color="primary" [routerLink]="['/', org.address]">access</button>
       </div>
 
-      <a mat-icon-button routerLink="/faqs" matTooltip="FAQs" aria-label="FAQs"><mat-icon>help_outline</mat-icon></a>
+      <a mat-icon-button routerLink="/faqs" matTooltip="FAQs" aria-label="FAQs" data-qa="landing-home-header-faqs">
+        <mat-icon>help_outline</mat-icon>
+      </a>
     </div>
   </header>
 
@@ -42,7 +44,14 @@
         encouraging and recognizing team cooperation between members.
       </p>
       <p class="main__text-button" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp" @cardInOut>
-        <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
+        <button mat-raised-button
+          color="primary"
+          data-qa="landing-home-start-using"
+          data-qa-key="section-1"
+          (click)="showHelp = true">
+
+          Start using EthKudos
+        </button>
       </p>
     </div>
 
@@ -236,7 +245,14 @@
           members respect the rules and promote gratitude between members.
         </p>
         <a href="#let's-start" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp">
-          <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
+          <button mat-raised-button
+            color="primary"
+            data-qa="landing-home-start-using"
+            data-qa-key="section-2"
+            (click)="showHelp = true">
+
+            Start using EthKudos
+          </button>
         </a>
       </div>
     </div>
@@ -258,7 +274,14 @@
           So, wouldn't you like to have EthKudos on your team?
         </p>
         <a href="#let's-start" *ngIf="(status$ | async) !== 'total' && (status$ | async) !== null && !showHelp">
-          <button mat-raised-button color="primary" (click)="showHelp = true">Start using EthKudos</button>
+          <button mat-raised-button
+            color="primary"
+            data-qa="landing-home-start-using"
+            data-qa-key="section-3"
+            (click)="showHelp = true">
+
+            Start using EthKudos
+          </button>
         </a>
       </div>
       <div class="block__grow">
@@ -312,7 +335,13 @@
             <div class="gauge-content__sub-ether gauge-content__sub-ether--left">needed</div>
             <div class="gauge-content__ether">{{(donationGoal || 0) | number : '.5'}}<span>&Xi;</span></div>
 
-            <button mat-raised-button color="primary" routerLink="/donate">donate</button>
+            <button mat-raised-button
+              color="primary"
+              data-qa="landing-home-section-donate"
+              routerLink="/donate">
+
+              donate
+            </button>
           </div>
         </div>
       </div>
@@ -336,13 +365,13 @@
 
   <footer>
     <div>
-      <a mat-button href="https://github.com/Pedro-vk/EthKudos" target="_blank" rel="noopener">GitHub</a>
-      <a mat-button routerLink="/faqs">FAQs</a>
-      <a mat-button routerLink="/about">About</a>
+      <a mat-button data-qa="landing-home-footer-github" href="https://github.com/Pedro-vk/EthKudos" target="_blank" rel="noopener">GitHub</a>
+      <a mat-button data-qa="landing-home-footer-faqs" routerLink="/faqs">FAQs</a>
+      <a mat-button data-qa="landing-home-footer-about" routerLink="/about">About</a>
     </div>
     <div>
-      <a mat-button routerLink="/privacy-policy">Privacy Policy</a>
-      <a mat-button routerLink="/donate">Donate</a>
+      <a mat-button data-qa="landing-home-footer-privacy" routerLink="/privacy-policy">Privacy Policy</a>
+      <a mat-button data-qa="landing-home-footer-donate" routerLink="/donate">Donate</a>
     </div>
   </footer>
 </div>
