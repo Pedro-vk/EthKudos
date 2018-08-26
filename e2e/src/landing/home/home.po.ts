@@ -35,7 +35,6 @@ export class LandingHomePage extends Page {
     };
   }
 
-
   async getHeaderFaqsButton() {
     return await element(by.css('[data-qa="landing-home-footer-faqs"]'));
   }

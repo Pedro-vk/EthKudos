@@ -32,20 +32,20 @@
 
           <div class="right-side">
 
-            <mat-card class="tx" *ngIf="pendingDonation.tx" [attr.disabled]="pendingDonation.working">
+            <mat-card class="tx" *ngIf="pendingDonation.tx" [attr.disabled]="pendingDonation.working" data-qa="landing-donate-tx-block">
               <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 
-              <div class="tx-link" (click)=goToEtherscan(pendingDonation.tx)>
+              <div class="tx-link" (click)="goToEtherscan(pendingDonation.tx)">
                 <mat-icon>open_in_new</mat-icon>
                 <span>{{pendingDonation.tx}}</span>
               </div>
 
-              <div class="tx-ok" matTooltip="Confirmations" *ngIf="pendingDonation.confirmations">
+              <div class="tx-ok" matTooltip="Confirmations" *ngIf="pendingDonation.confirmations" data-qa="landing-donate-tx-confirmations">
                 <mat-icon>check</mat-icon>
                 <span>{{pendingDonation.confirmations > 20 ? '+20' : pendingDonation.confirmations}}</span>
               </div>
 
-              <button mat-icon-button [disabled]="pendingDonation.working" (click)="pendingDonation.tx = undefined">
+              <button mat-icon-button [disabled]="pendingDonation.working" (click)="pendingDonation.tx = undefined" data-qa="landing-donate-tx-close">
                 <mat-icon>close</mat-icon>
               </button>
             </mat-card>
@@ -55,8 +55,8 @@
               <div class="inputs">
                 <mat-form-field class="ether-input">
                   <span matSuffix>&Xi;</span>
-                  <input
-                    matInput
+                  <input matInput
+                    data-qa="landing-donate-input-donate"
                     [(ngModel)]="donationAmount"
                     type="number"
                     step="0.001"
@@ -64,6 +64,7 @@
                 </mat-form-field>
                 <button mat-raised-button
                   color="primary"
+                  data-qa="landing-donate-make-donate"
                   [disabled]="pendingDonation.working"
                   (click)="donate()">
 

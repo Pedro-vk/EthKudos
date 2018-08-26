@@ -12,7 +12,7 @@ describe('Landing (Home page)', () => {
     await page.navigateTo();
   });
 
-  it('should habe the correct title', async() => {
+  it('should have the correct title', async() => {
     expect(await page.getTitle()).toBe('EthKudos - Time to reward');
   });
 
@@ -23,12 +23,11 @@ describe('Landing (Home page)', () => {
   it('should have the first section showing the correct content', async() => {
     expect(await page.getSectionContent(0)).toEqual({
       h2: 'Connecting coworkers',
-      h3: undefined,
+      h3: 'Join an organisation',
       p: [
         'EthKudos provides an opportunity of gratifying the team collaboration.',
         'Each member rewards people who helped him or her,\nencouraging and recognizing team cooperation between members.',
-        'Start using EthKudos',
-      ]
+      ],
     });
   });
 
@@ -100,7 +99,7 @@ describe('Landing (Home page)', () => {
     expect(await page.getPath()).toBe('/about');
   });
 
-  it('should go to Privacy Policy page clicking on footer Privacy Pokicy button', async() => {
+  it('should go to Privacy Policy page clicking on footer Privacy Policy button', async() => {
     page.navigateTo();
     expect(await page.getPath()).toBe('/');
     (await page.getFooterPrivacyButton()).click();
