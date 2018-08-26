@@ -126,6 +126,11 @@ jobs:
     steps:
       - checkout
       - *CHECKOUT-WORKSPACE
+      - run:
+          command: npm run eth:up
+          background: true
+      - run: rm -rf build/
+      - run: npm run deploy:dev
       - run: npm run e2e
   # Code quality
   lint-ng:
