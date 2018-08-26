@@ -13,6 +13,8 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
 
+import { environment } from '../../environments/environment';
+
 import { Web3Service } from './web3.service';
 import {
   Contract, TruffleContract,
@@ -117,8 +119,12 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
       const subject = new Subject<'error' | 'done' | 'waiting'>();
       const promise = <any>new Promise<TransactionReceipt>((resolve, reject) => {
         let tx;
+        const config: any = {from: this.web3Service.account};
+        if (environment.defaultGasLimit) {
+          config.gas = environment.defaultGasLimit;
+        }
         this.web3Contract.methods[action](...args)
-          .send({from: this.web3Service.account})
+          .send(config)
           .on('transactionHash', txHash => {
             tx = txHash;
             subject.next('waiting');

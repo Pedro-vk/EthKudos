@@ -6,4 +6,5 @@ const ganacheProvider = new HDWalletProvider(defaultGanacheMneonic, `http://loca
 export const environment = {
   production: false,
   web3Provider: ganacheProvider,
+  defaultGasLimit: 6721975,
 };
