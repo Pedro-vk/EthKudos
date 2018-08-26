@@ -1,5 +1,58 @@
 version: 2
 
+workflows:
+  version: 2
+  CI:
+    jobs:
+      - npm-install:
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+      - test-ng:
+          requires:
+            - npm-install
+      - test-sol:
+          requires:
+            - npm-install
+      - post-test:
+          requires:
+            - test-ng
+            - test-sol
+      - coveralls:
+          requires:
+            - post-test
+      - test-e2e:
+          requires:
+            - npm-install
+      - lint-ng:
+          requires:
+            - npm-install
+      - lint-sol:
+          requires:
+            - npm-install
+      - build-app:
+          requires:
+            - npm-install
+      - deploy-github:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - post-test
+            - test-e2e
+            - lint-ng
+            - lint-sol
+            - build-app
+      - cleanup-cloudflare:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - deploy-github
+
 node-defaults: &NODE
   working_directory: ~/eth-kudos
   docker:
@@ -67,6 +120,13 @@ jobs:
       - checkout
       - *CHECKOUT-WORKSPACE
       - run: cat ./lcov.info | node_modules/coveralls/bin/coveralls.js
+  # e2e Tests
+  test-e2e:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run e2e
   # Code quality
   lint-ng:
     <<: *NODE
@@ -113,51 +173,3 @@ jobs:
             -H "X-Auth-Key: ${cloudflare_key}" \
             -H "Content-Type: application/json" \
             --data '{"purge_everything":true}'
-workflows:
-  version: 2
-  CI:
-    jobs:
-      - npm-install:
-          filters:
-            branches:
-              ignore:
-                - gh-pages
-      - test-ng:
-          requires:
-            - npm-install
-      - test-sol:
-          requires:
-            - npm-install
-      - post-test:
-          requires:
-            - test-ng
-            - test-sol
-      - coveralls:
-          requires:
-            - post-test
-      - lint-ng:
-          requires:
-            - npm-install
-      - lint-sol:
-          requires:
-            - npm-install
-      - build-app:
-          requires:
-            - npm-install
-      - deploy-github:
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - post-test
-            - lint-ng
-            - lint-sol
-            - build-app
-      - cleanup-cloudflare:
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - deploy-github
