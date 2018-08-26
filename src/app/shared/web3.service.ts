@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, InjectionToken } from '@angular/core';
 import Web3 from 'web3';
 import * as Web3Module from 'web3';
 import { Transaction, ABIDataTypes } from 'web3/types';
@@ -45,6 +45,8 @@ export interface FullTransaction extends Transaction {
 }
 
 export type networkType = 'main' | 'morden'| 'ropsten'| 'rinkeby'| 'kovan'| 'unknown';
+
+export const WEB3_PROVIDER = new InjectionToken('WEB3_PROVIDER');
 
 @Injectable()
 export class Web3Service {
@@ -156,7 +158,7 @@ export class Web3Service {
     return this._web3 || this.initWeb3();
   }
 
-  constructor() {
+  constructor(@Inject(WEB3_PROVIDER) private _web3Provider: any) {
     this.checkContractInNetwork();
     this.listenChanges();
   }
@@ -175,7 +177,7 @@ export class Web3Service {
 
   private initWeb3(): Web3 {
     if ((<any>window).web3) {
-      return this._web3 = new (<any>Web3Module)((<any>window).web3.currentProvider);
+      return this._web3 = new (<any>Web3Module)(this._web3Provider);
     }
   }
 
