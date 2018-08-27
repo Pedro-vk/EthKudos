@@ -57,17 +57,18 @@
 
     <div class="main__card" *ngIf="(status$ | async) === 'total'">
       <div *ngIf="!(newOrganisation$ | async)" @cardInOut>
-        <mat-card @cardInOut *ngIf="!showCreateForm">
+        <mat-card @cardInOut *ngIf="!showCreateForm" data-qa="landing-home-join-card">
           <h3>Join an organisation</h3>
 
-          <mat-form-field class="input-address">
+          <mat-form-field class="input-address" data-qa="landing-home-join">
             <eth-kudos-blockie matPrefix [address]="orgAddress" variant="prefix"></eth-kudos-blockie>
             <input
               matInput
+              #organisationAddress="ngModel"
               [(ngModel)]="orgAddress"
               (ngModelChange)="newOrgAddress.next($event)"
+              data-qa="landing-home-join-input"
               type="text"
-              #organisationAddress="ngModel"
               name="organisationAddress"
               placeholder="Organisation address (0x...)"
               pattern="(^0x[0-9a-fA-F]{40}$)?"
@@ -76,14 +77,19 @@
               Is not a valid Ethereum address.
             </mat-error>
             <mat-autocomplete #orgs="matAutocomplete">
-              <mat-option *ngFor="let org of organisations$ | async" [value]="org">
+              <mat-option
+                *ngFor="let org of organisations$ | async"
+                [value]="org"
+                data-qa="landing-home-join-autocomplete"
+                [attr.data-qa-key]="org">
+
                 <eth-kudos-blockie class="autocomplete-option__blockie" [address]="org"></eth-kudos-blockie>
                 <span class="autocomplete-option__text">{{org}}</span>
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
 
-          <div class="organisation" *ngIf="selectedOrganisation$ | async as org" @cardInOut>
+          <div class="organisation" *ngIf="selectedOrganisation$ | async as org" @cardInOut data-qa="landing-home-join-org">
             <eth-kudos-blockie [address]="org.address" variant="big"></eth-kudos-blockie>
             <div class="organisation__info">
               <span class="organisation__name">{{org.organisationName || org.name}}</span>
@@ -94,7 +100,7 @@
           </div>
         </mat-card>
 
-        <mat-card @cardInOut *ngIf="showCreateForm" [attr.disabled]="newOrg.working">
+        <mat-card @cardInOut *ngIf="showCreateForm" [attr.disabled]="newOrg.working" data-qa="landing-home-new-org-card">
           <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 
           <h3>Create your organisation</h3>
@@ -107,9 +113,9 @@
           <form #newOrgForm="ngForm" novalidate>
 
             <mat-form-field>
-              <input
-                matInput
+              <input matInput
                 [(ngModel)]="newOrg.organisationName"
+                data-qa="landing-home-new-org-name"
                 type="text"
                 name="orgOrganisationName"
                 placeholder="Organisation name"
@@ -117,9 +123,9 @@
             </mat-form-field>
 
             <mat-form-field>
-              <input
-                matInput
+              <input matInput
                 [(ngModel)]="newOrg.name"
+                data-qa="landing-home-new-org-token"
                 type="text"
                 name="orgName"
                 placeholder="Token name"
@@ -128,9 +134,9 @@
             </mat-form-field>
 
             <mat-form-field>
-              <input
-                matInput
+              <input matInput
                 [(ngModel)]="newOrg.symbol"
+                data-qa="landing-home-new-org-symbol"
                 type="text"
                 name="orgSymbol"
                 minlength="3"
@@ -141,9 +147,9 @@
             </mat-form-field>
 
             <mat-form-field>
-              <input
-                matInput
+              <input matInput
                 [(ngModel)]="newOrg.decimals"
+                data-qa="landing-home-new-org-decimals"
                 type="number"
                 [min]="0"
                 [max]="8"
@@ -154,13 +160,14 @@
 
             <mat-checkbox
               [(ngModel)]="newOrg.toDirectory"
+              data-qa="landing-home-new-org-directory"
               name="orgToDirectory"
               color="primary">
 
               Add to the organisations directory
             </mat-checkbox>
 
-            <div class="organisation organisation--margin" *ngIf="newOrg.organisationName" @cardInOut>
+            <div class="organisation organisation--margin" *ngIf="newOrg.organisationName" @cardInOut data-qa="landing-home-new-org-example">
               <eth-kudos-blockie random variant="big"></eth-kudos-blockie>
               <div class="organisation__info">
                 <span class="organisation__name">{{newOrg.organisationName}}</span>
@@ -176,25 +183,29 @@
         <div class="or">or</div>
 
         <div class="new-organisation" @cardInOut *ngIf="showCreateForm">
-          <button mat-button color="primary" (click)="showCreateForm = !showCreateForm">Join an organisation</button>
+          <button mat-button color="primary" (click)="showCreateForm = !showCreateForm" data-qa="landing-home-button-join">Join an organisation</button>
         </div>
         <div class="new-organisation" @cardInOut *ngIf="!showCreateForm">
-          <button mat-button color="primary" (click)="showCreateForm = !showCreateForm">Create a new organisation</button>
+          <button mat-button color="primary" (click)="showCreateForm = !showCreateForm" data-qa="landing-home-button-create">Create a new organisation</button>
         </div>
       </div>
 
       <div *ngIf="newOrganisation$ | async as newOrganisation" @cardInOut>
-        <mat-card>
+        <mat-card data-qa="landing-home-created-org-card">
           <h3>Organisation created</h3>
 
           <div class="organisation">
             <eth-kudos-blockie [address]="newOrganisation.address" variant="big"></eth-kudos-blockie>
             <div class="organisation__info">
-              <span class="organisation__name">{{newOrganisation.organisationName || newOrganisation.name}}</span>
-              <span class="organisation__balance" *ngIf="newOrganisation.imMember">{{newOrganisation.myBalance}}<span>{{newOrganisation.symbol}}</span></span>
+              <span class="organisation__name" data-qa="landing-home-created-org-name">
+                {{newOrganisation.organisationName || newOrganisation.name}}
+              </span>
+              <span class="organisation__balance" *ngIf="newOrganisation.imMember">
+                {{newOrganisation.myBalance}}<span>{{newOrganisation.symbol}}</span>
+              </span>
               <span class="organisation__not-member" *ngIf="!newOrganisation.imMember">Let's start</span>
             </div>
-            <button mat-button color="primary" [routerLink]="['/', newOrganisation.address]">open</button>
+            <button mat-button color="primary" [routerLink]="['/', newOrganisation.address]" data-qa="landing-home-created-org-open">open</button>
           </div>
         </mat-card>
       </div>

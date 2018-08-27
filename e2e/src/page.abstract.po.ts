@@ -46,4 +46,16 @@ export abstract class Page {
   protected async getAllBySelector(selector: string, ofElement: ElementFinder = <any>element): Promise<ElementArrayFinder> {
     return <any>await (<any>ofElement.all)(by.css(selector));
   }
+
+  protected dataQa(dataQa: string) {
+    return async(): Promise<ElementFinder> => await element(by.css(`[data-qa="${dataQa}"]`));
+  }
+  protected dataQaAll(dataQa: string) {
+    return async(): Promise<ElementArrayFinder> => this.getAllBySelector('[data-qa="${dataQa}"]');
+  }
+  protected dataQaWait(dataQa: string) {
+    return async(): Promise<ElementFinder> => {
+      await this.waitUntilElement(element(by.css(`[data-qa="${dataQa}"]`)));
+    };
+  }
 }

@@ -3,6 +3,29 @@ import { browser, by, element, ElementFinder, ElementArrayFinder } from 'protrac
 import { Page } from '../../page.abstract.po';
 
 export class LandingHomePage extends Page {
+  readonly getHeaderFaqsButton = this.dataQa('landing-home-footer-faqs');
+  readonly getSectionDonateButton = this.dataQa('landing-home-footer-donate');
+  readonly getFooterGithubButton = this.dataQa('landing-home-footer-github');
+  readonly getFooterFaqsButton = this.dataQa('landing-home-footer-faqs');
+  readonly getFooterAboutButton = this.dataQa('landing-home-footer-about');
+  readonly getFooterPrivacyButton = this.dataQa('landing-home-footer-privacy');
+  readonly getFooterDonateButton = this.dataQa('landing-home-footer-donate');
+
+  readonly getJoinCard = this.dataQa('landing-home-join-card"]');
+  readonly getNewOrgCard = this.dataQa('landing-home-new-org-card"]');
+  readonly getCreatedOrgCard = this.dataQa('landing-home-created-org-card"]');
+
+  readonly getCreateButton = this.dataQa('landing-home-button-create"]');
+  readonly getJoinButton = this.dataQa('landing-home-button-join"]');
+
+  readonly getJoinInput = this.dataQa('landing-home-join-input"]');
+  readonly getJoinAutocompletions = this.dataQaAll('landing-home-join-autocomplete');
+
+  readonly getNewOrgNameInput = this.dataQa('landing-home-new-org-name"]');
+  readonly getNewOrgTokenInput = this.dataQa('landing-home-new-org-toekn"]');
+  readonly getNewOrgSymbolInput = this.dataQa('landing-home-new-org-symbol"]');
+  readonly getNewOrgDecimalsInput = this.dataQa('landing-home-new-org-decimals"]');
+
   async navigateTo() {
     return await this.goToPath('/');
   }
@@ -39,21 +62,6 @@ export class LandingHomePage extends Page {
     return await element(by.css('[data-qa="landing-home-footer-faqs"]'));
   }
   async getSectionDonateButton() {
-    return await element(by.css('[data-qa="landing-home-footer-donate"]'));
-  }
-  async getFooterGithubButton() {
-    return await element(by.css('[data-qa="landing-home-footer-github"]'));
-  }
-  async getFooterFaqsButton() {
-    return await element(by.css('[data-qa="landing-home-footer-faqs"]'));
-  }
-  async getFooterAboutButton() {
-    return await element(by.css('[data-qa="landing-home-footer-about"]'));
-  }
-  async getFooterPrivacyButton() {
-    return await element(by.css('[data-qa="landing-home-footer-privacy"]'));
-  }
-  async getFooterDonateButton() {
     return await element(by.css('[data-qa="landing-home-footer-donate"]'));
   }
 }
