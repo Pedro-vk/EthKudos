@@ -47,15 +47,21 @@ export abstract class Page {
     return <any>await (<any>ofElement.all)(by.css(selector));
   }
 
-  protected dataQa(dataQa: string) {
-    return async(): Promise<ElementFinder> => await element(by.css(`[data-qa="${dataQa}"]`));
+  protected dataQa(dataQa: string, waitDelay: number = 0): (() => Promise<ElementFinder>) & {waitUntil: () => Promise<ElementFinder>} {
+    const promise: any = async(): Promise<ElementFinder> => await element(by.css(`[data-qa="${dataQa}"]`));
+    promise.waitUntil = async(): Promise<ElementFinder> => {
+      const e = await this.dataQaWait(dataQa);
+      await browser.sleep(waitDelay);
+      return <any>e;
+    };
+    return promise;
   }
   protected dataQaAll(dataQa: string) {
     return async(): Promise<ElementArrayFinder> => this.getAllBySelector('[data-qa="${dataQa}"]');
   }
   protected dataQaWait(dataQa: string) {
     return async(): Promise<ElementFinder> => {
-      await this.waitUntilElement(element(by.css(`[data-qa="${dataQa}"]`)));
+      return await this.waitUntilElement(element(by.css(`[data-qa="${dataQa}"]`)));
     };
   }
 }

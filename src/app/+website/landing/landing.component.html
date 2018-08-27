@@ -173,7 +173,14 @@
                 <span class="organisation__name">{{newOrg.organisationName}}</span>
                 <span class="organisation__balance">{{(19 + getDecimals(newOrg.decimals)) | number : '.0-' + (newOrg.decimals || 0)}}<span>{{newOrg.symbol}}</span></span>
               </div>
-              <button mat-button color="primary" [disabled]="!newOrgForm.valid" (click)="createOrganisation(newOrgForm)">create</button>
+              <button mat-button
+                color="primary"
+                data-qa="landing-home-new-org-create"
+                [disabled]="!newOrgForm.valid"
+                (click)="createOrganisation(newOrgForm)">
+
+                create
+              </button>
             </div>
 
           </form>
@@ -194,7 +201,7 @@
         <mat-card data-qa="landing-home-created-org-card">
           <h3>Organisation created</h3>
 
-          <div class="organisation">
+          <div class="organisation" data-qa="landing-home-created-org-content">
             <eth-kudos-blockie [address]="newOrganisation.address" variant="big"></eth-kudos-blockie>
             <div class="organisation__info">
               <span class="organisation__name" data-qa="landing-home-created-org-name">
