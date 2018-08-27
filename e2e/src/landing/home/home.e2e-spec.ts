@@ -113,3 +113,44 @@ describe('Landing (Home page)', () => {
     expect(await page.getPath()).toBe('/donate');
   });
 });
+
+describe('Landing (Organization creation)', () => {
+  let page: LandingHomePage;
+
+  beforeEach(() => {
+    page = new LandingHomePage();
+  });
+
+  it('should be able to access', async() => {
+    await page.navigateTo();
+  });
+
+  it('should have the joining card available', async() => {
+    expect(await page.isPresent(await page.getJoinCard())).toBeTruthy();
+  });
+
+  it('should be able to search the organization by address and see empty results', async() => {
+    expect(await page.isPresent(await page.getJoinCard())).toBeTruthy();
+    await (await page.getJoinInput()).clear().sendKeys('0x');
+    expect(await (await page.getJoinInput()).getAttribute('value')).toBe('0x');
+    expect((await page.getJoinAutocompletions()).length).toBe(0);
+  });
+
+  it('should create a new organization', async() => {
+    (await page.getCreateButton()).click();
+    await page.getNewOrgCard.waitUntil();
+
+    expect(await page.isPresent(await page.getJoinCard())).toBeFalsy();
+    expect(await page.isPresent(await page.getNewOrgCard())).toBeTruthy();
+
+    await page.setNewOrganizationForm('Org e2e', 'OrgToken', 'e2e', 1);
+
+    (await page.getNewOrgCreateButton()).click();
+
+    await page.getCreatedOrgCard.waitUntil();
+    await page.getCreatedOrgContent.waitUntil();
+
+    expect(await (await page.getCreatedOrgContent()).getText()).toBe(`Org e2e\nLet's start\nopen`);
+
+  });
+});

@@ -11,20 +11,24 @@ export class LandingHomePage extends Page {
   readonly getFooterPrivacyButton = this.dataQa('landing-home-footer-privacy');
   readonly getFooterDonateButton = this.dataQa('landing-home-footer-donate');
 
-  readonly getJoinCard = this.dataQa('landing-home-join-card"]');
-  readonly getNewOrgCard = this.dataQa('landing-home-new-org-card"]');
-  readonly getCreatedOrgCard = this.dataQa('landing-home-created-org-card"]');
+  readonly getJoinCard = this.dataQa('landing-home-join-card', 1000);
+  readonly getNewOrgCard = this.dataQa('landing-home-new-org-card', 1000);
+  readonly getCreatedOrgCard = this.dataQa('landing-home-created-org-card', 1000);
 
-  readonly getCreateButton = this.dataQa('landing-home-button-create"]');
-  readonly getJoinButton = this.dataQa('landing-home-button-join"]');
+  readonly getCreateButton = this.dataQa('landing-home-button-create');
+  readonly getJoinButton = this.dataQa('landing-home-button-join');
 
-  readonly getJoinInput = this.dataQa('landing-home-join-input"]');
+  readonly getJoinInput = this.dataQa('landing-home-join-input');
   readonly getJoinAutocompletions = this.dataQaAll('landing-home-join-autocomplete');
 
-  readonly getNewOrgNameInput = this.dataQa('landing-home-new-org-name"]');
-  readonly getNewOrgTokenInput = this.dataQa('landing-home-new-org-toekn"]');
-  readonly getNewOrgSymbolInput = this.dataQa('landing-home-new-org-symbol"]');
-  readonly getNewOrgDecimalsInput = this.dataQa('landing-home-new-org-decimals"]');
+  readonly getNewOrgNameInput = this.dataQa('landing-home-new-org-name');
+  readonly getNewOrgTokenInput = this.dataQa('landing-home-new-org-token');
+  readonly getNewOrgSymbolInput = this.dataQa('landing-home-new-org-symbol');
+  readonly getNewOrgDecimalsInput = this.dataQa('landing-home-new-org-decimals');
+  readonly getNewOrgDirectoryCheckbox = this.dataQa('landing-home-new-org-directory');
+  readonly getNewOrgCreateButton = this.dataQa('landing-home-new-org-create');
+
+  readonly getCreatedOrgContent = this.dataQa('landing-home-created-org-content', 2000);
 
   async navigateTo() {
     return await this.goToPath('/');
@@ -58,10 +62,13 @@ export class LandingHomePage extends Page {
     };
   }
 
-  async getHeaderFaqsButton() {
-    return await element(by.css('[data-qa="landing-home-footer-faqs"]'));
-  }
-  async getSectionDonateButton() {
-    return await element(by.css('[data-qa="landing-home-footer-donate"]'));
+  async setNewOrganizationForm(name: string, token: string, symbol: string, decimals: number, directory?: boolean) {
+    await (await this.getNewOrgNameInput()).clear().sendKeys(name);
+    await (await this.getNewOrgTokenInput()).clear().sendKeys(token);
+    await (await this.getNewOrgSymbolInput()).clear().sendKeys(symbol);
+    await (await this.getNewOrgDecimalsInput()).clear().sendKeys(String(decimals));
+    if (directory) {
+      await (await this.getNewOrgDirectoryCheckbox()).click();
+    }
   }
 }
