@@ -23,6 +23,8 @@ describe('Web3Service', () => {
   let intervalMock;
 
   beforeEach(() => {
+    spyOn(<any>Web3Service.prototype, 'listenChanges');
+
     TestBed.configureTestingModule({
       providers: [Web3Service]
     });

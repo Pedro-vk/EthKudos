@@ -158,7 +158,7 @@ export class Web3Service {
 
   constructor() {
     this.checkContractInNetwork();
-    setTimeout(() => this.listenChanges(), 100);
+    this.listenChanges();
   }
 
   static addABI(abi: any): void {
