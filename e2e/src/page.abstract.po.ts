@@ -1,5 +1,7 @@
 import { browser, by, element, ExpectedConditions as until, ElementArrayFinder, ElementFinder } from 'protractor';
 
+type elementGetterAndWaitable<T> = (() => Promise<T>) & {waitUntil: (delay?: number) => Promise<T>};
+
 export abstract class Page {
 
   abstract navigateTo(params?: string | number | {[param: string]: string | number}): Promise<any>;
@@ -29,9 +31,10 @@ export abstract class Page {
     return browser.isElementPresent(elementFinder);
   }
 
-  protected async goToPath(path: string) {
+  protected async goToPath(path: string, wait: number = 0) {
     await browser.waitForAngularEnabled(false);
-    return await browser.get(path);
+    await browser.get(path);
+    await browser.sleep(wait);
   }
 
   protected async waitUntilElement(elementFinder: ElementFinder, timeout: number = 5000): Promise<ElementFinder> {
@@ -39,7 +42,7 @@ export abstract class Page {
     return elementFinder;
   }
 
-  protected async whiteUntilCss(selector: string, timeout: number = 5000) {
+  protected async waitUntilCss(selector: string, timeout: number = 5000) {
     return await this.waitUntilElement(element(by.css(selector)), timeout);
   }
 
@@ -47,17 +50,23 @@ export abstract class Page {
     return <any>await (<any>ofElement.all)(by.css(selector));
   }
 
-  protected dataQa(dataQa: string, waitDelay: number = 0): (() => Promise<ElementFinder>) & {waitUntil: () => Promise<ElementFinder>} {
+  protected dataQa(dataQa: string, waitDelay: number = 0): elementGetterAndWaitable<ElementFinder> {
     const promise: any = async(): Promise<ElementFinder> => await element(by.css(`[data-qa="${dataQa}"]`));
-    promise.waitUntil = async(): Promise<ElementFinder> => {
-      const e = await this.dataQaWait(dataQa);
-      await browser.sleep(waitDelay);
+    promise.waitUntil = async(delay = 0): Promise<ElementFinder> => {
+      const e = await this.dataQaWait(dataQa)();
+      await browser.sleep(Math.max(waitDelay, delay));
       return <any>e;
     };
     return promise;
   }
-  protected dataQaAll(dataQa: string) {
-    return async(): Promise<ElementArrayFinder> => this.getAllBySelector('[data-qa="${dataQa}"]');
+  protected dataQaAll(dataQa: string, waitDelay: number = 0): elementGetterAndWaitable<ElementArrayFinder> {
+    const promise: any = async(): Promise<ElementArrayFinder> => await this.getAllBySelector(`[data-qa="${dataQa}"]`);
+    promise.waitUntil = async(delay = 0): Promise<ElementArrayFinder> => {
+      await this.dataQaWait(dataQa)();
+      await browser.sleep(Math.max(waitDelay, delay));
+      return await <any>this.getAllBySelector(`[data-qa="${dataQa}"]`);
+    };
+    return promise;
   }
   protected dataQaWait(dataQa: string) {
     return async(): Promise<ElementFinder> => {

@@ -16,7 +16,7 @@ export class LandingDonatePage extends Page {
 
   async sendDonation() {
     (await this.getDonateButton()).click();
-    await this.waitUntilElement(await this.getTransactionBlock());
+    await await this.getTransactionBlock.waitUntil(100);
   }
 
   async waitForTransactionConfirmed() {

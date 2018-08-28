@@ -29,6 +29,8 @@ exports.config = {
     jasmine.getEnv().addReporter(new JUnitXmlReporter({
       savePath: path.join(__dirname, '../test-results/e2e'),
       consolidateAll: false,
+      useFullTestName: true,
+      modifySuiteName: () => 'e2e',
     }));
   }
 };
