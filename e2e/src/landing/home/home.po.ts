@@ -63,10 +63,10 @@ export class LandingHomePage extends Page {
   }
 
   async setNewOrganizationForm(name: string, token: string, symbol: string, decimals: number, directory?: boolean) {
-    await (await this.getNewOrgNameInput()).clear().sendKeys(name);
-    await (await this.getNewOrgTokenInput()).clear().sendKeys(token);
-    await (await this.getNewOrgSymbolInput()).clear().sendKeys(symbol);
-    await (await this.getNewOrgDecimalsInput()).clear().sendKeys(String(decimals));
+    await (await this.getNewOrgNameInput.waitUntil()).clear().sendKeys(name);
+    await (await this.getNewOrgTokenInput.waitUntil()).clear().sendKeys(token);
+    await (await this.getNewOrgSymbolInput.waitUntil()).clear().sendKeys(symbol);
+    await (await this.getNewOrgDecimalsInput.waitUntil()).clear().sendKeys(String(decimals));
     if (directory) {
       await (await this.getNewOrgDirectoryCheckbox()).click();
     }

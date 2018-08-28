@@ -65,49 +65,49 @@ describe('Landing (Home page)', () => {
   });
 
   it('should go to FAQs page clicking on header help icon', async() => {
-    page.navigateTo();
+    await page.navigateTo();
     expect(await page.getPath()).toBe('/');
     (await page.getHeaderFaqsButton()).click();
     expect(await page.getPath()).toBe('/faqs');
   });
 
   it('should go to donation page clicking on support the project section', async() => {
-    page.navigateTo();
+    await page.navigateTo();
     expect(await page.getPath()).toBe('/');
     (await page.getSectionDonateButton()).click();
     expect(await page.getPath()).toBe('/donate');
   });
 
   it('should go to GitHub clicking on footer GitHub button', async() => {
-    page.navigateTo();
+    await page.navigateTo();
     expect(await page.getPath()).toBe('/');
     (await page.getFooterGithubButton()).click();
     expect(await page.getNewTabUrlAndClose()).toBe('https://github.com/Pedro-vk/EthKudos');
   });
 
   it('should go to FAQs page clicking on footer FAQs button', async() => {
-    page.navigateTo();
+    await page.navigateTo();
     expect(await page.getPath()).toBe('/');
     (await page.getFooterFaqsButton()).click();
     expect(await page.getPath()).toBe('/faqs');
   });
 
   it('should go to About page clicking on footer About button', async() => {
-    page.navigateTo();
+    await page.navigateTo();
     expect(await page.getPath()).toBe('/');
     (await page.getFooterAboutButton()).click();
     expect(await page.getPath()).toBe('/about');
   });
 
   it('should go to Privacy Policy page clicking on footer Privacy Policy button', async() => {
-    page.navigateTo();
+    await page.navigateTo();
     expect(await page.getPath()).toBe('/');
     (await page.getFooterPrivacyButton()).click();
     expect(await page.getPath()).toBe('/privacy-policy');
   });
 
   it('should go to Donate page clicking on footer Donate button', async() => {
-    page.navigateTo();
+    await page.navigateTo();
     expect(await page.getPath()).toBe('/');
     (await page.getFooterDonateButton()).click();
     expect(await page.getPath()).toBe('/donate');
@@ -126,7 +126,7 @@ describe('Landing (Organization creation)', () => {
   });
 
   it('should have the joining card available', async() => {
-    expect(await page.isPresent(await page.getJoinCard())).toBeTruthy();
+    expect(await page.isPresent(await page.getJoinCard.waitUntil())).toBeTruthy();
   });
 
   it('should be able to search the organization by address and see empty results', async() => {
@@ -137,20 +137,35 @@ describe('Landing (Organization creation)', () => {
   });
 
   it('should create a new organization', async() => {
-    (await page.getCreateButton()).click();
+    await page.navigateTo();
+
+    (await page.getCreateButton.waitUntil(100)).click();
+
     await page.getNewOrgCard.waitUntil();
+    await page.getNewOrgNameInput.waitUntil();
 
     expect(await page.isPresent(await page.getJoinCard())).toBeFalsy();
     expect(await page.isPresent(await page.getNewOrgCard())).toBeTruthy();
 
     await page.setNewOrganizationForm('Org e2e', 'OrgToken', 'e2e', 1);
+    (await page.getNewOrgCreateButton()).click();
 
+    expect(await (await page.getCreatedOrgContent.waitUntil(300)).getText()).toBe(`Org e2e\nLet's start\nopen`);
+  });
+
+  it('should create a new organization and add it on the directory', async() => {
+    await page.navigateTo();
+
+    (await page.getCreateButton.waitUntil(100)).click();
+
+    await page.setNewOrganizationForm('Org e2e', 'OrgToken', 'e2e', 1, true);
     (await page.getNewOrgCreateButton()).click();
 
     await page.getCreatedOrgCard.waitUntil();
-    await page.getCreatedOrgContent.waitUntil();
 
-    expect(await (await page.getCreatedOrgContent()).getText()).toBe(`Org e2e\nLet's start\nopen`);
+    await page.navigateTo();
 
+    await (await page.getJoinInput.waitUntil()).clear().sendKeys('0x');
+    expect((await page.getJoinAutocompletions.waitUntil(200)).length).toBe(1);
   });
 });
