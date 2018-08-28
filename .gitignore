@@ -8,6 +8,7 @@
 coverage/
 coverage-ng/
 coverage-sol/
+test-results/
 
 # dependencies
 /node_modules
@@ -44,6 +45,5 @@ Thumbs.db
 # Truffle
 installed_contracts/*
 coverage\.json
-
-
 build/merged/
+

@@ -61,7 +61,7 @@ export function getCurrentValidLocale() {
     ...PROVIDERS,
     Title,
     {provide: LOCALE_ID, useValue: getCurrentValidLocale()},
-    {provide: WEB3_PROVIDER, useValue: environment.web3Provider || (<any>window).web3.currentProvider}
+    {provide: WEB3_PROVIDER, useValue: environment.web3Provider || ((<any>window).web3 && (<any>window).web3.currentProvider)}
   ],
   bootstrap: [AppWrapperComponent]
 })
