@@ -1,7 +1,8 @@
-/* tslint:disable:max-line-length */
-import { LandingDonatePage } from './donate.po';
+import { LandingDonatePage } from '../pages/donate.po';
 
-describe('Landing (Donate page)', () => {
+import * as helpers from '../helpers';
+
+describe('Donate page', () => {
   let page: LandingDonatePage;
 
   beforeEach(() => {
@@ -13,7 +14,7 @@ describe('Landing (Donate page)', () => {
   });
 
   it('should have the correct title', async() => {
-    expect(await page.getTitle()).toBe('EthKudos - Donate');
+    expect(await helpers.getTitle()).toBe('EthKudos - Donate');
   });
 
   it('should have the donation default value of 0.01', async() => {
@@ -27,15 +28,14 @@ describe('Landing (Donate page)', () => {
   });
 
   it('should be able to send transactions', async() => {
-    expect(await page.isPresent(await page.getTransactionBlock())).toBeFalsy();
+    expect(await helpers.isPresent(await page.getTransactionBlock())).toBeFalsy();
     await page.sendDonation();
-    expect(await page.isPresent(await page.getTransactionBlock.waitUntil())).toBeTruthy();
-    expect(await page.isPresent(await page.getTransactionConfirmations())).toBeFalsy();
+    expect(await helpers.isPresent(await page.getTransactionConfirmations())).toBeFalsy();
 
     await page.waitForTransactionConfirmed();
 
     expect(await (await page.getTransactionCloseButton()).isEnabled()).toBeTruthy();
-    expect(await page.isPresent(await page.getTransactionConfirmations())).toBeTruthy();
+    expect(await helpers.isPresent(await page.getTransactionConfirmations())).toBeTruthy();
     expect(await (await page.getTransactionConfirmations()).getText()).toBe('check\n1');
     expect(await (await page.getTransactionCloseButton()).isEnabled()).toBeTruthy();
   });
