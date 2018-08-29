@@ -156,7 +156,7 @@ describe('Landing (Organization creation)', () => {
     await page.navigateTo();
 
     await (await page.getJoinInput.waitUntil()).clear().sendKeys('0x');
-    const orgsNumber = (await page.getJoinAutocompletions.waitUntil(200)).length;
+    const orgsNumber = (await page.getJoinAutocompletions()).length;
     await (await page.getJoinInput.waitUntil()).clear().sendKeys('x');
 
     (await page.getCreateButton.waitUntil(300)).click();
