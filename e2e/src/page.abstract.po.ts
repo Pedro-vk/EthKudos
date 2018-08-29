@@ -59,10 +59,12 @@ export abstract class Page {
     };
     return promise;
   }
-  protected dataQaAll(dataQa: string, waitDelay: number = 0): elementGetterAndWaitable<ElementArrayFinder> {
+  protected dataQaAll(dataQa: string, waitDelay: number = 0, noPresence: boolean = false): elementGetterAndWaitable<ElementArrayFinder> {
     const promise: any = async(): Promise<ElementArrayFinder> => await this.getAllBySelector(`[data-qa="${dataQa}"]`);
     promise.waitUntil = async(delay = 0): Promise<ElementArrayFinder> => {
-      await this.dataQaWait(dataQa)();
+      if (!noPresence) {
+        await this.dataQaWait(dataQa)();
+      }
       await browser.sleep(Math.max(waitDelay, delay));
       return await <any>this.getAllBySelector(`[data-qa="${dataQa}"]`);
     };

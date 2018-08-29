@@ -19,7 +19,7 @@ export class LandingHomePage extends Page {
   readonly getJoinButton = this.dataQa('landing-home-button-join');
 
   readonly getJoinInput = this.dataQa('landing-home-join-input');
-  readonly getJoinAutocompletions = this.dataQaAll('landing-home-join-autocomplete');
+  readonly getJoinAutocompletions = this.dataQaAll('landing-home-join-autocomplete', 500, true);
 
   readonly getNewOrgNameInput = this.dataQa('landing-home-new-org-name');
   readonly getNewOrgTokenInput = this.dataQa('landing-home-new-org-token');

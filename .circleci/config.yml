@@ -138,14 +138,7 @@ jobs:
           background: true
       - run: rm -rf build/
       - run: npm run deploy:dev
-      - run: npm run e2e || export FAILED=true
-      - store_artifacts:
-          path: test-results
-      - store_test_results:
-          path: test-results
-      - run: |
-          echo "Failed: $FAILED"
-          [ "$FAILED" != "true" ]
+      - run: npm run e2e
   # Code quality
   lint-ng:
     <<: *NODE
