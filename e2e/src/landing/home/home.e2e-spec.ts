@@ -129,11 +129,10 @@ describe('Landing (Organization creation)', () => {
     expect(await page.isPresent(await page.getJoinCard.waitUntil())).toBeTruthy();
   });
 
-  it('should be able to search the organization by address and see empty results', async() => {
+  it('should be able to search the organization by address', async() => {
     expect(await page.isPresent(await page.getJoinCard())).toBeTruthy();
     await (await page.getJoinInput()).clear().sendKeys('0x');
     expect(await (await page.getJoinInput()).getAttribute('value')).toBe('0x');
-    expect((await page.getJoinAutocompletions()).length).toBe(0);
   });
 
   it('should create a new organization', async() => {
@@ -156,7 +155,11 @@ describe('Landing (Organization creation)', () => {
   it('should create a new organization and add it on the directory', async() => {
     await page.navigateTo();
 
-    (await page.getCreateButton.waitUntil(100)).click();
+    await (await page.getJoinInput.waitUntil()).clear().sendKeys('0x');
+    const orgsNumber = (await page.getJoinAutocompletions.waitUntil(200)).length;
+    await (await page.getJoinInput.waitUntil()).clear().sendKeys('x');
+
+    (await page.getCreateButton.waitUntil(300)).click();
 
     await page.setNewOrganizationForm('Org e2e', 'OrgToken', 'e2e', 1, true);
     (await page.getNewOrgCreateButton()).click();
@@ -166,6 +169,6 @@ describe('Landing (Organization creation)', () => {
     await page.navigateTo();
 
     await (await page.getJoinInput.waitUntil()).clear().sendKeys('0x');
-    expect((await page.getJoinAutocompletions.waitUntil(200)).length).toBe(1);
+    expect((await page.getJoinAutocompletions.waitUntil(200)).length).toBe(orgsNumber + 1);
   });
 });
