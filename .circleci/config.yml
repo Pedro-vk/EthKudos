@@ -19,7 +19,7 @@ workflows:
           requires:
             - test-ng
             - test-sol
-      - coveralls:
+      - coverages:
           requires:
             - post-test
       - test-e2e:
@@ -114,12 +114,19 @@ jobs:
           paths:
             - lcov.info
   # Tests coverage
-  coveralls:
+  coverages:
     <<: *NODE
     steps:
       - checkout
       - *CHECKOUT-WORKSPACE
       - run: cat ./lcov.info | node_modules/coveralls/bin/coveralls.js
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run: ./cc-test-reporter format-coverage -t lcov ./lcov.info
+      - run: ./cc-test-reporter upload-coverage
   # e2e Tests
   test-e2e:
     <<: *NODE
@@ -138,7 +145,7 @@ jobs:
           path: test-results
       - run: |
           echo "Failed: $FAILED"
-          test -n "$FAILED" && false
+          [ "$FAILED" != "true" ]
   # Code quality
   lint-ng:
     <<: *NODE
