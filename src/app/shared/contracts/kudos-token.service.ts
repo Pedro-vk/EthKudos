@@ -148,16 +148,6 @@ export class KudosTokenService
       });
   }
 
-  async fromDecimals(value: number): Promise<number> {
-    const decimals = await this.decimals();
-    return value * (10 ** decimals);
-  }
-
-  async fromInt(value: number): Promise<number> {
-    const decimals = await this.decimals();
-    return value / (10 ** decimals);
-  }
-
   async getContactsOf(members: string[]): Promise<{member: string, name: string}[]> {
     const contacts = members.map(async member => ({member, name: await this.getContact(member)}));
     return await Promise.all(contacts);
@@ -177,12 +167,6 @@ export class KudosTokenService
   async myContact(): Promise<string> {
     const myAccount = await this.web3Service.getAccount().toPromise();
     return await this.getContact(myAccount);
-  }
-
-  async imOwner(): Promise<boolean> {
-    const owner = await this.owner();
-    const i = await this.web3Service.getAccount().toPromise();
-    return owner.toLowerCase() === i.toLowerCase();
   }
 
   async imMember(): Promise<boolean> {

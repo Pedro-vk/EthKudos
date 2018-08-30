@@ -21,6 +21,8 @@ import {
   TruffleContractConstantMethods, TruffleContractConstantIteratorMethods, TruffleContractActionMethods, TruffleContractEventMethods,
 } from './truffle.interface';
 
+const emptyPromise: () => Promise<undefined> = () => Promise.resolve(undefined);
+
 export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   protected readonly _onInitialized: BehaviorSubject<any> = new BehaviorSubject(undefined);
   readonly onInitialized: Observable<any> = this._onInitialized.filter(_ => !!_);
@@ -54,7 +56,6 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   }
 
   getTokenInfo(): Observable<{name?: string, symbol?: string, decimals?: number}> {
-    const emptyPromise = () => new Promise(resolve => resolve(undefined));
     return this
       .checkUpdates(async contract => ({
         name: await ((<any>contract).name || emptyPromise)(),
@@ -63,6 +64,22 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
       }))
       .distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
       .share();
+  }
+
+  async fromDecimals(value: number): Promise<number> {
+    const decimals = await ((<any>this.contract).decimals || emptyPromise)();
+    return value * (10 ** decimals);
+  }
+
+  async fromInt(value: number): Promise<number> {
+    const decimals = await ((<any>this.contract).decimals || emptyPromise)();
+    return value / (10 ** decimals);
+  }
+
+  async imOwner(): Promise<boolean> {
+    const owner = await ((<any>this.contract).owner || emptyPromise)();
+    const account = await this.web3Service.getAccount().toPromise();
+    return owner.toLowerCase() === account.toLowerCase();
   }
 
   protected getContract(smartContractDescriptor: any): Contract<TruffleContract<C, CI, A, E>> {
