@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ViewChil
 import 'rxjs/add/operator/first';
 
 import { Web3Service, networkType } from '../../../shared';
+import { ContentBaseComponent } from '../content-base.abstract';
 
 @Component({
   selector: 'eth-kudos-donate',
@@ -9,8 +10,7 @@ import { Web3Service, networkType } from '../../../shared';
   styleUrls: ['./donate.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DonateComponent implements OnInit {
-  visible: boolean;
+export class DonateComponent extends ContentBaseComponent implements OnInit {
   copied: boolean;
   donationAmount = 0.01;
   pendingDonation: {working: boolean, tx?: string, confirmations?: number} = {working: undefined};
@@ -20,13 +20,8 @@ export class DonateComponent implements OnInit {
   readonly status$ = this.web3Service.status$;
   readonly network$ = this.web3Service.getNetworkType();
 
-  constructor(private web3Service: Web3Service, private changeDetectorRef: ChangeDetectorRef) { }
-
-  ngOnInit() {
-    setTimeout(() => {
-      this.visible = true;
-      this.changeDetectorRef.markForCheck();
-    }, 10);
+  constructor(private web3Service: Web3Service, protected changeDetectorRef: ChangeDetectorRef) {
+    super(changeDetectorRef);
   }
 
   copyAddress() {
