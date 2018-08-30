@@ -77,19 +77,20 @@ export class AppComponent implements OnInit {
   }
 
   share() {
+    if ((navigator as any).share) {
+      this.openShareDialog();
+      return;
+    }
     this.kudosTokenService$
       .mergeMap(kudosTokenService => kudosTokenService.onInitialized.map(() => kudosTokenService))
       .map(async kudosTokenService => {
-        if ((navigator as any).share) {
-          (navigator as any)
-            .share({
-              title: `Join ${await kudosTokenService.name()}`,
-              url: `{document.location.origin}/${kudosTokenService.address}`,
-            })
-            .then(() => {})
-            .catch(() => {});
-        }
-        return;
+        (navigator as any)
+          .share({
+            title: `Join ${await kudosTokenService.name()}`,
+            url: `{document.location.origin}/${kudosTokenService.address}`,
+          })
+          .then(() => {})
+          .catch(() => {});
       })
       .subscribe(proimise => proimise.then(() => {}));
   }
