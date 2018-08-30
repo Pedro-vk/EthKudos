@@ -64,10 +64,4 @@ export class KudosOrganisationsService
           });
       });
   }
-
-  async imOnwer(): Promise<boolean> {
-    const owner = await this.owner();
-    const i = await this.web3Service.getAccount().toPromise();
-    return owner.toLowerCase() === i.toLowerCase();
-  }
 }
