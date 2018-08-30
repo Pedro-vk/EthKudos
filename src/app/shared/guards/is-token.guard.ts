@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/first';
 
-import { KudosTokenFactoryService } from './kudos-token-factory.service';
+import { KudosTokenFactoryService } from '../kudos-token-factory.service';
 
 @Injectable()
 export class IsTokenGuard implements CanActivate {

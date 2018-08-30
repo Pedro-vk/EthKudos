@@ -4,11 +4,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppCommonModule } from '../../app-common.module';
 import { ContentBaseComponent } from './content-base.abstract';
 
-class ContentBaseExtendedComponent extends ContentBaseComponent { };
+class ContentBaseExtendedComponent extends ContentBaseComponent { }
 
 describe('ContentBaseComponent', () => {
+  const changeDetectorRefMarkForCheckSpy = jasmine.createSpy('markForCheck');
   let component: ContentBaseComponent;
-  let changeDetectorRefMarkForCheckSpy = jasmine.createSpy('markForCheck');
 
   beforeEach(() => {
     component = new ContentBaseExtendedComponent(<any>{markForCheck: changeDetectorRefMarkForCheckSpy});

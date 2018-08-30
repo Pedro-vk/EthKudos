@@ -1,7 +1,7 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { Web3Service } from './web3.service';
+import { Web3Service } from '../web3.service';
 
 import { IsConnectedGuard } from './is-connected.guard';
 

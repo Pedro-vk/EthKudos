@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Web3Service } from './web3.service';
 
-import { KudosTokenService } from './kudos-token.service';
+import { KudosTokenService } from './contracts/kudos-token.service';
 import { KudosPollFactoryService } from './kudos-poll-factory.service';
 
 @Injectable()

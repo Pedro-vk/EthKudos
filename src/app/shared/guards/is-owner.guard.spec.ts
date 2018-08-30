@@ -1,20 +1,20 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { Web3Service } from './web3.service';
-import { KudosTokenFactoryService } from './kudos-token-factory.service';
-import { KudosPollFactoryService } from './kudos-poll-factory.service';
+import { Web3Service } from '../web3.service';
+import { KudosTokenFactoryService } from '../kudos-token-factory.service';
+import { KudosPollFactoryService } from '../kudos-poll-factory.service';
 
-import { IsTokenGuard } from './is-token.guard';
+import { IsOwnerGuard } from './is-owner.guard';
 
-describe('IsTokenGuard', () => {
+describe('IsOwnerGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
       ],
       providers: [
-        IsTokenGuard,
+        IsOwnerGuard,
         Web3Service,
         KudosTokenFactoryService,
         KudosPollFactoryService,
@@ -22,7 +22,7 @@ describe('IsTokenGuard', () => {
     });
   });
 
-  it('should create', inject([IsTokenGuard], (guard: IsTokenGuard) => {
+  it('should create', inject([IsOwnerGuard], (guard: IsOwnerGuard) => {
     expect(guard).toBeTruthy();
   }));
 });
