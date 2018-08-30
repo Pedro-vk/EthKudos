@@ -9,12 +9,12 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/toPromise';
 
-import * as KudosTokenDefinition from '../../../build/contracts/KudosToken.json';
+import * as KudosTokenDefinition from '../../../../build/contracts/KudosToken.json';
 
 import { SmartContract } from './smart-contract.abstract';
 import { Contract, TruffleContract, TruffleContractActionMethods, TruffleContractEventMethods } from './truffle.interface';
-import { Web3Service, ConnectionStatus } from './web3.service';
-import { KudosPollFactoryService } from './kudos-poll-factory.service';
+import { Web3Service, ConnectionStatus } from '../web3.service';
+import { KudosPollFactoryService } from '../kudos-poll-factory.service';
 import { KudosPollService } from './kudos-poll.service';
 
 interface KudosTokenConstants {

@@ -13,9 +13,9 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
 
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
-import { Web3Service } from './web3.service';
+import { Web3Service } from '../web3.service';
 import {
   Contract, TruffleContract,
   TruffleContractConstantMethods, TruffleContractConstantIteratorMethods, TruffleContractActionMethods, TruffleContractEventMethods,

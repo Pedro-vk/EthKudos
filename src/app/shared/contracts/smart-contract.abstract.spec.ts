@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 import * as Web3Module from 'web3';
 
-import { Web3Service } from './web3.service';
+import { Web3Service } from '../web3.service';
 
 import { SmartContract } from './smart-contract.abstract';
 

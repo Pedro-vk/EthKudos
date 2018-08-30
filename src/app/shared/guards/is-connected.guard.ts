@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 
-import { Web3Service, ConnectionStatus } from './web3.service';
+import { Web3Service, ConnectionStatus } from '../web3.service';
 
 @Injectable()
 export class IsConnectedGuard implements CanActivate, CanActivateChild {

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 
-import * as KudosPollDefinition from '../../../build/contracts/KudosPoll.json';
+import * as KudosPollDefinition from '../../../../build/contracts/KudosPoll.json';
 
 import { SmartContract } from './smart-contract.abstract';
-import { Web3Service, ConnectionStatus } from './web3.service';
+import { Web3Service, ConnectionStatus } from '../web3.service';
 
 export interface Gratitude {
   kudos: number;
