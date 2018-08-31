@@ -99,10 +99,6 @@ export class AppComponent implements OnInit {
     return this.router.url.split('/').slice(2).join('/') === url.replace(/^\//, '');
   }
 
-  reload(): void {
-    window.location.reload();
-  }
-
   trackTransaction(index: string, transaction: {hash: string}): string {
     return transaction.hash || undefined;
   }
