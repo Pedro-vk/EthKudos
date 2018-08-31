@@ -14,28 +14,18 @@ import * as KudosTokenDefinition from '../../../../build/contracts/KudosToken.js
 import { SmartContract } from './smart-contract.abstract';
 import { Contract, TruffleContract, TruffleContractActionMethods, TruffleContractEventMethods } from './truffle.interface';
 import { Web3Service, ConnectionStatus } from '../web3.service';
+import { SmartContractExtender, OwnableMixin, BasicTokenMixin, MembershipMixin } from './mixins';
 import { KudosPollFactoryService } from '../kudos-poll-factory.service';
 import { KudosPollService } from './kudos-poll.service';
 
 interface KudosTokenConstants {
   version: string;
   organisationName: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  totalSupply: number;
   isActivePoll: boolean;
-  owner: string;
   activePoll: string;
   getPolls: string[];
   getPollsSize: number;
-  isMember: boolean;
-  memberIndex: number;
-  getMembers: string[];
-  getMember: string;
-  membersNumber: number;
   getContact: string;
-  balanceOf: number;
 }
 type KudosTokenConstantsIteratiors = {  // tslint:disable-line
   getBalances: {member: string, balance: number, name: string}[];
@@ -43,58 +33,37 @@ type KudosTokenConstantsIteratiors = {  // tslint:disable-line
 interface KudosTokenActions {
   newPoll: boolean;
   closePoll: boolean;
-  addMember: boolean;
-  removeMember: boolean;
   editContact: boolean;
-  transfer: boolean;
 }
 interface KudosTokenEvents {
-  AddMember: {member: string};
-  RemoveMember: {member: string};
   NewPoll: {poll: string};
   ClosePoll: {poll: string};
-  OwnershipTransferred: {previousOwner: string, newOwner: string};
-  Transfer: {from: string, to: string, value: number};
 }
 export type KudosToken = KudosTokenActions & KudosTokenConstantsIteratiors & KudosTokenConstants & KudosTokenEvents;
 
 Web3Service.addABI(KudosTokenDefinition.abi);
 
+class KudosTokenSmartContract extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> { }
+
 @Injectable()
-export class KudosTokenService
-  extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> {
+export class KudosTokenService extends SmartContractExtender(KudosTokenSmartContract, OwnableMixin, BasicTokenMixin, MembershipMixin) {
 
   isValid: boolean;
   private readonly _onIsValid = new Subject<boolean>();
   readonly onIsValid = this._onIsValid.shareReplay();
 
   // Events
-  readonly AddMember$ = this.generateEventObservable('AddMember');
-  readonly RemoveMember$ = this.generateEventObservable('RemoveMember');
   readonly NewPoll$ = this.generateEventObservable('NewPoll');
   readonly ClosePoll$ = this.generateEventObservable('ClosePoll');
-  readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
-  readonly Transfer$ = this.generateEventObservable('Transfer');
 
   // Constants
   readonly version = () => this.generateConstant('version')();
   readonly organisationName = () => this.generateConstant('organisationName')();
-  readonly name = () => this.generateConstant('name')();
-  readonly symbol = () => this.generateConstant('symbol')();
-  readonly decimals = () => this.generateConstant('decimals')();
-  readonly totalSupply = () => this.generateConstant('totalSupply')();
   readonly isActivePoll = () => this.generateConstant('isActivePoll')();
-  readonly owner = () => this.generateConstant('owner')();
   readonly activePoll = () => this.generateConstant('activePoll')();
   readonly getPolls = () => this.generateConstant('getPolls')();
   readonly getPollsSize = () => this.generateConstant('getPollsSize')();
-  readonly isMember = (address: string) => this.generateConstant('isMember')(address);
-  readonly memberIndex = (address: string) => this.generateConstant('memberIndex')(address);
-  readonly getMembers = () => this.generateConstant('getMembers')();
-  readonly getMember = (index: number) => this.generateConstant('getMember')(index);
-  readonly membersNumber = () => this.generateConstant('membersNumber')();
   readonly getContact = (address: string) => this.generateConstant('getContact')(address);
-  readonly balanceOf = (address: string) => this.generateConstant('balanceOf')(address);
 
   // Constant iterators
   readonly getBalances = () => this.generateConstantIteration<'getBalances'>(
@@ -110,10 +79,7 @@ export class KudosTokenService
   readonly newPoll = (kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number) =>
     this.generateAction('newPoll')(kudosByMember, maxKudosToMember, minDurationInMinutes)
   readonly closePoll = () => this.generateAction('closePoll')();
-  readonly addMember = (member: string, name: string) => this.generateAction('addMember')(member, name);
-  readonly removeMember = (address: string) => this.generateAction('removeMember')(address);
   readonly editContact = (address: string, name: string) => this.generateAction('editContact')(address, name);
-  readonly transfer = (to: string, value: number) => this.generateAction('transfer')(to, value);
 
   constructor(protected web3Service: Web3Service, private kudosPollFactoryService: KudosPollFactoryService) {
     super(web3Service);
@@ -135,7 +101,7 @@ export class KudosTokenService
         const kudosToken = this.getContract(KudosTokenDefinition);
         kudosToken.at(address)
           .then(contract => {
-            this.contract = contract;
+            this.contract = <any>contract;
             this.initialized = true;
           })
           .catch(() => this._onIsValid.next(this.isValid = false));
@@ -159,19 +125,9 @@ export class KudosTokenService
     return await Promise.all(contacts);
   }
 
-  async myBalance(): Promise<number> {
-    const myAccount = await this.web3Service.getAccount().toPromise();
-    return await this.balanceOf(myAccount);
-  }
-
   async myContact(): Promise<string> {
     const myAccount = await this.web3Service.getAccount().toPromise();
     return await this.getContact(myAccount);
-  }
-
-  async imMember(): Promise<boolean> {
-    const myAccount = await this.web3Service.getAccount().toPromise();
-    return await this.isMember(myAccount);
   }
 
   getPollContractByAddress(address: string): KudosPollService {
@@ -190,7 +146,7 @@ export class KudosTokenService
     return activePoll ? this.getPollContractByAddress(activePoll) : undefined;
   }
   async getPreviousPollsContracts(): Promise<KudosPollService[]> {
-    const polls = await this.getPolls();
+    const polls = (await this.getPolls()) || [];
     if (await this.isActivePoll()) {
       polls.pop();
     }
