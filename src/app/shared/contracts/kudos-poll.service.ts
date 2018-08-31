@@ -110,18 +110,15 @@ export class KudosPollService
   }
 
   async remainingKudos(): Promise<number> {
-    const myAccount = await this.web3Service.getAccount().toPromise();
-    return await this.balanceOf(myAccount);
+    return await this.balanceOf(await this.web3Service.getAccount().toPromise());
   }
 
   async myKudos(): Promise<number> {
-    const myAccount = await this.web3Service.getAccount().toPromise();
-    return await this.getKudosOf(myAccount);
+    return await this.getKudosOf(await this.web3Service.getAccount().toPromise());
   }
 
   async myGratitudes(): Promise<Gratitude[]> {
-    const myAccount = await this.web3Service.getAccount().toPromise();
-    return await this.getGratitudesOf(myAccount);
+    return await this.getGratitudesOf(await this.web3Service.getAccount().toPromise());
   }
 
   async allGratitudes(): Promise<(Gratitude & {to: string})[]> {
