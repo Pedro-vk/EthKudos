@@ -6,6 +6,7 @@ import * as KudosPollDefinition from '../../../../build/contracts/KudosPoll.json
 
 import { SmartContract } from './smart-contract.abstract';
 import { Web3Service, ConnectionStatus } from '../web3.service';
+import { SmartContractExtender, OwnableMixin, BasicTokenMixin, BurnableTokenMixin, MembershipMixin } from './mixins';
 
 export interface Gratitude {
   kudos: number;
@@ -20,10 +21,6 @@ export interface Result {
 
 interface KudosPollConstants {
   version: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  totalSupply: number;
   active: boolean;
   kudosByMember: number;
   maxKudosToMember: number;
@@ -31,11 +28,6 @@ interface KudosPollConstants {
   minDeadline: number;
   creation: number;
   canBeClosed: boolean;
-  isMember: boolean;
-  getMembers: string[];
-  getMember: string;
-  membersNumber: number;
-  balanceOf: number;
   getGratitudeOf: Gratitude;
   getGratitudesSizeOf: number;
   getKudosOf: number;
@@ -48,39 +40,27 @@ type KudosPollConstantsIteratiors = { // tslint:disable-line
 };
 interface KudosPollActions {
   close: boolean;
-  addMember: boolean;
-  addMembers: boolean;
-  transfer: boolean;
-  burn: undefined;
   reward: boolean;
 }
 interface KudosPollEvents {
-  AddMember: {member: string};
   Close: {};
-  OwnershipTransferred: {previousOwner: string, newOwner: string};
   Reward: {sender: string, rewarded: string, kudos: number, message: string};
-  Transfer: {from: string, to: string, value: number};
 }
 export type KudosPoll = KudosPollActions & KudosPollConstantsIteratiors & KudosPollConstants & KudosPollEvents;
 
 Web3Service.addABI(KudosPollDefinition.abi);
 
+class KudosPollSmartContract extends SmartContract<KudosPollConstants, KudosPollConstantsIteratiors, KudosPollActions, KudosPollEvents> { }
+
 @Injectable()
-export class KudosPollService extends SmartContract<KudosPollConstants, KudosPollConstantsIteratiors, KudosPollActions, KudosPollEvents> {
+export class KudosPollService extends SmartContractExtender(KudosPollSmartContract, OwnableMixin, BasicTokenMixin, BurnableTokenMixin, MembershipMixin) {
 
   // Events
-  readonly AddMember$ = this.generateEventObservable('AddMember');
   readonly Close$ = this.generateEventObservable('Close');
-  readonly OwnershipTransferred$ = this.generateEventObservable('OwnershipTransferred');
   readonly Reward$ = this.generateEventObservable('Reward');
-  readonly Transfer$ = this.generateEventObservable('Transfer');
 
   // Constants
   readonly version = () => this.generateConstant('version')();
-  readonly name = () => this.generateConstant('name')();
-  readonly symbol = () => this.generateConstant('symbol')();
-  readonly decimals = () => this.generateConstant('decimals')();
-  readonly totalSupply = () => this.generateConstant('totalSupply')();
   readonly active = () => this.generateConstant('active')();
   readonly kudosByMember = () => this.generateConstant('kudosByMember')();
   readonly maxKudosToMember = () => this.generateConstant('maxKudosToMember')();
@@ -88,11 +68,6 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
   readonly minDeadline = () => this.generateConstant('minDeadline')();
   readonly creation = () => this.generateConstant('creation')();
   readonly canBeClosed = () => this.generateConstant('canBeClosed')();
-  readonly isMember = (member: string) => this.generateConstant('isMember')(member);
-  readonly getMembers = () => this.generateConstant('getMembers')();
-  readonly getMember = (index: number) => this.generateConstant('getMember')(index);
-  readonly membersNumber = () => this.generateConstant('membersNumber')();
-  readonly balanceOf = (owner: string) => this.generateConstant('balanceOf')(owner);
   readonly getGratitudeOf = (member: string, index: number) =>
     this.generateConstant('getGratitudeOf', ([kudos, message, from]) => ({kudos, message, from}))(member, index)
   readonly getGratitudesSizeOf = (member: string) => this.generateConstant('getGratitudesSizeOf')(member);
@@ -108,9 +83,6 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
 
   // Actions
   readonly close = () => this.generateAction('close')();
-  readonly addMember = (member: string) => this.generateAction('addMember')(member);
-  readonly addMembers = (members: string[]) => this.generateAction('addMembers')(members);
-  readonly transfer = (to: string, value: number) => this.generateAction('transfer')(to, value);
   readonly reward = (to: string, kudos: number, message: string) => this.generateAction('reward')(to, kudos, message);
 
   constructor(protected web3Service: Web3Service) {
@@ -129,7 +101,7 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
 
         kudosPoll.at(address)
           .then(contract => {
-            this.contract = contract;
+            this.contract = <any>contract;
             this.initialized = true;
           });
       });
@@ -143,11 +115,6 @@ export class KudosPollService extends SmartContract<KudosPollConstants, KudosPol
   async myKudos(): Promise<number> {
     const myAccount = await this.web3Service.getAccount().toPromise();
     return await this.getKudosOf(myAccount);
-  }
-
-  async imMember(): Promise<boolean> {
-    const myAccount = await this.web3Service.getAccount().toPromise();
-    return await this.isMember(myAccount);
   }
 
   async myGratitudes(): Promise<Gratitude[]> {
