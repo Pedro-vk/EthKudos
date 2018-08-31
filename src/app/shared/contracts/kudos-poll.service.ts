@@ -50,10 +50,12 @@ export type KudosPoll = KudosPollActions & KudosPollConstantsIteratiors & KudosP
 
 Web3Service.addABI(KudosPollDefinition.abi);
 
-class KudosPollSmartContract extends SmartContract<KudosPollConstants, KudosPollConstantsIteratiors, KudosPollActions, KudosPollEvents> { }
+class KudosPollSmartContract
+  extends SmartContract<KudosPollConstants, KudosPollConstantsIteratiors, KudosPollActions, KudosPollEvents> { }
 
 @Injectable()
-export class KudosPollService extends SmartContractExtender(KudosPollSmartContract, OwnableMixin, BasicTokenMixin, BurnableTokenMixin, MembershipMixin) {
+export class KudosPollService
+  extends SmartContractExtender(KudosPollSmartContract, OwnableMixin, BasicTokenMixin, BurnableTokenMixin, MembershipMixin) {
 
   // Events
   readonly Close$ = this.generateEventObservable('Close');

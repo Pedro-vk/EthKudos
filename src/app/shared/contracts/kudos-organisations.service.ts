@@ -9,12 +9,12 @@ import * as KudosOrganisationsDefinition from '../../../../build/contracts/Kudos
 import { SmartContract } from './smart-contract.abstract';
 import { Contract } from './truffle.interface';
 import { Web3Service, ConnectionStatus } from '../web3.service';
+import { SmartContractExtender, OwnableMixin } from './mixins';
 
 interface KudosOrganisationsConstants {
   getOrganisations: string[];
   isInDirectory: boolean;
   organisationIndex: number;
-  owner: string;
 }
 interface KudosOrganisationsActions {
   newOrganisation: boolean;
@@ -27,9 +27,11 @@ export type KudosOrganisations = KudosOrganisationsActions & KudosOrganisationsC
 
 Web3Service.addABI(KudosOrganisationsDefinition.abi);
 
+class KudosOrganisationsSmartContract
+  extends SmartContract<KudosOrganisationsConstants, {}, KudosOrganisationsActions, KudosOrganisationsEvents> { }
+
 @Injectable()
-export class KudosOrganisationsService
-  extends SmartContract<KudosOrganisationsConstants, undefined, KudosOrganisationsActions, KudosOrganisationsEvents> {
+export class KudosOrganisationsService extends SmartContractExtender(KudosOrganisationsSmartContract, OwnableMixin) {
 
   // Events
   readonly NewOrganisation$ = this.generateEventObservable('NewOrganisation');
@@ -38,7 +40,6 @@ export class KudosOrganisationsService
   readonly getOrganisations = () => this.generateConstant('getOrganisations')();
   readonly isInDirectory = (address: string) => this.generateConstant('isInDirectory')(address);
   readonly organisationIndex = (address: string) => this.generateConstant('organisationIndex')(address);
-  readonly owner = () => this.generateConstant('owner')();
 
   // Actions
   readonly newOrganisation =
@@ -57,9 +58,9 @@ export class KudosOrganisationsService
 
         kudosOrganisation.deployed()
           .then(contract => {
-            this.web3Contract = this.getWeb3Contract(KudosOrganisationsDefinition.abi, contract.address);
+            this.web3Contract = this.getWeb3Contract(KudosOrganisationsDefinition.abi, (<any>contract).address);
 
-            this.contract = contract;
+            this.contract = <any>contract;
             this.initialized = true;
           });
       });

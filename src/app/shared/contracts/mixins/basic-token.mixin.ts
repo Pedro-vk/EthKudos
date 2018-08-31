@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/share';
 
 import { Web3Service } from '../../web3.service';
 import { SmartContract, emptyPromise } from '../smart-contract.abstract';
@@ -22,17 +24,17 @@ export type BasicToken = BasicTokenActions & BasicTokenConstants & BasicTokenEve
 @Injectable()
 export class BasicTokenMixin extends SmartContract<BasicTokenConstants, {}, BasicTokenActions, BasicTokenEvents> {
   // Events
-  get Transfer$() { return this.generateEventObservable('Transfer'); };
+  get Transfer$() { return this.generateEventObservable('Transfer'); }
 
   // Constants
-  get name() { return () => this.generateConstant('name')(); };
-  get symbol() { return () => this.generateConstant('symbol')(); };
-  get decimals() { return () => this.generateConstant('decimals')(); };
-  get totalSupply() { return () => this.generateConstant('totalSupply')(); };
-  get balanceOf() { return (address: string) => this.generateConstant('balanceOf')(address); };
+  get name() { return () => this.generateConstant('name')(); }
+  get symbol() { return () => this.generateConstant('symbol')(); }
+  get decimals() { return () => this.generateConstant('decimals')(); }
+  get totalSupply() { return () => this.generateConstant('totalSupply')(); }
+  get balanceOf() { return (address: string) => this.generateConstant('balanceOf')(address); }
 
   // Actions
-  get transfer() { return (to: string, value: number) => this.generateAction('transfer')(to, value); };
+  get transfer() { return (to: string, value: number) => this.generateAction('transfer')(to, value); }
 
   constructor(protected web3Service: Web3Service) {
     super(web3Service);

@@ -15,10 +15,10 @@ export type BurnableToken = BurnableTokenActions & BurnableTokenEvents;
 @Injectable()
 export class BurnableTokenMixin extends SmartContract<{}, {}, BurnableTokenActions, BurnableTokenEvents> {
   // Events
-  get Burn$() { return this.generateEventObservable('Burn'); };
+  get Burn$() { return this.generateEventObservable('Burn'); }
 
   // Actions
-  get burn() { return (value: number) => this.generateAction('burn')(value); };
+  get burn() { return (value: number) => this.generateAction('burn')(value); }
 
   constructor(protected web3Service: Web3Service) {
     super(web3Service);

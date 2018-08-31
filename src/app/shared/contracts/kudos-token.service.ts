@@ -43,10 +43,12 @@ export type KudosToken = KudosTokenActions & KudosTokenConstantsIteratiors & Kud
 
 Web3Service.addABI(KudosTokenDefinition.abi);
 
-class KudosTokenSmartContract extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> { }
+class KudosTokenSmartContract
+  extends SmartContract<KudosTokenConstants, KudosTokenConstantsIteratiors, KudosTokenActions, KudosTokenEvents> { }
 
 @Injectable()
-export class KudosTokenService extends SmartContractExtender(KudosTokenSmartContract, OwnableMixin, BasicTokenMixin, MembershipMixin) {
+export class KudosTokenService
+  extends SmartContractExtender(KudosTokenSmartContract, OwnableMixin, BasicTokenMixin, MembershipMixin) {
 
   isValid: boolean;
   private readonly _onIsValid = new Subject<boolean>();
