@@ -37,7 +37,7 @@
     "postinstall": "node scripts/fix-angular-cli-crypto.js",
     "create-cname": "echo $(cat package.json | grep '\"homepage\"' | cut -d '\"' -f 4) > dist/CNAME",
     "heroku": "cp -fr ./.heroku/. ./dist",
-    "deploy": "cp dist/index.html dist/404.html && npm run create-cname && npm run heroku && npm run deploy:github-pages",
+    "deploy": "cp dist/index.html dist/404.html && cp -r .circleci dist/ && npm run create-cname && npm run heroku && npm run deploy:github-pages",
     "deploy:github-pages": "gh-pages -t -d dist/ -m \"Built from $(git rev-parse --short=16 HEAD): $(git log -n 1 --pretty=format:%s)\""
   },
   "dependencies": {
@@ -100,6 +100,7 @@
     "karma-jasmine": "^1.1.2",
     "karma-jasmine-html-reporter": "^1.3.1",
     "protractor": "^5.4.0",
+    "protractor-jasmine2-screenshot-reporter": "^0.5.0",
     "rxjs": "^6.2.2",
     "rxjs-tslint-rules": "^4.7.2",
     "solidity-coverage": "^0.5.7",
