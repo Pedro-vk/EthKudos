@@ -18,7 +18,7 @@ contract('KudosToken', accounts => {
     kudosRouterInstance = await KudosRouter.new();
     await kudosRouterInstance.setResource('KudosPollFactory', '0.0-test.1', kudosPollFactory)
 
-    instance = await KudosToken.new('KudosToken Organisation', 'KudosToken', 'KKT', decimals, kudosRouterInstance.address);
+    instance = await KudosToken.new('KudosToken Organisation', 'KudosToken', 'KTT', decimals, kudosRouterInstance.address);
   });
 
   // Lifecycle - Init
@@ -178,13 +178,14 @@ contract('KudosToken', accounts => {
     this.timeout(10 * 60 * 1000);
 
     const getKudosPoll = async address => await KudosPoll.at(address);
+    const deadlineInMin = 0; // Value 0 set to speed-up the tests, it must be 1 or more.
     let deadline;
 
     it('should create a new poll', async () => {
       assert.equal(+(await instance.getPollsSize()), 0, '0 wasn\'t in the number of polls');
 
-      await instance.newPoll(500, 200, 1);
-      deadline = Date.now() + ((1 + 0.5) * 60 * 1000);
+      await instance.newPoll(500, 200, deadlineInMin);
+      deadline = Date.now() + ((deadlineInMin + 0.05) * 60 * 1000);
 
 
       assert.equal(+(await instance.getPollsSize()), 1, '1 wasn\'t in the number of polls');
@@ -206,12 +207,12 @@ contract('KudosToken', accounts => {
       assert.equal(
         await kudosPoll.name(),
         'KudosToken - Polling #1',
-        `'KudosToken - Polling #1' wasn't in the number of members`,
+        `'KudosToken - Polling #1' wasn't the name of the polling`,
       );
       assert.equal(
         await kudosPoll.symbol(),
-        'KKT#1',
-        `'KKT#1' wasn't in the number of members`,
+        'KTT#1',
+        `'KTT#1' wasn't the symbol of the polling`,
       );
     });
 
@@ -265,7 +266,6 @@ contract('KudosToken', accounts => {
       assert.equal(+(await instance.getPollsSize()), 1, '1 wasn\'t in the number of polls');
 
       await instance.newPoll(500, 200, 1);
-      deadline = Date.now() + ((1 + 0.5) * 60 * 1000);
 
       assert.equal(+(await instance.getPollsSize()), 2, '2 wasn\'t in the number of polls');
     });

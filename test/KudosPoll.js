@@ -4,7 +4,7 @@ contract('KudosPoll', accounts => {
   const decimals = 2;
   const kudosByMember = 5 * (10 ** decimals);
   const maxKudosToMember = 2 * (10 ** decimals);
-  const deadlineInMin = 1;
+  const deadlineInMin = 0; // Value 0 set to speed-up the tests, it must be 1 or more.
 
   let instance;
   let deadline;
@@ -12,8 +12,8 @@ contract('KudosPoll', accounts => {
   before(async function() {
     this.timeout(10 * 60 * 1000);
 
-    instance = await KudosPoll.new('Kudos poll Test', 'KVT', decimals, kudosByMember, maxKudosToMember, deadlineInMin);
-    deadline = Date.now() + ((deadlineInMin + 0.5) * 60 * 1000);
+    instance = await KudosPoll.new('KudosPoll Test', 'KPT', decimals, kudosByMember, maxKudosToMember, deadlineInMin);
+    deadline = Date.now() + ((deadlineInMin + 0.05) * 60 * 1000);
   });
 
   // Lifecycle - Init
