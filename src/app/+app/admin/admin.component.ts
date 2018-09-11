@@ -2,7 +2,6 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/of';
@@ -55,19 +54,16 @@ export class AdminComponent implements OnInit {
       const members = (await _.getMembers()).length;
 
       const initialTotal = kudosByMember * members;
-      return await _.fromInt(initialTotal - totalSupply);
+      return {
+        sent: await _.fromInt(initialTotal - totalSupply),
+        total: await _.fromInt(initialTotal),
+      };
     }))
-    .catch(() => Observable.of(0))
+    .catch(() => Observable.of({sent: 0, total: 0}))
     .distinctUntilChanged()
     .share();
-  readonly totalSupplyOnActivePoll$ = this.activePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(async _ => {
-      return await _.fromInt(await _.totalSupply());
-    }))
-    .share();
-  readonly percentageKudosSentOnActivePoll$ = Observable
-    .combineLatest(this.kudosSentOnActivePoll$, this.totalSupplyOnActivePoll$)
-    .map(([sent, remaining]) => (sent || 0) / ((sent || 0) + (remaining || 0)))
+  readonly percentageKudosSentOnActivePoll$ = this.kudosSentOnActivePoll$
+    .map(({sent, total}) => sent / total)
     .share();
   readonly activePollMinDeadline$ = this.activePollContract$
     .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.minDeadline()))

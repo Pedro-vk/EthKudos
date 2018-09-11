@@ -187,7 +187,6 @@ contract('KudosToken', accounts => {
       await instance.newPoll(500, 200, deadlineInMin);
       deadline = Date.now() + ((deadlineInMin + 0.05) * 60 * 1000);
 
-
       assert.equal(+(await instance.getPollsSize()), 1, '1 wasn\'t in the number of polls');
     });
 
