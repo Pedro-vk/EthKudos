@@ -1,0 +1,187 @@
+version: 2
+
+workflows:
+  version: 2
+  CI:
+    jobs:
+      - npm-install:
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+      - test-ng:
+          requires:
+            - npm-install
+      - test-sol:
+          requires:
+            - npm-install
+      - post-test:
+          requires:
+            - test-ng
+            - test-sol
+      - coverages:
+          requires:
+            - post-test
+      - test-e2e:
+          requires:
+            - npm-install
+      - lint-ng:
+          requires:
+            - npm-install
+      - lint-sol:
+          requires:
+            - npm-install
+      - build-app:
+          requires:
+            - npm-install
+      - deploy-github:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - post-test
+            - test-e2e
+            - lint-ng
+            - lint-sol
+            - build-app
+      - cleanup-cloudflare:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - deploy-github
+
+node-defaults: &NODE
+  working_directory: ~/eth-kudos
+  docker:
+    - image: circleci/node:9.11.2-browsers
+
+checkout-workspace-defaults:
+  - &CHECKOUT-WORKSPACE
+    attach_workspace:
+      at: ~/eth-kudos
+
+jobs:
+  # NPM install
+  npm-install:
+    <<: *NODE
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - ethkudos-dependencies-{{ checksum "package.json" }}
+          - ehtkudos-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: ehtkudos-dependencies-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+  # Tests
+  test-ng:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run test:ng
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage-ng
+  test-sol:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run test:sol
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage-sol
+  post-test:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npx lcov-result-merger "coverage-*/lcov.info" lcov.info
+      - persist_to_workspace:
+          root: .
+          paths:
+            - lcov.info
+  # Tests coverage
+  coverages:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: cat ./lcov.info | node_modules/coveralls/bin/coveralls.js
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run: ./cc-test-reporter format-coverage -t lcov ./lcov.info
+      - run: ./cc-test-reporter upload-coverage
+  # e2e Tests
+  test-e2e:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run:
+          command: npm run eth:up
+          background: true
+      - run: rm -rf build/
+      - run: npm run deploy:dev
+      - run: npm run e2e
+  # Code quality
+  lint-ng:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run lint:ng
+  lint-sol:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run lint:sol
+  # Build
+  build-app:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+  # Deploy
+  deploy-github:
+    <<: *NODE
+    environment:
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run:
+          command: |
+            git config --global user.email "deploy@circleci.com"
+            git config --global user.name "CircleCI Deploy"
+          name: Git configuration
+      - run: npm run deploy
+  cleanup-cloudflare:
+    <<: *NODE
+    steps:
+      - run: |
+          curl -X DELETE "https://api.cloudflare.com/client/v4/zones/${cloudflare_zone}/purge_cache" \
+            -H "X-Auth-Email: ${cloudflare_email}" \
+            -H "X-Auth-Key: ${cloudflare_key}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
