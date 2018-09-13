@@ -44,7 +44,7 @@ export interface FullTransaction extends Transaction {
   }[];
 }
 
-export type networkType = 'main' | 'morden'| 'ropsten'| 'rinkeby'| 'kovan'| 'unknown';
+export type networkType = 'main' | 'morden' | 'ropsten' | 'rinkeby' | 'kovan' | 'unknown';
 
 export const WEB3_PROVIDER = new InjectionToken('WEB3_PROVIDER');
 
