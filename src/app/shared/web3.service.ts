@@ -75,6 +75,10 @@ export class Web3Service {
     .merge(this.newBlock$, this.account$)
     .map(() => undefined)
     .share();
+  readonly ethBalance$: Observable<number> = this.changes$
+    .mergeMap(() => this.getEthBalance())
+    .distinctUntilChanged()
+    .shareReplay();
   readonly status$: Observable<ConnectionStatus> = this.interval$
     .mergeMap(() => this.getAccount())
     .filter(() => this.existInNetwork !== undefined)
