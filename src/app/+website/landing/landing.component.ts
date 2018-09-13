@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Store } from '@ngrx/store';
 import Web3 from 'web3';
 import * as Web3Module from 'web3';
 import { Observable } from 'rxjs/Observable';
@@ -20,6 +21,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
+
+import * as fromRoot from '../../shared/store/reducers';
 
 import {
   Web3Service, ConnectionStatus, KudosOrganisationsService, KudosTokenFactoryService, cardInOutAnimation,
@@ -91,7 +94,7 @@ export class LandingComponent implements OnInit {
     {balance: 6, name: 'Robbie Shepherd', member: 'RANDOM #####Robbie Shepherd##### 2'},
   ];
 
-  readonly status$ = this.web3Service.status$;
+  readonly status$ = this.store.select(fromRoot.getStatus);
   readonly organisations$ = this.kudosOrganisationsService.checkUpdates(_ => _.getOrganisations())
     .combineLatest(this.newOrgAddress.startWith(undefined))
     .map(([organisations, search]) =>
@@ -116,6 +119,7 @@ export class LandingComponent implements OnInit {
     .distinctUntilChanged();
 
   constructor(
+    private store: Store<fromRoot.State>,
     private web3Service: Web3Service,
     private kudosOrganisationsService: KudosOrganisationsService,
     private kudosTokenFactoryService: KudosTokenFactoryService,
@@ -126,7 +130,7 @@ export class LandingComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.web3Service.status$
+    this.store.select(fromRoot.getStatus)
       .subscribe(status => {
         if (status === ConnectionStatus.Total && this.router.url.match(/^\/error/)) {
           this.router.navigate(['/']);
