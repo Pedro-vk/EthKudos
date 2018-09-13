@@ -15,9 +15,9 @@ import * as fromAccount from './account.reducers';
 import * as accountActions from './account.actions';
 import { AccountEffects } from './account.effects';
 
-describe('account - Reducers', () => {
-  const newAccount = n => `0x${'0'.repeat(40 - String(n).length)}${n}`;
+const newAccount = n => `0x${'0'.repeat(40 - String(n).length)}${n}`;
 
+describe('Account - Reducers', () => {
   it('should be auto-initialized', () => {
     const finalState = reduceActions(accountReducer);
     expect(finalState).not.toBeUndefined();
@@ -55,5 +55,73 @@ describe('account - Reducers', () => {
       2222,
       3333,
     ]);
+  });
+});
+
+describe('Account - Effects', () => {
+  let store: Store<State>;
+  let effects: AccountEffects;
+  let actions: Observable<any>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        StoreModule.forRoot({
+          ...reducers,
+        }),
+      ],
+      providers: [
+        ...PROVIDERS,
+        AccountEffects,
+        provideMockActions(() => actions),
+      ],
+    });
+
+    effects = TestBed.get(AccountEffects);
+    store = TestBed.get(Store);
+  });
+
+  it('should watch for account changes', () => {
+    const fakeAddress = cold('--a--b--c', {
+      a: newAccount(1),
+      b: newAccount(2),
+      c: newAccount(3),
+    });
+
+    spyOn(effects, 'getWeb3Account').and.returnValue(fakeAddress);
+
+    actions = hot('-a', {
+      a: {type: ROOT_EFFECTS_INIT},
+    });
+
+    const expected = cold('---a--b--c', {
+      a: new accountActions.SetAccountAction(newAccount(1)),
+      b: new accountActions.SetAccountAction(newAccount(2)),
+      c: new accountActions.SetAccountAction(newAccount(3)),
+    });
+
+    expect(effects.watchAccountChanges$).toBeObservable(expected);
+  });
+
+  it('should watch for balance changes', () => {
+    const fakeAddress = cold('--a--b--c', {
+      a: 1111,
+      b: 2222,
+      c: 3333,
+    });
+
+    spyOn(effects, 'getWeb3Balance').and.returnValue(fakeAddress);
+
+    actions = hot('-a', {
+      a: {type: ROOT_EFFECTS_INIT},
+    });
+
+    const expected = cold('---a--b--c', {
+      a: new accountActions.SetBalanceAction(1111),
+      b: new accountActions.SetBalanceAction(2222),
+      c: new accountActions.SetBalanceAction(3333),
+    });
+
+    expect(effects.watchBalanceChanges$).toBeObservable(expected);
   });
 });
