@@ -4,10 +4,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Observable';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 import 'rxjs/add/observable/empty';
 
 import { AppCommonModule } from '../../app-common.module';
 import { PROVIDERS } from '../../shared';
+import { reducers, effects } from '../../shared/store';
 
 import { JoinComponent } from './join.component';
 
@@ -21,6 +24,11 @@ describe('JoinComponent', () => {
         AppCommonModule,
         RouterTestingModule,
         NoopAnimationsModule,
+
+        StoreModule.forRoot({
+          ...reducers,
+        }),
+        EffectsModule.forRoot(effects),
       ],
       declarations: [
         JoinComponent,

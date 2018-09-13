@@ -3,12 +3,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material';
+import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 
 import { Web3Service, ConnectionStatus, KudosTokenFactoryService } from '../shared';
 import { ShareDialogComponent } from '../components';
+
+import * as fromRoot from '../shared/store/reducers';
 
 @Component({
   selector: 'eth-kudos-app',
@@ -33,7 +36,7 @@ export class AppComponent implements OnInit {
 
   readonly canBeShared: boolean = !!(navigator as any).share;
 
-  readonly status$ = this.web3Service.status$;
+  readonly status$ = this.store.select(fromRoot.getStatus);
   readonly account$ = this.web3Service.account$;
   readonly pendingTransactions$ = this.web3Service.pendingTransactions$;
   readonly balance$ = this.web3Service.checkUpdates(_ => _.getEthBalance());
@@ -49,6 +52,7 @@ export class AppComponent implements OnInit {
   readonly myContact$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.myContact()));
 
   constructor(
+    private store: Store<fromRoot.State>,
     private web3Service: Web3Service,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private http: HttpClient,

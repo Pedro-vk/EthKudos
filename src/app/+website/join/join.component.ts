@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/merge';
@@ -14,6 +15,8 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
 
+import * as fromRoot from '../../shared/store/reducers';
+
 import { Web3Service, KudosTokenFactoryService, cardInOutAnimation } from '../../shared';
 
 @Component({
@@ -27,7 +30,7 @@ export class JoinComponent {
   joinName$ = new Subject<string>();
   @ViewChild('joinUrl') joinUrlElement: ElementRef;
 
-  readonly status$ = this.web3Service.status$;
+  readonly status$ = this.store.select(fromRoot.getStatus);
   readonly account$ = this.web3Service.account$;
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
@@ -47,6 +50,7 @@ export class JoinComponent {
     .shareReplay();
 
   constructor(
+    private store: Store<fromRoot.State>,
     private web3Service: Web3Service,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private activatedRoute: ActivatedRoute,

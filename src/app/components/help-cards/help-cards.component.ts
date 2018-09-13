@@ -1,6 +1,9 @@
 import { Component, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
+import { Store } from '@ngrx/store';
 
 import * as MetamaskLogo from 'metamask-logo';
+
+import * as fromRoot from '../../shared/store/reducers';
 
 import { Web3Service, cardInOutAnimation } from '../../shared';
 
@@ -17,9 +20,9 @@ export class HelpCardsComponent implements AfterViewChecked {
   @ViewChild('metamaskLogo') metamaskLogo: ElementRef;
   private metamaskLogoViewer: any;
 
-  readonly status$ = this.web3Service.status$;
+  readonly status$ = this.store.select(fromRoot.getStatus);
 
-  constructor(private web3Service: Web3Service) { }
+  constructor(private store: Store<fromRoot.State>, private web3Service: Web3Service) { }
 
   ngAfterViewChecked() {
     if (this.metamaskLogo && this.metamaskLogo.nativeElement.offsetParent) {

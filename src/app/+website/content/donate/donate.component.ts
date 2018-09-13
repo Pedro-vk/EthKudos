@@ -1,5 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
+import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/first';
+
+import * as fromRoot from '../../../shared/store/reducers';
 
 import { Web3Service, networkType } from '../../../shared';
 import { ContentBaseComponent } from '../content-base.abstract';
@@ -17,10 +20,10 @@ export class DonateComponent extends ContentBaseComponent implements OnInit {
   @ViewChild('address') addressElement: ElementRef;
 
   readonly donationAddress = '0x178a262C6B2FFB042f5cb1A7a20d7edbDdb3B16D';
-  readonly status$ = this.web3Service.status$;
+  readonly status$ = this.store.select(fromRoot.getStatus);
   readonly network$ = this.web3Service.getNetworkType();
 
-  constructor(private web3Service: Web3Service, protected changeDetectorRef: ChangeDetectorRef) {
+  constructor(private store: Store<fromRoot.State>, private web3Service: Web3Service, protected changeDetectorRef: ChangeDetectorRef) {
     super(changeDetectorRef);
   }
 

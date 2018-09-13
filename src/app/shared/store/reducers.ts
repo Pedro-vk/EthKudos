@@ -7,7 +7,7 @@ import * as fromStatus from './status/status.reducers';
 
 export interface State {
   routerReducer: RouterReducerState;
-  status: StatusState;
+  statusReducer: StatusState;
 }
 
 export const reducers = {
@@ -17,7 +17,7 @@ export const reducers = {
 
 // Root selectors
 export const getRouterState = (state: State) => state.routerReducer;
-export const getStatusState = (state: State) => state.status;
+export const getStatusState = (state: State) => state.statusReducer;
 
 // Status
 export const getStatus = createSelector(getStatusState, fromStatus.getStatus);
