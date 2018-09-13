@@ -2,7 +2,7 @@ import * as statusActions from './status.actions';
 import { ConnectionStatus } from '../../web3.service';
 
 export interface StatusState {
-  status: ConnectionStatus | undefined,
+  status: ConnectionStatus | undefined;
 }
 
 const initialState: StatusState = {

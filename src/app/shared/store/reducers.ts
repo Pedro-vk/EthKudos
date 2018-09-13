@@ -7,7 +7,7 @@ import * as fromStatus from './status/status.reducers';
 
 export interface State {
   routerReducer: RouterReducerState;
-  status: StatusState,
+  status: StatusState;
 }
 
 export const reducers = {
