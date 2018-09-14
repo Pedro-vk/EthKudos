@@ -41,7 +41,7 @@ export class MembershipMixin extends SmartContract<MembershipConstants, {}, Memb
   get removeMember() { return (address: string) => this.generateAction('removeMember')(address); }
 
   constructor(protected web3Service: Web3Service) {
-    super(web3Service);
+    super(web3Service, undefined);
   }
 
   // Helpers

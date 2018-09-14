@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
@@ -47,8 +48,8 @@ export class KudosOrganisationsService extends SmartContractExtender(KudosOrgani
       this.generateAction('newOrganisation')(tokenOrganisationName, tokenName, tokenSymbol, decimalUnits, addToDirectory)
   readonly removeOrganisation = (address: string) => this.generateAction('removeOrganisation')(address);
 
-  constructor(protected web3Service: Web3Service) {
-    super(web3Service);
+  constructor(protected web3Service: Web3Service, protected store: Store<any>) {
+    super(web3Service, store);
     this.web3Service
       .status$
       .filter(status => status === ConnectionStatus.Total)

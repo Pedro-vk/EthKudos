@@ -26,7 +26,7 @@ export class OwnableMixin extends SmartContract<OwnableConstants, {}, OwnableAct
   get transferOwnership() { return (newOwner: string) => this.generateAction('transferOwnership')(newOwner); }
 
   constructor(protected web3Service: Web3Service) {
-    super(web3Service);
+    super(web3Service, undefined);
   }
 
   // Helpers

@@ -2,9 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
+import { StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-
 
 import { PROVIDERS } from '../../../shared';
 
@@ -21,6 +21,7 @@ describe('PollChartComponent', () => {
         AppCommonModule,
         RouterTestingModule,
         NoopAnimationsModule,
+        StoreModule.forRoot({}),
       ],
       declarations: [ PollChartComponent ],
       providers: [

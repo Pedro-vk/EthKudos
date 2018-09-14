@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromPromise';
@@ -83,8 +84,8 @@ export class KudosTokenService
   readonly closePoll = () => this.generateAction('closePoll')();
   readonly editContact = (address: string, name: string) => this.generateAction('editContact')(address, name);
 
-  constructor(protected web3Service: Web3Service, private kudosPollFactoryService: KudosPollFactoryService) {
-    super(web3Service);
+  constructor(protected web3Service: Web3Service, protected store: Store<any>, private kudosPollFactoryService: KudosPollFactoryService) {
+    super(web3Service, store);
   }
 
   initAt(address: string): void {

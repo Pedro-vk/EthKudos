@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 
@@ -87,8 +88,8 @@ export class KudosPollService
   readonly close = () => this.generateAction('close')();
   readonly reward = (to: string, kudos: number, message: string) => this.generateAction('reward')(to, kudos, message);
 
-  constructor(protected web3Service: Web3Service) {
-    super(web3Service);
+  constructor(protected web3Service: Web3Service, protected store: Store<any>) {
+    super(web3Service, store);
   }
 
   initAt(address: string): void {
