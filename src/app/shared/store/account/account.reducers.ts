@@ -20,6 +20,7 @@ export function accountReducer(state: AccountState = initialState, action: accou
       return {
         ...state,
         account: action.payload,
+        pendingTransactions: {},
       };
     }
 
