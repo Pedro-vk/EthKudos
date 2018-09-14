@@ -3,6 +3,7 @@ import { Tx, ABIDefinition, TransactionReceipt, Contract as Web3Contract } from 
 import * as truffleContract from 'truffle-contract';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
@@ -43,7 +44,7 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
     return (this.contract || {} as any).address;
   }
 
-  constructor(protected web3Service: Web3Service) { }
+  constructor(protected web3Service: Web3Service, protected store: Store<any>) { }
 
   checkUpdates<T>(fn: (context: this) => Promise<T>): Observable<T> {
     return Observable

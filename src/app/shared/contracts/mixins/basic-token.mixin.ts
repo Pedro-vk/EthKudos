@@ -37,7 +37,7 @@ export class BasicTokenMixin extends SmartContract<BasicTokenConstants, {}, Basi
   get transfer() { return (to: string, value: number) => this.generateAction('transfer')(to, value); }
 
   constructor(protected web3Service: Web3Service) {
-    super(web3Service);
+    super(web3Service, undefined);
   }
 
   // Helpers

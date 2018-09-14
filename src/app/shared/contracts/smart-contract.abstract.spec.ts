@@ -1,4 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { StoreModule, Store } from '@ngrx/store';
 import * as Web3Module from 'web3';
 
 import { Web3Service } from '../web3.service';
@@ -14,13 +15,18 @@ describe('SmartContract', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [Web3Service],
+      imports: [
+        StoreModule.forRoot({}),
+      ],
+      providers: [
+        Web3Service,
+      ],
     });
   });
 
-  beforeEach(inject([Web3Service], (service: Web3Service) => {
-    web3Service = service;
-    smartContract = new SmartContractExtended(service);
+  beforeEach(inject([Web3Service, Store], (_web3Service: Web3Service, _store: Store<any>) => {
+    web3Service = _web3Service;
+    smartContract = new SmartContractExtended(_web3Service, _store);
   }));
 
   it('should be created', () => {

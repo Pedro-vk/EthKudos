@@ -20,7 +20,7 @@ export class BurnableTokenMixin extends SmartContract<{}, {}, BurnableTokenActio
   // Actions
   get burn() { return (value: number) => this.generateAction('burn')(value); }
 
-  constructor(protected web3Service: Web3Service) {
-    super(web3Service);
+  constructor() {
+    super(undefined, undefined);
   }
 }
