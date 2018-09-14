@@ -5,7 +5,7 @@ import { FullTransaction } from '../../web3.service';
 export interface AccountState {
   account: string;
   balance: number;
-  pendingTransactions: {[account: string]: FullTransaction[] | {}};
+  pendingTransactions: {[tx: string]: FullTransaction};
 }
 
 const initialState: AccountState = {
@@ -38,7 +38,7 @@ export function accountReducer(state: AccountState = initialState, action: accou
         pendingTransactions: {
           ...state.pendingTransactions,
           [tx]: {
-            ...(state.pendingTransactions[tx] || {}),
+            ...(state.pendingTransactions[tx] || {} as any),
           },
         },
       };
@@ -51,7 +51,7 @@ export function accountReducer(state: AccountState = initialState, action: accou
         pendingTransactions: {
           ...state.pendingTransactions,
           [tx]: {
-            ...(state.pendingTransactions[tx] || {}),
+            ...(state.pendingTransactions[tx] || {} as any),
             ...metadata,
           },
         },
@@ -75,7 +75,7 @@ export function accountReducer(state: AccountState = initialState, action: accou
         pendingTransactions: {
           ...state.pendingTransactions,
           [tx]: {
-            ...(state.pendingTransactions[tx] || {}),
+            ...(state.pendingTransactions[tx] || {} as any),
             confirmations,
           },
         },
@@ -89,3 +89,4 @@ export function accountReducer(state: AccountState = initialState, action: accou
 export const getAccount = (state: AccountState) => state.account;
 export const getBalance = (state: AccountState) => state.balance;
 export const getPendingTransactionsById = (state: AccountState) => state.pendingTransactions;
+export const getPendingTransactions = (state: AccountState) => Object.values(state.pendingTransactions).filter(_ => !!_.hash);

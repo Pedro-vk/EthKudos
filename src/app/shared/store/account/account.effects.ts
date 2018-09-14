@@ -3,7 +3,11 @@ import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/observable/from';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
@@ -72,7 +76,8 @@ export class AccountEffects {
         , [])
         .mergeMap(txs =>
           Observable
-            .combineLatest(...txs.map(tx =>this.web3Service.getTransaction(tx)))
+            .combineLatest(Observable.of(undefined), ...txs.map(tx => this.web3Service.getTransaction(tx)))
+            .map(transactions => transactions.filter(_ => !!_))
             .map(transactions => ({transactions, txs})),
         )
         .mergeMap(({transactions, txs}) => {

@@ -260,7 +260,7 @@ describe('Account - Effects', () => {
         setTxs([], 0);
       }
       blockNumber++;
-      return Observable.of(block)
+      return Observable.of(block);
     });
 
     actions = hot('-a', {

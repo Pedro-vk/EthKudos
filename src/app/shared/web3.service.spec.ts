@@ -160,38 +160,4 @@ describe('Web3Service', () => {
 
     expect(service.status$).toBeObservable(expected);
   });
-
-  it('should keep the pending transactions', done => {
-    const pTx = (tx, confirmations) => ({tx, confirmations, raw: {hash: tx}});
-    const emitter = hot('-ab-(cd)-e--f|', {
-      a: {tx: newTx('a00'), confirmations: 0},
-      b: {tx: newTx('a00'), confirmations: 10},
-      c: {tx: newTx('a00'), confirmations: 20},
-      d: {tx: newTx('b11'), confirmations: 0},
-      e: {tx: newTx('a00'), confirmations: 24},
-      f: {tx: newTx('b11'), confirmations: 2},
-    });
-    const expected = [
-      [pTx(newTx('a00'), 0)],
-      [pTx(newTx('a00'), 10)],
-      [pTx(newTx('a00'), 20)],
-      [pTx(newTx('a00'), 20), pTx(newTx('b11'), 0)],
-      [pTx(newTx('b11'), 0)],
-      [pTx(newTx('b11'), 2)],
-    ];
-
-    service.activePendingTransactions$
-      .subscribe(_ => {
-        expect(_).toEqual(<any>expected.shift());
-        if (!expected.length) {
-          done();
-        }
-      });
-
-    emitter
-      .subscribe(({tx, confirmations}) => {
-        service.newPendingTransaction(tx, confirmations);
-      });
-    getTestScheduler().flush();
-  });
 });

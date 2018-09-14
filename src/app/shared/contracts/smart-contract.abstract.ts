@@ -130,11 +130,9 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
           .on('transactionHash', txHash => {
             tx = txHash;
             subject.next('waiting');
-            this.web3Service.newPendingTransaction(tx, undefined);
             this.store.dispatch(new accountActions.AddNewTransactionAction(tx));
           })
           .on('confirmation', confirmations => {
-            this.web3Service.newPendingTransaction(tx, confirmations);
             this.store.dispatch(new accountActions.SetTransactionConfirmationsAction(tx, confirmations));
           })
           .on('error', error => {
