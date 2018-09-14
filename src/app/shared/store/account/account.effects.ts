@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 import { Effect, Actions, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
@@ -26,6 +27,21 @@ export class AccountEffects {
     .first()
     .mergeMap(() => this.getWeb3Balance())
     .map(balance => new accountActions.SetBalanceAction(balance));
+
+  @Effect()
+  getMetadataOfNewTransactions$: Observable<Action> = this.actions$
+    .ofType(accountActions.ADD_NEW_TRANSACTION)
+    .map(({payload}: accountActions.AddNewTransactionAction) => payload)
+    .mergeMap(tx => this.web3Service.getTransaction(tx))
+    .map(transaction => this.web3Service.getTransactionMetadata(transaction))
+    .map(metadata => new accountActions.SetTransactionMetadataAction(metadata.hash, metadata));
+
+  @Effect()
+  removeTransactionOnConfirmations$: Observable<Action> = this.actions$
+    .ofType(accountActions.SET_TRANSACTION_CONFIRMATIONS)
+    .map(({payload}: accountActions.SetTransactionConfirmationsAction) => payload)
+    .filter(({confirmations}) => confirmations >= 24)
+    .map(({tx}) => new accountActions.RemoveTransactionAction(tx));
 
   constructor(private actions$: Actions, private web3Service: Web3Service) { }
 

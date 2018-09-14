@@ -37,6 +37,7 @@ export enum ConnectionStatus {
 export interface FullTransaction extends Transaction {
   method: string;
   methodName: string;
+  confirmations?: number;
   params: {
     name: string;
     value: string;
@@ -254,6 +255,20 @@ export class Web3Service {
           default: return 'unknown';
         }
       });
+  }
+
+  getTransaction(tx: string): Observable<Transaction> {
+     return Observable.fromPromise(this.web3.eth.getTransaction(tx));
+  }
+
+  getTransactionMetadata(transaction: Transaction): FullTransaction {
+    const {name, params} = abiDecoder.decodeMethod(transaction.input) || {name: '', params: []} as any;
+    return {
+      ...transaction,
+      method: name,
+      methodName: name.replace(/([A-Z])/g, ' $1').toLowerCase(),
+      params,
+    };
   }
 
   getMetamaskInstallationLink(browser?: string): string {

@@ -5,7 +5,7 @@ import { FullTransaction } from '../../web3.service';
 export interface AccountState {
   account: string;
   balance: number;
-  pendingTransactions: {[account: string]: FullTransaction[]};
+  pendingTransactions: {[account: string]: FullTransaction[] | {}};
 }
 
 const initialState: AccountState = {
@@ -27,6 +27,57 @@ export function accountReducer(state: AccountState = initialState, action: accou
       return {
         ...state,
         balance: action.payload,
+      };
+    }
+
+    case accountActions.ADD_NEW_TRANSACTION: {
+      const tx = action.payload;
+      return {
+        ...state,
+        pendingTransactions: {
+          ...state.pendingTransactions,
+          [tx]: {
+            ...(state.pendingTransactions[tx] || {}),
+          },
+        },
+      };
+    }
+
+    case accountActions.SET_TRANSACTION_METADATA: {
+      const {tx, metadata} = action.payload;
+      return {
+        ...state,
+        pendingTransactions: {
+          ...state.pendingTransactions,
+          [tx]: {
+            ...(state.pendingTransactions[tx] || {}),
+            ...metadata,
+          },
+        },
+      };
+    }
+
+    case accountActions.REMOVE_NEW_TRANSACTION: {
+      const tx = action.payload;
+      const pendingTransactions = {...state.pendingTransactions};
+      delete pendingTransactions[tx];
+      return {
+        ...state,
+        pendingTransactions,
+      };
+    }
+
+    case accountActions.SET_TRANSACTION_CONFIRMATIONS: {
+      const {tx, confirmations} = action.payload;
+      return {
+        ...state,
+        pendingTransactions: {
+          ...state.pendingTransactions,
+          [tx]: {
+            ...(state.pendingTransactions[tx] || {}),
+            confirmations,
+          },
+        },
       };
     }
 

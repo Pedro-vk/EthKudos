@@ -21,6 +21,7 @@ import {
   Contract, TruffleContract,
   TruffleContractConstantMethods, TruffleContractConstantIteratorMethods, TruffleContractActionMethods, TruffleContractEventMethods,
 } from './truffle.interface';
+import * as accountActions from '../store/account/account.actions';
 
 export const emptyPromise: () => Promise<undefined> = () => Promise.resolve(undefined);
 
@@ -130,9 +131,11 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
             tx = txHash;
             subject.next('waiting');
             this.web3Service.newPendingTransaction(tx, undefined);
+            this.store.dispatch(new accountActions.AddNewTransactionAction(tx));
           })
           .on('confirmation', confirmations => {
             this.web3Service.newPendingTransaction(tx, confirmations);
+            this.store.dispatch(new accountActions.SetTransactionConfirmationsAction(tx, confirmations));
           })
           .on('error', error => {
             subject.next('error');
