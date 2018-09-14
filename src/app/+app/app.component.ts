@@ -37,9 +37,9 @@ export class AppComponent implements OnInit {
   readonly canBeShared: boolean = !!(navigator as any).share;
 
   readonly status$ = this.store.select(fromRoot.getStatus);
-  readonly account$ = this.web3Service.account$;
-  readonly pendingTransactions$ = this.web3Service.pendingTransactions$;
-  readonly balance$ = this.web3Service.checkUpdates(_ => _.getEthBalance());
+  readonly account$ = this.store.select(fromRoot.getAccount);
+  readonly pendingTransactions$ = this.store.select(fromRoot.getPendingTransactions);
+  readonly balance$ = this.store.select(fromRoot.getBalance);
 
   readonly kudosTokenService$ = this.activatedRoute.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
