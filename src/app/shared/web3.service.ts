@@ -1,7 +1,7 @@
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import Web3 from 'web3';
 import * as Web3Module from 'web3';
-import { Transaction, ABIDataTypes } from 'web3/types';
+import { Transaction, ABIDataTypes, Block, BlockType } from 'web3/types';
 import * as abiDecoder from 'abi-decoder';
 import * as contract from 'truffle-contract';
 import { detect } from 'detect-browser';
@@ -269,6 +269,10 @@ export class Web3Service {
       methodName: name.replace(/([A-Z])/g, ' $1').toLowerCase(),
       params,
     };
+  }
+
+  getBlock(number: BlockType, returnTransactions: boolean = false): Observable<Block> {
+    return Observable.fromPromise(this.web3.eth.getBlock(number, returnTransactions));
   }
 
   getMetamaskInstallationLink(browser?: string): string {
