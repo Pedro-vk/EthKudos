@@ -5,7 +5,7 @@ import { FullTransaction } from '../../web3.service';
 export const SET_ACCOUNT =                    'account - set account';
 export const SET_BALANCE =                    'account - set balance';
 export const ADD_NEW_TRANSACTION =            'account - new transaction';
-export const SET_TRANSACTION_METADATA =            'account - set transaction metadata';
+export const SET_TRANSACTION_METADATA =       'account - set transaction metadata';
 export const REMOVE_NEW_TRANSACTION =         'account - remove transaction';
 export const SET_TRANSACTION_CONFIRMATIONS =  'account - set transaction confirmations';
 
