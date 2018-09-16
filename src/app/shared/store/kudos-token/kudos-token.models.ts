@@ -8,10 +8,10 @@ export interface KudosTokenData {
   decimals: number;
   totalSupply: number;
   members: string[];
+  balances: {[member: string]: number};
 
   // Total
-  contacts: {member: string, name: string}[];
+  contacts: {[member: string]: string};
   polls: string[];
   isActivePoll: boolean;
-  balances: {member: string, balance: number, name: string}[];
 }

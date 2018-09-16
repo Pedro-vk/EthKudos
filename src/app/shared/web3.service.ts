@@ -108,6 +108,7 @@ export class Web3Service {
     .mergeMap(addrs =>
       this.newBlock$
         .mergeMap(blockNumber => this.getBlock(blockNumber, true))
+        .filter(_ => !!_)
         .map(({transactions}) => transactions.map(transaction => String(transaction.to).toLowerCase()))
         .mergeMap(changes => Observable.from(changes.filter(change => addrs.indexOf(change) !== -1))),
     )
