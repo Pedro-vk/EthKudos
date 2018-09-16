@@ -51,7 +51,7 @@ export const getStatus = createSelector(getStatusState, fromStatus.getStatus);
 export const getKudosTokenByAddressWithAccountData = (address: string) => createSelector(getAccount, getKudosTokenByAddress(address),
   (account, kudosToken) => kudosToken && ({
     ...kudosToken,
-    imMember: (kudosToken.members || []).indexOf(account) !== -1,
+    imMember: !!(kudosToken.members || []).find(({member}) => member === account),
     myBalance: ((kudosToken.balances || {})[account] || 0) / 10 ** kudosToken.decimals,
   }),
 );

@@ -3,19 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/combineLatest';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
 
 import * as fromRoot from '../../shared/store/reducers';
+import * as kudosTokenActions from '../../shared/store/kudos-token/kudos-token.actions';
 
 import { Web3Service, KudosTokenFactoryService, cardInOutAnimation } from '../../shared';
 
@@ -31,28 +27,23 @@ export class JoinComponent {
   @ViewChild('joinUrl') joinUrlElement: ElementRef;
 
   readonly status$ = this.store.select(fromRoot.getStatus);
-  readonly account$ = this.web3Service.account$;
-  readonly kudosTokenService$ = this.activatedRoute.parent.params
-    .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
-    .shareReplay();
+  readonly account$ = this.store.select(fromRoot.getAccount);
   readonly kudosTokenInfo$ = this.activatedRoute.params
     .mergeMap(({tokenAddress}) => this.getKudosTokenInfo(tokenAddress))
     .shareReplay();
-  readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
 
   readonly adminJoinUrl$ = this.joinName$
     .startWith(undefined)
-    .combineLatest(this.web3Service.account$, this.activatedRoute.params)
+    .combineLatest(this.store.select(fromRoot.getAccount), this.activatedRoute.params)
     .map(([name, account, {tokenAddress}]) =>
       `https://eth-kudos.com/${tokenAddress}/admin;address=${account}` + (name ? `;name=${name}` : ''),
     )
     .map(url => encodeURI(url))
+    .distinctUntilChanged()
     .shareReplay();
 
   constructor(
     private store: Store<fromRoot.State>,
-    private web3Service: Web3Service,
-    private kudosTokenFactoryService: KudosTokenFactoryService,
     private activatedRoute: ActivatedRoute,
   ) { }
 
@@ -64,28 +55,8 @@ export class JoinComponent {
   }
 
   private getKudosTokenInfo(address: string) {
-    const kudosTokenService = this.kudosTokenFactoryService.getKudosTokenServiceAt(address);
-    const selectedKudosTokenService = kudosTokenService
-      .onIsValid
-      .filter(_ => _)
-      .first()
-      .mergeMap(() => this.web3Service.account$)
-      .map(async () => ({
-        address: kudosTokenService.address,
-        organisationName: +(await kudosTokenService.version()) > 0.1 ? await kudosTokenService.organisationName() : undefined,
-        name: await kudosTokenService.name(),
-        symbol: await kudosTokenService.symbol(),
-        decimals: await kudosTokenService.decimals(),
-        members: await kudosTokenService.getContacts(),
-        imMember: await kudosTokenService.imMember(),
-        myBalance: await kudosTokenService.myBalance() / (10 ** await kudosTokenService.decimals()),
-      }))
-      .mergeMap(_ => Observable.fromPromise(_))
-      .catch(() => Observable.of(undefined));
-    return Observable
-      .merge(
-        kudosTokenService.onIsValid.filter(_ => !_).map(() => undefined),
-        selectedKudosTokenService,
-      );
+    this.store.dispatch(new kudosTokenActions.LoadBasicDataAction(address));
+    this.store.dispatch(new kudosTokenActions.LoadTotalDataAction(address));
+    return this.store.select(fromRoot.getKudosTokenByAddressWithAccountData(address));
   }
 }

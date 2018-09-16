@@ -8,6 +8,7 @@ import 'rxjs/add/observable/empty';
 
 import { AppCommonModule } from '../../app-common.module';
 import { PROVIDERS } from '../../shared';
+import { reducers } from '../../shared/store';
 
 import { HomeComponent } from './home.component';
 
@@ -21,7 +22,7 @@ describe('HomeComponent', () => {
         AppCommonModule,
         RouterTestingModule,
         NoopAnimationsModule,
-        StoreModule.forRoot({}),
+        StoreModule.forRoot(reducers),
       ],
       declarations: [
         HomeComponent,
