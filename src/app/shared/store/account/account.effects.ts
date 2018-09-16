@@ -73,7 +73,9 @@ export class AccountEffects {
         .scan((acc, transactions) =>
           [...acc, ...transactions]
             .filter((tx, i, list) => list.indexOf(tx) === i)
-        , [])
+            .filter(_ => !!_),
+          [],
+        )
         .mergeMap(txs =>
           Observable
             .combineLatest(Observable.of(undefined), ...txs.map(tx => this.web3Service.getTransaction(tx)))

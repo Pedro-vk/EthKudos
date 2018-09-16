@@ -160,4 +160,18 @@ describe('Web3Service', () => {
 
     expect(service.status$).toBeObservable(expected);
   });
+
+  it('should notify a contract change', () => {
+    spyOn(service, 'getBlockNumber').and.returnValues(...[1000, 1000, 1001, 1001, 1002, 1002].map(toObservable));
+    spyOn(service, 'getBlock').and.returnValues(...[
+      {transactions: [{to: newAccount(100)}, {to: newAccount(101)}, {to: newAccount(102)}]},
+      {transactions: [{to: newAccount(103)}]},
+      {transactions: [{to: newAccount(100)}, {to: newAccount(900)}, {to: newAccount(102)}]},
+    ].map(toObservable));
+
+    intervalMock =    hot('-x-x-x-x|', {x: undefined});
+    const expected = cold('-------c', {c: newAccount(900)});
+
+    expect(service.watchContractChanges(newAccount(900))).toBeObservable(expected);
+  });
 });
