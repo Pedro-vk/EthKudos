@@ -44,12 +44,7 @@ export class AppComponent implements OnInit {
   readonly kudosTokenService$ = this.activatedRoute.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
     .shareReplay();
-  readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
-  readonly organisationName$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.organisationName()));
-  readonly kudosBalance$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(async _ => _.fromInt(await _.myBalance())));
-  readonly imOwner$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imOwner()));
-  readonly imMember$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imMember()));
-  readonly myContact$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.myContact()));
+  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithAccountData);
 
   constructor(
     private store: Store<fromRoot.State>,

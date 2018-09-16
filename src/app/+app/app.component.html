@@ -5,12 +5,12 @@
         <mat-icon>keyboard_arrow_left</mat-icon>
       </button>
     </div><!--
- --><div class="icon-wrapper" [class.icon-wrapper--visible]="(imOwner$ | async) && !routeIs('/admin')">
+ --><div class="icon-wrapper" [class.icon-wrapper--visible]="(kudosToken$ | async)?.imOwner && !routeIs('/admin')">
       <button mat-icon-button routerLink="./admin" [attr.aria-label]="'Admin settings' | translate">
         <mat-icon>settings</mat-icon>
       </button><!--
  --></div><!--
- --><span>{{(organisationName$ | async) || (token$ | async)?.name}}</span>
+ --><span>{{(kudosToken$ | async)?.organisationName}}</span>
   </div>
   <span>
     <button
@@ -43,8 +43,8 @@
   <div>
     <div class="header__account-wrapper" *ngIf="account$ | async as account">
       <eth-kudos-blockie [address]="account" variant="big" noicon></eth-kudos-blockie>
-      <div class="header__account" [class.header__account--no-member]="!(imMember$ | async)">
-        <span class="header__account-row header__account-row--name">{{(myContact$ | async) || "&nbsp;"}}</span>
+      <div class="header__account" [class.header__account--no-member]="!(kudosToken$ | async)?.imMember">
+        <span class="header__account-row header__account-row--name">{{(kudosToken$ | async)?.myContact || "&nbsp;"}}</span>
         <span class="header__account-row header__account-row--no-member" translate>You are not member</span>
         <span class="header__account-row header__account-row--address">{{account}}</span>
       </div>
@@ -57,7 +57,7 @@
     </div>
     <div class="header__balance-row">
       <span class="bp-l" translate>Kudos received:</span><!--
-   --><code> {{((kudosBalance$ | async) || 0) | number : '.0-2'}} <span class="symbol">{{(token$ | async)?.symbol}}</span></code>
+   --><code> {{((kudosToken$ | async)?.myBalance || 0) | number}} <span class="symbol">{{(kudosToken$ | async)?.symbol}}</span></code>
     </div>
   </div>
 </mat-toolbar>

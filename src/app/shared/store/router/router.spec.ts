@@ -3,7 +3,6 @@ import { StoreModule, Store } from '@ngrx/store';
 import { ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
 import { hot, cold } from 'jasmine-marbles';
 
 import { PROVIDERS } from '../../';
