@@ -107,4 +107,47 @@ describe('KudosToken - Effects', () => {
     effects = TestBed.get(KudosTokenEffects);
     store = TestBed.get(Store);
   });
+
+  it('should get basic KudosToken data', () => {
+    const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
+
+    actions = hot('-a', {
+      a: new kudosTokenActions.LoadBasicDataAction(newAccount(1)),
+    });
+
+    const expected = cold('-r', {
+      r: {type: 'mock'},
+    });
+
+    expect(effects.getBasicKudosTokenData$).toBeObservable(expected);
+    expect(setDataSpy).toHaveBeenCalledWith(newAccount(1), 'basic', jasmine.any(Function));
+  });
+
+  it('should get total KudosToken data', () => {
+    const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
+
+    actions = hot('-a', {
+      a: new kudosTokenActions.LoadTotalDataAction(newAccount(1)),
+    });
+
+    const expected = cold('-r', {
+      r: {type: 'mock'},
+    });
+
+    expect(effects.getTotalKudosTokenData$).toBeObservable(expected);
+    expect(setDataSpy).toHaveBeenCalledWith(newAccount(1), 'total', jasmine.any(Function));
+  });
+
+  it('should get data', done => {
+    spyOn(effects, 'resolvePromise').and.returnValue(Observable.of({name: 'test'}));
+    const getKudosTokenServiceAtSpy = spyOn((effects as any).kudosTokenFactoryService, 'getKudosTokenServiceAt')
+      .and.returnValue({onIsValid: Observable.of(true)});
+
+    effects.setData(newAccount(1), 'basic', async() => ({}))
+      .subscribe(action => {
+        expect(action).toEqual(new kudosTokenActions.SetTokenDataAction(newAccount(1), 'basic', {name: 'test'}));
+        expect(getKudosTokenServiceAtSpy).toHaveBeenCalledWith(newAccount(1));
+        done();
+      });
+  });
 });
