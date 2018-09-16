@@ -86,7 +86,7 @@ export function accountReducer(state: AccountState = initialState, action: accou
   }
 }
 
-export const getAccount = (state: AccountState) => state.account;
+export const getAccount = (state: AccountState) => (state.account || '').toLowerCase() || undefined;
 export const getBalance = (state: AccountState) => state.balance;
 export const getPendingTransactionsById = (state: AccountState) => state.pendingTransactions;
 export const getPendingTransactions = (state: AccountState) => Object.values(state.pendingTransactions).filter(_ => !!_.hash);

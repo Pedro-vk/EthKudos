@@ -86,7 +86,9 @@ export const getKudosTokensById = (state: KudosTokenState) => state.kudosTokens;
 export const getKudosTokens = (state: KudosTokenState) => Object.values(state.kudosTokens);
 
 // By id
-export const getKudosTokenByAddress = (address: string) => createSelector(getKudosTokensById, state => state[address]);
+export const getKudosTokenByAddress = (address: string) => createSelector(getKudosTokensById,
+  state => state[address] && state[address].loaded.basic ? state[address] : undefined,
+);
 export const getKudosTokenLoading = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).loading);
 export const getKudosTokenLoaded = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).loaded);
 
