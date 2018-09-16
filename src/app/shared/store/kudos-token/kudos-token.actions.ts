@@ -11,11 +11,17 @@ export const SET_BALANCE =          'kudos token - set balance';
 // Load data
 export class LoadBasicDataAction implements Action {
   readonly type = LOAD_BASIC_DATA;
-  constructor(public payload: string) { }
+  payload: {address: string, force: boolean};
+  constructor(address: string, force: boolean = false) {
+    this.payload = {address, force};
+  }
 }
 export class LoadTotalDataAction implements Action {
   readonly type = LOAD_TOTAL_DATA;
-  constructor(public payload: string) { }
+  payload: {address: string, force: boolean};
+  constructor(address: string, force: boolean = false) {
+    this.payload = {address, force};
+  }
 }
 export class LoadAccountBalanceAction implements Action {
   readonly type = LOAD_ACCOUNT_BALANCE;
