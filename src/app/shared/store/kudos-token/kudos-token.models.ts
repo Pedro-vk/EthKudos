@@ -11,6 +11,7 @@ export interface KudosTokenData {
   balances: {[member: string]: number};
 
   // Total
+  owner: string;
   contacts: {[member: string]: string};
   polls: string[];
   isActivePoll: boolean;

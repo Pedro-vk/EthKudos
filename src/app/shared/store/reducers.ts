@@ -51,7 +51,18 @@ export const getStatus = createSelector(getStatusState, fromStatus.getStatus);
 export const getKudosTokenByAddressWithAccountData = (address: string) => createSelector(getAccount, getKudosTokenByAddress(address),
   (account, kudosToken) => kudosToken && ({
     ...kudosToken,
+    imOwner: kudosToken.owner && kudosToken.owner === account,
     imMember: !!(kudosToken.members || []).find(({member}) => member === account),
     myBalance: ((kudosToken.balances || {})[account] || 0) / 10 ** kudosToken.decimals,
+    myContact: kudosToken.contacts && kudosToken.contacts[account],
   }),
+);
+
+// Account + KudosToken + router
+export const getCurrentKudosTokenWithAccountData = createSelector(getRouterState, _ => _,
+  (router, state) => {
+    if (router && router.state.root.firstChild && router.state.root.firstChild.params.tokenAddress) {
+      return getKudosTokenByAddressWithAccountData(router.state.root.firstChild.params.tokenAddress)(state);
+    }
+  },
 );
