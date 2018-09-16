@@ -56,7 +56,7 @@ export class Web3Service {
   private existInNetwork: boolean;
   private _web3: Web3;
   private _intervalMock: Function;
-  private _newWatchingAddress: BehaviorSubject<string> = new BehaviorSubject(undefined);
+  private _newWatchingAddress$: BehaviorSubject<string> = new BehaviorSubject(undefined);
 
   private readonly interval$: Observable<any> = Observable.of(undefined)
     .mergeMap(() => (this._intervalMock && this._intervalMock()) || Observable.interval(100))
@@ -102,7 +102,7 @@ export class Web3Service {
     })
     .distinctUntilChanged()
     .shareReplay(1);
-  readonly watchingContractChanges$ = this._newWatchingAddress
+  readonly watchingContractChanges$ = this._newWatchingAddress$
     .scan((acc, address) => [...acc, String(address).toLowerCase()].filter((_, i, list) => list.indexOf(_) === i), [])
     .filter(addrs => !!addrs.length)
     .mergeMap(addrs =>
@@ -208,8 +208,8 @@ export class Web3Service {
   }
 
   watchContractChanges(address: string): Observable<string> {
-    this._newWatchingAddress.next(address);
-    return this.watchingContractChanges$.filter(_ => _ === address);
+    this._newWatchingAddress$.next(address);
+    return this.watchingContractChanges$.filter(_ => _ === address).share();
   }
 
   getTransaction(tx: string): Observable<Transaction> {
@@ -217,6 +217,9 @@ export class Web3Service {
   }
 
   getTransactionMetadata(transaction: Transaction): FullTransaction {
+    if (!transaction) {
+      return;
+    }
     const {name, params} = abiDecoder.decodeMethod(transaction.input) || {name: '', params: []} as any;
     return {
       ...transaction,

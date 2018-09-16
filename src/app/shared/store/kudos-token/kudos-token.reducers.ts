@@ -1,3 +1,5 @@
+import { createSelector } from '@ngrx/store';
+
 import * as kudosTokenActions from './kudos-token.actions';
 import { KudosTokenData } from './kudos-token.models';
 
@@ -22,7 +24,7 @@ export function kudosTokenReducer(state: KudosTokenState = initialState, action:
     case kudosTokenActions.LOAD_BASIC_DATA:
     case kudosTokenActions.LOAD_TOTAL_DATA:
     case kudosTokenActions.LOAD_ACCOUNT_BALANCE: {
-      const address = (action.payload as {address: string}).address || <string>action.payload;
+      const {address} = action.payload;
       return {
         ...state,
         kudosTokens: {
@@ -79,5 +81,12 @@ export function kudosTokenReducer(state: KudosTokenState = initialState, action:
   }
 }
 
+/* tslint:disable:max-line-length */
 export const getKudosTokensById = (state: KudosTokenState) => state.kudosTokens;
 export const getKudosTokens = (state: KudosTokenState) => Object.values(state.kudosTokens);
+
+// By id
+export const getKudosTokenByAddress = (address: string) => createSelector(getKudosTokensById, state => state[address]);
+export const getKudosTokenLoading = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).loading);
+export const getKudosTokenLoaded = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).loaded);
+

@@ -44,6 +44,7 @@ export class AccountEffects {
     .map(({payload}: accountActions.AddNewTransactionAction) => payload)
     .mergeMap(tx => this.web3Service.getTransaction(tx))
     .map(transaction => this.web3Service.getTransactionMetadata(transaction))
+    .filter(_ => !!_)
     .map(metadata => new accountActions.SetTransactionMetadataAction(metadata.hash, metadata));
 
   @Effect()

@@ -2,15 +2,16 @@ import { Injectable } from '@angular/core';
 import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/distinct';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import { Transaction } from 'web3/types';
 
-import { KudosTokenFactoryService } from '../../kudos-token-factory.service';
-import { KudosTokenService } from '../../contracts/kudos-token.service';
+import { Web3Service, KudosTokenService, KudosTokenFactoryService } from '../../';
 
 import * as fromRoot from '../reducers';
 import * as kudosTokenActions from './kudos-token.actions';
@@ -23,10 +24,11 @@ export class KudosTokenEffects {
   getBasicKudosTokenData$: Observable<Action> = this.actions$
     .ofType(kudosTokenActions.LOAD_BASIC_DATA)
     .map(({payload}: kudosTokenActions.LoadBasicDataAction) => payload)
-    .mergeMap(address =>
+    .mergeMap(({address, force}) =>
       this.setData(
         address,
         'basic',
+        force,
         async(kudosTokenService) => ({
           address,
           version: await kudosTokenService.version(),
@@ -44,10 +46,11 @@ export class KudosTokenEffects {
   getTotalKudosTokenData$: Observable<Action> = this.actions$
     .ofType(kudosTokenActions.LOAD_TOTAL_DATA)
     .map(({payload}: kudosTokenActions.LoadTotalDataAction) => payload)
-    .mergeMap(address =>
+    .mergeMap(({address, force}) =>
       this.setData(
         address,
         'total',
+        force,
         async(kudosTokenService) => ({
           contacts: await kudosTokenService.getContacts(),
           polls: await kudosTokenService.getPolls(),
@@ -57,20 +60,45 @@ export class KudosTokenEffects {
       ),
     );
 
+  @Effect()
+  watchKudosTokenChanges$: Observable<Action> = this.actions$
+    .ofType(kudosTokenActions.LOAD_TOTAL_DATA, kudosTokenActions.LOAD_BASIC_DATA)
+    .map(({payload}: kudosTokenActions.LoadTotalDataAction | kudosTokenActions.LoadBasicDataAction) => payload)
+    .map(({address}) => address)
+    .distinct()
+    .mergeMap((address) => this.web3Service.watchContractChanges(address))
+    .mergeMap((address: string) =>
+      this.store.select(_ => fromRoot.getKudosTokenLoaded(address)(_))
+        .first()
+        .filter(_ => !!_)
+        .mergeMap(({basic, total}) => {
+          const actions = [];
+          if (basic) {
+            actions.push(new kudosTokenActions.LoadBasicDataAction(address, true));
+          }
+          if (total) {
+            actions.push(new kudosTokenActions.LoadTotalDataAction(address, true));
+          }
+          return Observable.from(actions);
+        }),
+    );
+
   constructor(
     private actions$: Actions,
     private store: Store<fromRoot.State>,
+    private web3Service: Web3Service,
     private kudosTokenFactoryService: KudosTokenFactoryService,
   ) { }
 
   setData(
     address: string,
     type: 'basic' | 'total' | undefined,
+    force: boolean,
     dataGetter: (kudosTokenService: KudosTokenService) => Promise<Partial<KudosTokenData>>,
   ) {
     return this.store.select(fromRoot.getKudosTokensById)
       .first()
-      .filter(kudosTokens => !(kudosTokens[address] && kudosTokens[address].loaded[type]))
+      .filter(kudosTokens => !(kudosTokens && kudosTokens[address] && kudosTokens[address].loaded[type]) || force)
       .mergeMap(() => {
         const kudosTokenService = this.kudosTokenFactoryService.getKudosTokenServiceAt(address);
         return kudosTokenService.onIsValid

@@ -23,6 +23,7 @@ export const reducers = {
   statusReducer,
 };
 
+/* tslint:disable:max-line-length */
 // Root selectors
 export const getAccountState = (state: State) => state.accountReducer;
 export const getKudosTokenState = (state: State) => state.kudosTokenReducer;
@@ -38,6 +39,9 @@ export const getPendingTransactions = createSelector(getAccountState, fromAccoun
 // KudosToken
 export const getKudosTokensById = createSelector(getKudosTokenState, fromKudosToken.getKudosTokensById);
 export const getKudosTokens = createSelector(getKudosTokenState, fromKudosToken.getKudosTokens);
+export const getKudosTokenByAddress = (address: string) => createSelector(getKudosTokenState, fromKudosToken.getKudosTokenByAddress(address));
+export const getKudosTokenLoading = (address: string) => createSelector(getKudosTokenState, fromKudosToken.getKudosTokenLoading(address));
+export const getKudosTokenLoaded = (address: string) => createSelector(getKudosTokenState, fromKudosToken.getKudosTokenLoaded(address));
 
 // Status
 export const getStatus = createSelector(getStatusState, fromStatus.getStatus);
