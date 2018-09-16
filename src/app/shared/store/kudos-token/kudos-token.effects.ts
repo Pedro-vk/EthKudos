@@ -4,9 +4,10 @@ import { Effect, Actions, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/operator/distinct';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/distinct';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import { Transaction } from 'web3/types';
@@ -19,6 +20,21 @@ import { KudosTokenData } from './kudos-token.models';
 
 @Injectable()
 export class KudosTokenEffects {
+
+  @Effect()
+  loadBalanceOfCurrentAccount$: Observable<Action> = this.actions$
+    .ofType(ROOT_EFFECTS_INIT)
+    .mergeMap(() => this.store.select(fromRoot.getAccount))
+    .filter(_ => !!_)
+    .distinctUntilChanged()
+    .mergeMap(account =>
+      this.store.select(fromRoot.getKudosTokensById)
+        .map(_ => Object.keys(_))
+        .distinctUntilChanged((a, b) => a.toString() === b.toString())
+        .mergeMap((addresses: string[] = []) =>
+          Observable.from(addresses.map(address => new kudosTokenActions.LoadAccountBalanceAction(address, account))),
+        ),
+    );
 
   @Effect()
   getBasicKudosTokenData$: Observable<Action> = this.actions$

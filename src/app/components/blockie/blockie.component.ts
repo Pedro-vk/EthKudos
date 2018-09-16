@@ -1,10 +1,11 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
+import { Store } from '@ngrx/store';
 import * as blockies from 'blockies';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/shareReplay';
 
-import { Web3Service } from '../../shared/web3.service';
+import * as fromRoot from '../../shared/store/reducers';
 
 @Component({
   selector: 'eth-kudos-blockie',
@@ -19,11 +20,11 @@ export class BlockieComponent implements OnInit, OnChanges {
   @Input() random: number;
   blockie: SafeStyle;
 
-  readonly isActiveAccount$ = this.web3Service.account$
+  readonly isActiveAccount$ = this.store.select(fromRoot.getAccount)
     .map((account: string = '') => (this.address || '').toLowerCase() === account.toLowerCase())
     .shareReplay(1);
 
-  constructor(private web3Service: Web3Service, private domSanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) { }
+  constructor(private store: Store<fromRoot.State>, private domSanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     if (this.random !== undefined) {

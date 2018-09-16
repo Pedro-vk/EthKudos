@@ -26,9 +26,7 @@ describe('LandingComponent', () => {
         NoopAnimationsModule,
         HttpClientTestingModule,
 
-        StoreModule.forRoot({
-          ...reducers,
-        }),
+        StoreModule.forRoot(reducers),
         EffectsModule.forRoot(effects),
       ],
       declarations: [

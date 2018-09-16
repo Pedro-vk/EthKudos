@@ -8,21 +8,18 @@ import Web3 from 'web3';
 import * as Web3Module from 'web3';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/interval';
-import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
 
 import * as fromRoot from '../../shared/store/reducers';
+import * as kudosTokenActions from '../../shared/store/kudos-token/kudos-token.actions';
 
 import {
   Web3Service, ConnectionStatus, KudosOrganisationsService, KudosTokenFactoryService, cardInOutAnimation,
@@ -109,7 +106,7 @@ export class LandingComponent implements OnInit {
       }
       return this.getKudosTokenInfo(address);
     })
-    .distinctUntilChanged();
+    .shareReplay();
   readonly newOrganisation$ = this.newKudosTokenAddress
     .mergeMap(address => this.getKudosTokenInfo(address))
     .distinctUntilChanged();
@@ -205,27 +202,7 @@ export class LandingComponent implements OnInit {
   }
 
   private getKudosTokenInfo(address: string) {
-    const kudosTokenService = this.kudosTokenFactoryService.getKudosTokenServiceAt(address);
-    const selectedKudosTokenService = kudosTokenService
-      .onIsValid
-      .filter(_ => _)
-      .first()
-      .mergeMap(() => this.web3Service.account$)
-      .map(async () => ({
-        address: kudosTokenService.address,
-        organisationName: +(await kudosTokenService.version()) > 0.1 ? await kudosTokenService.organisationName() : undefined,
-        name: await kudosTokenService.name(),
-        symbol: await kudosTokenService.symbol(),
-        decimals: await kudosTokenService.decimals(),
-        imMember: await kudosTokenService.imMember(),
-        myBalance: await kudosTokenService.myBalance() / (10 ** await kudosTokenService.decimals()),
-      }))
-      .mergeMap(_ => Observable.fromPromise(_))
-      .catch(() => Observable.of(undefined));
-    return Observable
-      .merge(
-        kudosTokenService.onIsValid.filter(_ => !_).map(() => undefined),
-        selectedKudosTokenService,
-      );
+    this.store.dispatch(new kudosTokenActions.LoadBasicDataAction(address));
+    return this.store.select(fromRoot.getKudosTokenByAddressWithAccountData(address));
   }
 }

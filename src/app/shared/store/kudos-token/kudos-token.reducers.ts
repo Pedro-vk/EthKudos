@@ -87,7 +87,15 @@ export const getKudosTokens = (state: KudosTokenState) => Object.values(state.ku
 
 // By id
 export const getKudosTokenByAddress = (address: string) => createSelector(getKudosTokensById,
-  state => state[address] && state[address].loaded.basic ? state[address] : undefined,
+  state => {
+    if (!state[address] || !state[address].loaded.basic) {
+      return;
+    }
+    return {
+      ...state[address],
+      members: (state[address].members || []).map(member => ({member, name: (state[address].contacts || {})[member]}))
+    };
+  }
 );
 export const getKudosTokenLoading = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).loading);
 export const getKudosTokenLoaded = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).loaded);

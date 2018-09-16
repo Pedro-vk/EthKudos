@@ -25,9 +25,7 @@ describe('JoinComponent', () => {
         RouterTestingModule,
         NoopAnimationsModule,
 
-        StoreModule.forRoot({
-          ...reducers,
-        }),
+        StoreModule.forRoot(reducers),
         EffectsModule.forRoot(effects),
       ],
       declarations: [

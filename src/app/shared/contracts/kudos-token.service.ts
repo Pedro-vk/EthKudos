@@ -168,13 +168,10 @@ export class KudosTokenService
       .map(async () => {
         try {
           switch (false) {
-            case this.initialized: return false;
-            case !!(await this.version()).match(/^\d+\.\d+$/): return false;
-            // Decreased number of check to speed up the validation
-            // case !!(await this.name()): return false;
-            // case !!(await this.symbol()): return false;
-            // case !isNaN(await this.decimals()): return false;
-            case !isNaN(await this.getPollsSize()): return false;
+            case this.initialized:
+            case !!(await this.version()).match(/^\d+\.\d+$/):
+            case !isNaN(await this.getPollsSize()):
+              return false;
             default: return true;
           }
         } catch (e) {

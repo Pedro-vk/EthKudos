@@ -152,7 +152,7 @@ describe('KudosToken - Effects', () => {
       });
   });
 
-  it('should get total KudosToken data', () => {
+  it('should update the data of a KudosToken when has changes', () => {
     let account1WatchStep = 0;
     const account1Changes = hot('---c--------c', {c: newAccount(1)})
       .do(() => store.dispatch(new kudosTokenActions.SetTokenDataAction(newAccount(1), account1WatchStep++ ? 'total' : 'basic', {})));
