@@ -69,6 +69,7 @@ export class KudosTokenEffects {
         'total',
         force,
         async(kudosTokenService) => ({
+          owner: await kudosTokenService.owner(),
           contacts: (await kudosTokenService.getContacts() || []).reduce((acc, _) => ({...acc, [_.member]: _.name}), {}),
           polls: await kudosTokenService.getPolls(),
           isActivePoll: await kudosTokenService.isActivePoll(),
