@@ -36,6 +36,7 @@ interface KudosPollConstants {
   getPollResultsSize: number;
 }
 type KudosPollConstantsIteratiors = { // tslint:disable-line
+  getBalances: {member: string, balance: number}[];
   getGratitudesOf: Gratitude[];
   getPollResults: Result[];
 };
@@ -79,6 +80,13 @@ export class KudosPollService
   readonly getPollResultsSize = () => this.generateConstant('getPollResultsSize')();
 
   // Constant iterators
+  readonly getBalances = () => this.generateConstantIteration<'getBalances'>(
+    () => this.membersNumber(),
+    async i => {
+      const member = await this.getMember(i);
+      return {member, balance: await this.balanceOf(member)};
+    },
+  )
   readonly getGratitudesOf = (member: string) =>
     this.generateConstantIteration<'getGratitudesOf'>(() => this.getGratitudesSizeOf(member), i => this.getGratitudeOf(member, i))
   readonly getPollResults = () =>
