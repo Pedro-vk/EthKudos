@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
@@ -59,6 +61,47 @@ export class KudosPollEffects {
         }),
       ),
     );
+
+  @Effect()
+  getGratitudesOf$: Observable<Action> = this.actions$
+    .ofType(kudosPollActions.LOAD_ACCOUNT_GRATITUDES)
+    .map(({payload}: kudosPollActions.LoadAccountGratitudesAction) => payload)
+    .mergeMap(({address, account}) =>
+      this.getKudosPollServiceData(address, async kudosPollService => await kudosPollService.getGratitudesOf(account))
+        .map(gratitudes => ({gratitudes, address, account})),
+    )
+    .map(({address, account, gratitudes}) => new kudosPollActions.SetGratitudesAction(address, account, gratitudes));
+
+  @Effect()
+  watchKudosPollChanges$: Observable<Action> = this.actions$
+    .ofType(kudosPollActions.LOAD_DYNAMIC_DATA, kudosPollActions.LOAD_BASIC_DATA)
+    .map(({payload}: kudosPollActions.LoadDynamicDataAction | kudosPollActions.LoadBasicDataAction) => payload)
+    .map(({address}) => address)
+    .distinct()
+    .mergeMap((address) => this.web3Service.watchContractChanges(address))
+    .mergeMap((address: string) =>
+      this.store.select(_ => fromRoot.getKudosPollLoaded(address)(_))
+        .first()
+        .filter(_ => !!_)
+        .mergeMap(({dynamic}) => {
+          if (dynamic) {
+            return Observable.of(new kudosPollActions.LoadDynamicDataAction(address, true));
+          }
+          return Observable.empty();
+        }),
+    );
+
+  @Effect()
+  watchGratitudesSent$: Observable<Action> = this.actions$
+    .ofType(kudosPollActions.LOAD_DYNAMIC_DATA)
+    .map(({payload}: kudosPollActions.LoadDynamicDataAction) => payload)
+    .map(({address}) => address)
+    .distinct()
+    .mergeMap((address) =>
+      this.kudosPollFactoryService.getKudosPollServiceAt(address).Reward$.map(data => ({...data, address})),
+    )
+    .do(_ => console.log('gratitude sent', _))
+    .map(({address, rewarded}) => new kudosPollActions.LoadAccountGratitudesAction(address, rewarded));
 
   constructor(
     private actions$: Actions,

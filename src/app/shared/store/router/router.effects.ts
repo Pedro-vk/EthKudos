@@ -4,6 +4,7 @@ import { Effect, Actions } from '@ngrx/effects';
 import { ROUTER_NAVIGATION, RouterNavigationAction } from '@ngrx/router-store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
@@ -19,6 +20,7 @@ export class RouterEffects {
     .map(({payload}: RouterNavigationAction) => payload)
     .map(({routerState}) => routerState.root.firstChild && routerState.root.firstChild.params.tokenAddress)
     .filter(_ => !!_)
+    .distinctUntilChanged()
     .mergeMap(address => Observable.from([
       new kudosTokenActions.LoadBasicDataAction(address),
       new kudosTokenActions.LoadTotalDataAction(address),

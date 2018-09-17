@@ -99,4 +99,9 @@ export const getKudosTokenByAddress = (address: string) => createSelector(getKud
 );
 export const getKudosTokenLoading = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).loading);
 export const getKudosTokenLoaded = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).loaded);
+export const getKudosTokenPolls = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).polls);
+export const getKudosTokenPreviousPolls = (address: string) => createSelector(getKudosTokenByAddress(address), state => state.polls.slice(0, -state.isActivePoll));
+export const getKudosTokenActivePoll = (address: string) => createSelector(getKudosTokenByAddress(address),
+  state => state.isActivePoll ? state.polls[state.polls.length - 1] : undefined,
+);
 
