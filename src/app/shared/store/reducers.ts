@@ -54,6 +54,9 @@ export const getKudosTokens = createSelector(getKudosTokenState, fromKudosToken.
 export const getKudosTokenByAddress = (address: string) => createSelector(getKudosTokenState, fromKudosToken.getKudosTokenByAddress(address));
 export const getKudosTokenLoading = (address: string) => createSelector(getKudosTokenState, fromKudosToken.getKudosTokenLoading(address));
 export const getKudosTokenLoaded = (address: string) => createSelector(getKudosTokenState, fromKudosToken.getKudosTokenLoaded(address));
+export const getKudosTokenPolls = (address: string) => createSelector(getKudosTokenState, fromKudosToken.getKudosTokenPolls(address));
+export const getKudosTokenPreviousPolls = (address: string) => createSelector(getKudosTokenState, fromKudosToken.getKudosTokenPreviousPolls(address));
+export const getKudosTokenActivePoll = (address: string) => createSelector(getKudosTokenState, fromKudosToken.getKudosTokenActivePoll(address));
 
 // Status
 export const getStatus = createSelector(getStatusState, fromStatus.getStatus);
