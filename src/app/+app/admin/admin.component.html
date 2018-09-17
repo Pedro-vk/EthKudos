@@ -1,5 +1,5 @@
 <div class="side">
-  <form #newPollForm="ngForm" novalidate *ngIf="(isActivePoll$ | async) === false" class="block-separation">
+  <form #newPollForm="ngForm" novalidate *ngIf="(kudosToken$ | async)?.isActivePoll === false" class="block-separation">
     <mat-card [attr.disabled]="newPoll.working">
       <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 
@@ -64,7 +64,7 @@
     </mat-card>
   </form>
 
-  <mat-card *ngIf="(isActivePoll$ | async) === true"  [attr.disabled]="closePollWorking">
+  <mat-card *ngIf="(kudosToken$ | async)?.isActivePoll === true"  [attr.disabled]="closePollWorking">
     <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 
     <mat-card-header>
@@ -72,7 +72,7 @@
       <mat-card-subtitle>
         {{'The remaining kudos not sent are going to be frozen.' | translate}}
         <br>
-        <span [innerHTML]="'CLOSE_KUDOS_TO_TOKEN' | translate : {SYMBOL: (token$ | async)?.symbol}"></span>
+        <span [innerHTML]="'CLOSE_KUDOS_TO_TOKEN' | translate : {SYMBOL: (kudosToken$ | async)?.symbol}"></span>
       </mat-card-subtitle>
     </mat-card-header>
 
@@ -80,11 +80,11 @@
       <div class="transfered__title" translate>Kudos sent</div>
       <code>
         <span class="transfered__number transfered__number--left">
-          {{(kudosSentOnActivePoll$ | async)?.sent || 0}}<span class="transfered__symbol">{{(token$ | async)?.symbol}}</span>
+          {{(kudosSentOnActivePoll$ | async)?.sent || 0}}<span class="transfered__symbol">{{(kudosToken$ | async)?.symbol}}</span>
         </span>
         <span class="transfered__of"></span>
         <span class="transfered__number transfered__number--right">
-          {{(kudosSentOnActivePoll$ | async)?.total || 0}}<span class="transfered__symbol">{{(token$ | async)?.symbol}}</span>
+          {{(kudosSentOnActivePoll$ | async)?.total || 0}}<span class="transfered__symbol">{{(kudosToken$ | async)?.symbol}}</span>
         </span>
       </code>
 
@@ -165,12 +165,12 @@
   </form>
 </div>
 
-<div class="side" *ngIf="(getContacts$ | async)?.length as length">
+<div class="side" *ngIf="(kudosToken$ | async)?.members?.length as length">
   <h2 class="heading">{{ 'MEMBERS_ALONE_SHORT' | translate : {NUMBER: length} }}</h2>
 
   <mat-accordion>
     <mat-expansion-panel
-      *ngFor="let contact of getContacts$ | async; trackBy: trackMember"
+      *ngFor="let contact of (kudosToken$ | async)?.members; trackBy: trackMember"
       [hideToggle]="true"
       [attr.disabled]="memberWorking[contact.member]">
 
