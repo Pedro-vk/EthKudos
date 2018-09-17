@@ -10,7 +10,6 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
-import { Transaction } from 'web3/types';
 
 import { Web3Service, KudosTokenService, KudosTokenFactoryService } from '../../';
 

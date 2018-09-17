@@ -6,6 +6,7 @@ export interface KudosPollGratitude {
 
 export interface KudosPollData {
   // Basic information
+  address: string;
   version: string;
   name: string;
   symbol: string;

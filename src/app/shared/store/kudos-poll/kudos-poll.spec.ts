@@ -4,7 +4,6 @@ import { ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/do';
 import { hot, cold } from 'jasmine-marbles';
 
 import { PROVIDERS } from '../../';
@@ -126,5 +125,48 @@ describe('KudosPoll - Effects', () => {
 
     effects = TestBed.get(KudosPollEffects);
     store = TestBed.get(Store);
+  });
+
+  it('should get basic KudosPoll data', () => {
+    const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
+
+    actions = hot('-a', {
+      a: new kudosPollActions.LoadBasicDataAction(newAccount(1)),
+    });
+
+    const expected = cold('-r', {
+      r: {type: 'mock'},
+    });
+
+    expect(effects.getBasicKudosPollData$).toBeObservable(expected);
+    expect(setDataSpy).toHaveBeenCalledWith(newAccount(1), 'basic', false, jasmine.any(Function));
+  });
+
+  it('should get dynamic KudosPoll data', () => {
+    const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
+
+    actions = hot('-a', {
+      a: new kudosPollActions.LoadDynamicDataAction(newAccount(1)),
+    });
+
+    const expected = cold('-r', {
+      r: {type: 'mock'},
+    });
+
+    expect(effects.getTotalKudosPollData$).toBeObservable(expected);
+    expect(setDataSpy).toHaveBeenCalledWith(newAccount(1), 'dynamic', false, jasmine.any(Function));
+  });
+
+  it('should get data', done => {
+    spyOn(effects, 'resolvePromise').and.returnValue(Observable.of({name: 'test'}));
+    const getKudosPollServiceAtSpy = spyOn((effects as any).kudosPollFactoryService, 'getKudosPollServiceAt')
+      .and.returnValue({onInitialized: Observable.of(true)});
+
+    effects.setData(newAccount(1), 'basic', false, async() => ({}))
+      .subscribe(action => {
+        expect(action).toEqual(new kudosPollActions.SetPollDataAction(newAccount(1), 'basic', {name: 'test'}));
+        expect(getKudosPollServiceAtSpy).toHaveBeenCalledWith(newAccount(1));
+        done();
+      });
   });
 });

@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Store, Action } from '@ngrx/store';
 import { Effect, Actions, ROOT_EFFECTS_INIT } from '@ngrx/effects';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import { Transaction } from 'web3/types';
 
 import { Web3Service, KudosPollService, KudosPollFactoryService } from '../../';
 
@@ -10,5 +17,80 @@ import { KudosPollData } from './kudos-poll.models';
 
 @Injectable()
 export class KudosPollEffects {
-  constructor(private store: Store<fromRoot.State>) { }
+
+  @Effect()
+  getBasicKudosPollData$: Observable<Action> = this.actions$
+    .ofType(kudosPollActions.LOAD_BASIC_DATA)
+    .map(({payload}: kudosPollActions.LoadBasicDataAction) => payload)
+    .mergeMap(({address, force}) =>
+      this.setData(
+        address,
+        'basic',
+        force,
+        async(kudosPollService) => ({
+          address,
+          version: await kudosPollService.version(),
+          name: await kudosPollService.name(),
+          symbol: await kudosPollService.symbol(),
+          decimals: await kudosPollService.decimals(),
+          totalSupply: await kudosPollService.totalSupply(),
+          kudosByMember: await kudosPollService.kudosByMember(),
+          maxKudosToMember: await kudosPollService.maxKudosToMember(),
+          minDeadline: await kudosPollService.minDeadline(),
+          creation: await kudosPollService.creation(),
+        }),
+      ),
+    );
+
+  @Effect()
+  getTotalKudosPollData$: Observable<Action> = this.actions$
+    .ofType(kudosPollActions.LOAD_DYNAMIC_DATA)
+    .map(({payload}: kudosPollActions.LoadDynamicDataAction) => payload)
+    .mergeMap(({address, force}) =>
+      this.setData(
+        address,
+        'dynamic',
+        force,
+        async(kudosPollService) => ({
+          active: await kudosPollService.active(),
+          members: await kudosPollService.getMembers(),
+          balances: (await kudosPollService.getBalances() || []).reduce((acc, _) => ({...acc, [_.member]: _.balance}), {}),
+          gratitudes: (await kudosPollService.allGratitudes() || []).reduce((acc, gratitude) => ({...acc, [gratitude.to]: gratitude}), {}),
+        }),
+      ),
+    );
+
+  constructor(
+    private actions$: Actions,
+    private store: Store<fromRoot.State>,
+    private web3Service: Web3Service,
+    private kudosPollFactoryService: KudosPollFactoryService,
+  ) { }
+
+  setData(
+    address: string,
+    type: 'basic' | 'dynamic' | undefined,
+    force: boolean,
+    dataGetter: (kudosPollService: KudosPollService) => Promise<Partial<KudosPollData>>,
+  ) {
+    return this.store.select(fromRoot.getKudosPollsById)
+      .first()
+      .filter(kudosPolls => !(kudosPolls && kudosPolls[address] && kudosPolls[address].loaded[type]) || force)
+      .mergeMap(() => this.getKudosPollServiceData(address, dataGetter))
+      .map(data => new kudosPollActions.SetPollDataAction(address, type, data));
+  }
+
+  getKudosPollServiceData(
+    address: string,
+    dataGetter: (kudosPollService: KudosPollService) => Promise<any>,
+  ): Observable<any> {
+    const kudosPollService = this.kudosPollFactoryService.getKudosPollServiceAt(address);
+    return kudosPollService.onInitialized
+      .first()
+      .mergeMap(() => this.resolvePromise(dataGetter(kudosPollService)));
+  }
+
+  resolvePromise<T>(promise: Promise<T>): Observable<T> {
+    return Observable.fromPromise(promise);
+  }
 }
