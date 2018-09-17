@@ -4,7 +4,7 @@ contract('KudosPoll', accounts => {
   const decimals = 2;
   const kudosByMember = 5 * (10 ** decimals);
   const maxKudosToMember = 2 * (10 ** decimals);
-  const deadlineInMin = 0; // Value 0 set to speed-up the tests, it must be 1 or more.
+  const deadlineInMin = 1;
 
   let instance;
   let deadline;
