@@ -127,7 +127,7 @@ describe('KudosPoll - Effects', () => {
     store = TestBed.get(Store);
   });
 
-  it('should get basic KudosPoll data', () => {
+  it('should get basic KudosPoll data', async() => {
     const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
 
     actions = hot('-a', {
@@ -140,9 +140,16 @@ describe('KudosPoll - Effects', () => {
 
     expect(effects.getBasicKudosPollData$).toBeObservable(expected);
     expect(setDataSpy).toHaveBeenCalledWith(newAccount(1), 'basic', false, jasmine.any(Function));
+
+    const dataGetter = setDataSpy.calls.mostRecent().args[3];
+    const serviceSpy = jasmine.createSpyObj('service', [
+      'version', 'name', 'symbol', 'decimals', 'totalSupply', 'kudosByMember', 'maxKudosToMember', 'minDeadline', 'creation',
+    ]);
+
+    expect(await dataGetter(serviceSpy)).toBeDefined();
   });
 
-  it('should get dynamic KudosPoll data', () => {
+  it('should get dynamic KudosPoll data', async() => {
     const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
 
     actions = hot('-a', {
@@ -153,8 +160,15 @@ describe('KudosPoll - Effects', () => {
       r: {type: 'mock'},
     });
 
-    expect(effects.getTotalKudosPollData$).toBeObservable(expected);
+    expect(effects.getDynamicKudosPollData$).toBeObservable(expected);
     expect(setDataSpy).toHaveBeenCalledWith(newAccount(1), 'dynamic', false, jasmine.any(Function));
+
+    const dataGetter = setDataSpy.calls.mostRecent().args[3];
+    const serviceSpy = jasmine.createSpyObj('service', [
+      'active', 'getMembers', 'getBalances', 'allGratitudes',
+    ]);
+
+    expect(await dataGetter(serviceSpy)).toBeDefined();
   });
 
   it('should get data', done => {
@@ -168,5 +182,33 @@ describe('KudosPoll - Effects', () => {
         expect(getKudosPollServiceAtSpy).toHaveBeenCalledWith(newAccount(1));
         done();
       });
+  });
+
+  it('should update the data of a KudosPoll when has changes', () => {
+    let account1WatchStep = 0;
+    const account1Changes = hot('---c--------c', {c: newAccount(1)})
+      .do(() => store.dispatch(new kudosPollActions.SetPollDataAction(newAccount(1), account1WatchStep++ ? 'dynamic' : 'basic', {})));
+    const account2Changes = hot('-------c', {c: newAccount(2)})
+      .do(() => store.dispatch(new kudosPollActions.SetPollDataAction(newAccount(2), 'basic', {})));
+
+    spyOn((<any>effects).web3Service, 'watchContractChanges')
+      .and.callFake(address => ({
+        [newAccount(1)]: account1Changes,
+        [newAccount(2)]: account2Changes,
+      }[address]));
+
+    actions = hot('-a----x---b', {
+      a: new kudosPollActions.LoadBasicDataAction(newAccount(1)),
+      b: new kudosPollActions.LoadDynamicDataAction(newAccount(1)),
+      x: new kudosPollActions.LoadBasicDataAction(newAccount(2)),
+    });
+
+    const expected = cold('------------b', {
+      a: new kudosPollActions.LoadBasicDataAction(newAccount(1), true),
+      b: new kudosPollActions.LoadDynamicDataAction(newAccount(1), true),
+      x: new kudosPollActions.LoadBasicDataAction(newAccount(2), true),
+    });
+
+    expect(effects.watchKudosPollChanges$).toBeObservable(expected);
   });
 });
