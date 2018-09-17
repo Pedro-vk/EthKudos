@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
@@ -14,6 +15,8 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
+
+import * as fromRoot from '../../shared/store/reducers';
 
 import { Web3Service, KudosTokenFactoryService } from '../../shared';
 
@@ -34,9 +37,7 @@ export class AdminComponent implements OnInit {
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
     .shareReplay();
-  readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
-  readonly isActivePoll$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.isActivePoll()));
-  readonly getContacts$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getContacts()));
+  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithAccountData);
 
   readonly activePollContract$ = this.web3Service.changes$
     .startWith(undefined)
@@ -73,6 +74,7 @@ export class AdminComponent implements OnInit {
     .share();
 
   constructor(
+    private store: Store<fromRoot.State>,
     private web3Service: Web3Service,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private router: Router,
@@ -90,9 +92,10 @@ export class AdminComponent implements OnInit {
           .subscribe(() => this.router.navigate(['../'], {relativeTo: this.activatedRoute}));
       });
 
-    this.getContacts$
-      .subscribe(contacts => {
-        contacts.forEach(({member, name}) => this.memberName[member] = this.memberName[member] || name);
+    this.kudosToken$
+      .filter(_ => !!_)
+      .subscribe(({members}) => {
+        members.forEach(({member, name}) => this.memberName[member] = this.memberName[member] || name);
       });
 
     this.activatedRoute.params
