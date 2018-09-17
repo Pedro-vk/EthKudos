@@ -109,7 +109,7 @@ describe('KudosToken - Effects', () => {
     store = TestBed.get(Store);
   });
 
-  it('should get basic KudosToken data', () => {
+  it('should get basic KudosToken data', async() => {
     const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
 
     actions = hot('-a', {
@@ -122,9 +122,16 @@ describe('KudosToken - Effects', () => {
 
     expect(effects.getBasicKudosTokenData$).toBeObservable(expected);
     expect(setDataSpy).toHaveBeenCalledWith(newAccount(1), 'basic', false, jasmine.any(Function));
+
+    const dataGetter = setDataSpy.calls.mostRecent().args[3];
+    const serviceSpy = jasmine.createSpyObj('service', [
+      'version', 'organisationName', 'name', 'name', 'symbol', 'decimals', 'totalSupply', 'getMembers', 'getBalances',
+    ]);
+
+    expect(await dataGetter(serviceSpy)).toBeDefined();
   });
 
-  it('should get total KudosToken data', () => {
+  it('should get total KudosToken data', async() => {
     const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
 
     actions = hot('-a', {
@@ -137,6 +144,13 @@ describe('KudosToken - Effects', () => {
 
     expect(effects.getTotalKudosTokenData$).toBeObservable(expected);
     expect(setDataSpy).toHaveBeenCalledWith(newAccount(1), 'total', false, jasmine.any(Function));
+
+    const dataGetter = setDataSpy.calls.mostRecent().args[3];
+    const serviceSpy = jasmine.createSpyObj('service', [
+      'owner', 'getContacts', 'getPolls', 'isActivePoll',
+    ]);
+
+    expect(await dataGetter(serviceSpy)).toBeDefined();
   });
 
   it('should get data', done => {

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/distinct';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
@@ -31,10 +32,10 @@ export class KudosPollEffects {
         force,
         async(kudosPollService) => ({
           address,
-          version: await kudosPollService.version(),
-          name: await kudosPollService.name(),
-          symbol: await kudosPollService.symbol(),
-          decimals: await kudosPollService.decimals(),
+          // version: await kudosPollService.version(),
+          // name: await kudosPollService.name(),
+          // symbol: await kudosPollService.symbol(),
+          // decimals: await kudosPollService.decimals(),
           totalSupply: await kudosPollService.totalSupply(),
           kudosByMember: await kudosPollService.kudosByMember(),
           maxKudosToMember: await kudosPollService.maxKudosToMember(),
@@ -45,7 +46,7 @@ export class KudosPollEffects {
     );
 
   @Effect()
-  getTotalKudosPollData$: Observable<Action> = this.actions$
+  getDynamicKudosPollData$: Observable<Action> = this.actions$
     .ofType(kudosPollActions.LOAD_DYNAMIC_DATA)
     .map(({payload}: kudosPollActions.LoadDynamicDataAction) => payload)
     .mergeMap(({address, force}) =>
@@ -90,18 +91,6 @@ export class KudosPollEffects {
           return Observable.empty();
         }),
     );
-
-  @Effect()
-  watchGratitudesSent$: Observable<Action> = this.actions$
-    .ofType(kudosPollActions.LOAD_DYNAMIC_DATA)
-    .map(({payload}: kudosPollActions.LoadDynamicDataAction) => payload)
-    .map(({address}) => address)
-    .distinct()
-    .mergeMap((address) =>
-      this.kudosPollFactoryService.getKudosPollServiceAt(address).Reward$.map(data => ({...data, address})),
-    )
-    .do(_ => console.log('gratitude sent', _))
-    .map(({address, rewarded}) => new kudosPollActions.LoadAccountGratitudesAction(address, rewarded));
 
   constructor(
     private actions$: Actions,
