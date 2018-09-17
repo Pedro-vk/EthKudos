@@ -4,6 +4,7 @@ import { ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/do';
 import { hot, cold } from 'jasmine-marbles';
 
 import { PROVIDERS } from '../../';

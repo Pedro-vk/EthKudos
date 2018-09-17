@@ -58,7 +58,11 @@ export class KudosPollEffects {
           active: await kudosPollService.active(),
           members: await kudosPollService.getMembers(),
           balances: (await kudosPollService.getBalances() || []).reduce((acc, _) => ({...acc, [_.member]: _.balance}), {}),
-          gratitudes: (await kudosPollService.allGratitudes() || []).reduce((acc, gratitude) => ({...acc, [gratitude.to]: gratitude}), {}),
+          gratitudes: (await kudosPollService.allGratitudes() || [])
+            .reduce((acc, gratitude) => ({
+              ...acc,
+              [gratitude.to]: [...(acc[gratitude.to] || []), gratitude],
+            }), {}),
         }),
       ),
     );

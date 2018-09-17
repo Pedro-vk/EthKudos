@@ -106,10 +106,15 @@ export const getKudosPolls = (state: KudosPollState) => Object.values(state.kudo
 // By id
 export const getKudosPollByAddress = (address: string) => createSelector(getKudosPollsById,
   state => {
-    if (!state[address] || !state[address].loaded.basic) {
-      return;
+    if (!state[address] || !state[address].loaded.dynamic) {
+      return state[address];
     }
-    return state[address];
+    return {
+      ...state[address],
+      results: (Object.entries(state[address].gratitudes || {}) || [])
+        .map(([to, gratitudes]) => gratitudes.map(({from, kudos, message}) => ({to, kudos, message, from})))
+        .reduce((acc, _) => [...acc, ..._], []),
+    };
   }
 );
 export const getKudosPollLoading = (address: string) => createSelector(getKudosPollByAddress(address), state => (state || {} as any).loading);
