@@ -33,7 +33,9 @@ export class RouterEffects {
         ]),
         this.store.select(fromRoot.getKudosTokenPolls(address))
           .mergeMap(kudosPolls => Observable.from(kudosPolls || []))
+          .filter(_ => !!_)
           .distinct()
+          .delay(1000)
           .mergeMap(kudosPollAddress => Observable.from([
             new kudosPollActions.LoadBasicDataAction(kudosPollAddress),
             new kudosPollActions.LoadDynamicDataAction(kudosPollAddress),

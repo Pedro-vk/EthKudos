@@ -1,7 +1,40 @@
 import { createSelector } from '@ngrx/store';
 
 import * as kudosPollActions from './kudos-poll.actions';
-import { KudosPollData } from './kudos-poll.models';
+import { KudosPollData, KudosPollGratitudes } from './kudos-poll.models';
+
+function generateResultsFromState(state: Partial<KudosPollData> = <any>{}) {
+  const allGratitudes = Object.entries(state.gratitudes || {})
+    .map(([to, gratitudes]) =>
+      gratitudes.map(({from, kudos, message}) => ({to, kudos: kudos * 10 ** (state.decimals || 0), message, from})),
+    )
+    .reduce((acc, _) => [...acc, ..._], []);
+  const initial = (state.members || []).reduce((acc, _) => ({...acc, [_]: 0}), {});
+  const gratitudesByMember = allGratitudes
+    .reduce(({received, sent}, {from, to}) => ({
+      received: {...received, [to.toLowerCase()]: (received[to.toLowerCase()] || 0) + 1},
+      sent: {...sent, [from.toLowerCase()]: (sent[from.toLowerCase()] || 0) + 1},
+    }), {received: {...initial}, sent: {...initial}});
+  const kudosByMember = allGratitudes
+    .reduce((acc, {to, kudos}) => ({...acc, [to]: (acc[to] || 0) + kudos}), {...initial});
+  const maxGratitudesSent = Math.max(...Object.values<number>(kudosByMember));
+  return {
+    gratitudes: state.gratitudes,
+    allGratitudes,
+    results: Object.entries(kudosByMember)
+      .map(([member, kudos]) => ({
+        member,
+        kudos,
+        gratitudesReceived: gratitudesByMember.received[member],
+        gratitudesSent: gratitudesByMember.sent[member],
+        achievements: {
+          topSender: gratitudesByMember.sent[member] === maxGratitudesSent,
+          onTop: (gratitudesByMember.sent[member] >= (maxGratitudesSent * 0.8)),
+          noParticipation: gratitudesByMember.sent[member] === 0,
+        },
+      })),
+  };
+}
 
 export interface KudosPollState {
   kudosPolls: {
@@ -54,6 +87,7 @@ export function kudosPollReducer(state: KudosPollState = initialState, action: k
               ...(type ? {[type]: true} : {}),
             },
             ...data,
+            ...generateResultsFromState(data),
           },
         },
       };
@@ -71,7 +105,7 @@ export function kudosPollReducer(state: KudosPollState = initialState, action: k
             balances: {
               ...(state.kudosPolls[address] || {} as any).balances,
               [account]: balance,
-            }
+            },
           },
         },
       };
@@ -79,17 +113,21 @@ export function kudosPollReducer(state: KudosPollState = initialState, action: k
 
     case kudosPollActions.SET_GRATITUDES: {
       const {address, account, gratitudes} = action.payload;
+      const kudosPoll = {
+        ...(state.kudosPolls[address] || {} as any),
+        loading: false,
+        gratitudes: {
+          ...(state.kudosPolls[address] || {} as any).gratitudes,
+          [account]: gratitudes,
+        },
+      };
       return {
         ...state,
         kudosPolls: {
           ...state.kudosPolls,
           [address]: {
-            ...(state.kudosPolls[address] || {} as any),
-            loading: false,
-            gratitudes: {
-              ...(state.kudosPolls[address] || {} as any).gratitudes,
-              [account]: gratitudes,
-            }
+            ...kudosPoll,
+            ...generateResultsFromState(kudosPoll),
           },
         },
       };
@@ -104,19 +142,7 @@ export const getKudosPollsById = (state: KudosPollState) => state.kudosPolls;
 export const getKudosPolls = (state: KudosPollState) => Object.values(state.kudosPolls);
 
 // By id
-export const getKudosPollByAddress = (address: string) => createSelector(getKudosPollsById,
-  state => {
-    if (!state[address] || !state[address].loaded.dynamic) {
-      return state[address];
-    }
-    return {
-      ...state[address],
-      results: (Object.entries(state[address].gratitudes || {}) || [])
-        .map(([to, gratitudes]) => gratitudes.map(({from, kudos, message}) => ({to, kudos, message, from})))
-        .reduce((acc, _) => [...acc, ..._], []),
-    };
-  }
-);
+export const getKudosPollByAddress = (address: string) => createSelector(getKudosPollsById, state => state[address]);
 export const getKudosPollLoading = (address: string) => createSelector(getKudosPollByAddress(address), state => (state || {} as any).loading);
 export const getKudosPollLoaded = (address: string) => createSelector(getKudosPollByAddress(address), state => (state || {} as any).loaded);
 
