@@ -3,7 +3,9 @@ export interface KudosPollGratitude {
   message: string;
   from: string;
 }
-export type KudosPollGratitudes = {[member: string]: KudosPollGratitude[]};
+export interface KudosPollGratitudes {
+  [member: string]: KudosPollGratitude[];
+}
 
 export interface KudosPollGeneratedData {
   allGratitudes: {to: string, from: string, kudos: number, message: string}[];
@@ -18,7 +20,7 @@ export interface KudosPollGeneratedData {
       onTop: boolean,
       noParticipation: boolean,
     };
-  }[]
+  }[];
 }
 
 export interface KudosPollData extends KudosPollGeneratedData {

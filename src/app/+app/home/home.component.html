@@ -1,50 +1,50 @@
 <div class="side">
   <mat-card
-    *ngIf="getActivePollContract$ | async as activePollContract"
+    *ngIf="activePoll$ | async as activePoll"
     routerLink="./active"
     class="active-poll relative pointer">
 
     <mat-card-header>
-      <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
+      <eth-kudos-blockie [address]="activePoll.address" variant="card" mat-card-avatar></eth-kudos-blockie>
       <mat-card-title translate>Active polling</mat-card-title>
       <mat-card-subtitle class="bp-l">
-        {{'MEMBERS_LONG' | translate : {NUMBER: ((getActivePollMembersNumber$ | async) || '')} }}
+        {{'MEMBERS_LONG' | translate : {NUMBER: (activePoll?.members?.length || '')} }}
       </mat-card-subtitle>
       <mat-card-subtitle class="bp-s">
-        {{'MEMBERS_SHORT' | translate : {NUMBER: ((getActivePollMembersNumber$ | async) || '')} }}
+        {{'MEMBERS_SHORT' | translate : {NUMBER: (activePoll?.members?.length || '')} }}
       </mat-card-subtitle>
     </mat-card-header>
 
-    <div class="remaining-wrapper" *ngIf="imMember$ | async">
+    <div class="remaining-wrapper" *ngIf="(kudosToken$ | async)?.imMember">
       {{'Remaining' | translate}}
 
       <code class="remaining">
-        {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{(token$ | async)?.symbol}}</span>
+        {{activePoll.myBalance || 0 | number}}<span class="remaining__symbol">{{(kudosToken$ | async)?.symbol}}</span>
       </code>
     </div>
   </mat-card>
 
-  <div class="no-active-poll" *ngIf="!(getActivePollContract$ | async)">
+  <div class="no-active-poll" *ngIf="!(activePoll$ | async)">
     <mat-icon>not_interested</mat-icon>
     {{'No active poll' | translate}}
   </div>
 
-  <div class="no-active-poll no-active-poll--sub" *ngIf="!(getActivePollContract$ | async)">
-    <span *ngIf="imOwner$ | async">
+  <div class="no-active-poll no-active-poll--sub" *ngIf="!(activePoll$ | async)">
+    <span *ngIf="(kudosToken$ | async)?.imOwner">
       {{'You can open a new polling.' | translate}}
       <button mat-button routerLink="./admin">{{'go to admin' | translate}}</button>
     </span>
-    <span *ngIf="!(imOwner$ | async)">
+    <span *ngIf="!(kudosToken$ | async)?.imOwner">
       {{'The owner can create a new one.' | translate}}
     </span>
   </div>
 
-  <h2 class="heading" *ngIf="getPreviousPollsContracts$ | async" translate>Previous polls</h2>
+  <h2 class="heading" *ngIf="(previousPolls$ | async)?.length" translate>Previous polls</h2>
 
-  <mat-accordion *ngIf="getPreviousPollsContracts$ | async as previousPollsContracts">
+  <mat-accordion *ngIf="previousPolls$ | async as previousPolls">
     <mat-expansion-panel
       class="pointer"
-      *ngFor="let poll of previousPollsContracts; trackBy: trackContracts"
+      *ngFor="let poll of previousPolls; let i = index; trackBy: trackPoll"
       [routerLink]="['./closed', poll.address]"
       [hideToggle]="true"
       [disabled]="true">
@@ -55,17 +55,17 @@
 
             <eth-kudos-blockie [address]="poll.address"></eth-kudos-blockie>
 
-            <span class="previous__number">#{{poll.i + 1 | number : '2.0-0'}}</span>
+            <span class="previous__number">#{{previousPolls.length - i | number : '2.0-0'}}</span>
 
             <mat-icon class="bp-l">date_range</mat-icon>
 
             <span class="previous__date bp-l">{{'AT_DATE' | translate : {DATE: (poll.creation | date : 'short') || ''} }}</span>
 
-            <div class="previous__right" *ngIf="poll.kudos">
+            <div class="previous__right" *ngIf="poll.myKudos">
               {{'Gratified' | translate}}
               <code class="previous__my-kudos">
-                {{poll.kudos}}<!--
-             --><span class="previous__my-kudos-symbol">{{(token$ | async)?.symbol}}</span>
+                {{poll.myKudos | number}}<!--
+             --><span class="previous__my-kudos-symbol">{{(kudosToken$ | async)?.symbol}}</span>
               </code>
             </div>
           </div>
@@ -75,30 +75,30 @@
   </mat-accordion>
 </div>
 
-<div class="side" *ngIf="(getBalances$ | async) && (getBalances$ | async)?.length !== 0">
-  <h2 class="heading" translate>Most awarded</h2>
+<div class="side" *ngIf="(kudosToken$ | async)?.results as results">
+  <h2 class="heading" *ngIf="results?.length" translate>Most awarded</h2>
 
-  <mat-accordion>
+  <mat-accordion *ngIf="results?.length">
     <mat-expansion-panel
-      *ngFor="let balance of getBalances$ | async; let i = index; trackBy: trackMember"
+      *ngFor="let result of results; let i = index; trackBy: trackMember"
       [hideToggle]="true"
       [disabled]="true">
 
       <mat-expansion-panel-header>
         <mat-panel-title class="ranking-wrapper">
-          <div class="ranking" [attr.data-n]="i + 1" [attr.data-kudos]="balance.balance || 0">
+          <div class="ranking" [attr.data-n]="i + 1" [attr.data-kudos]="result.kudos || 0 | number">
             <span class="ranking__balance-wrapper">
-              <span class="ranking__balance">{{balance.balance}}<code>{{(token$ | async)?.symbol}}</code></span>
+              <span class="ranking__balance">{{result.kudos | number}}<code>{{(kudosToken$ | async)?.symbol}}</code></span>
             </span>
 
-            <eth-kudos-blockie [address]="balance.member"></eth-kudos-blockie>
+            <eth-kudos-blockie [address]="result.member"></eth-kudos-blockie>
 
-            <span class="ranking__name">{{balance.name}}</span>
+            <span class="ranking__name">{{result.name}}</span>
 
             <mat-icon
               class="ranking__extra ranking__icon--top-sender"
               [matTooltip]="'The most grateful' | translate"
-              *ngIf="balance?.achievements?.topSender">
+              *ngIf="result?.achievements?.topSender">
 
               whatshot
             </mat-icon>
@@ -106,7 +106,7 @@
             <mat-icon
               class="ranking__extra ranking__icon--on-top"
               [matTooltip]="'One of the most grateful' | translate"
-              *ngIf="balance?.achievements?.onTop && !balance?.achievements?.topSender">
+              *ngIf="result?.achievements?.onTop && !result?.achievements?.topSender">
 
               whatshot
             </mat-icon>
@@ -114,7 +114,7 @@
             <mat-icon
               class="ranking__extra ranking__icon--no-participation"
               [matTooltip]="'No participation yet' | translate"
-              *ngIf="balance?.achievements?.noParticipation">
+              *ngIf="result?.achievements?.noParticipation && !result?.achievements?.beginner">
 
               ac_unit
             </mat-icon>
@@ -122,18 +122,18 @@
             <mat-icon
               class="ranking__extra ranking__icon--beginner"
               [matTooltip]="'Beginner' | translate"
-              *ngIf="balance?.achievements?.beginner">
+              *ngIf="result?.achievements?.beginner">
 
               fiber_new
             </mat-icon>
 
-            <span class="ranking__extra" *ngIf="balance.gratitudesReceived !== undefined" [matTooltip]="'Gratitudes received' | translate">
+            <span class="ranking__extra" *ngIf="result.gratitudesReceived !== undefined" [matTooltip]="'Gratitudes received' | translate">
               <mat-icon class="ranking__extra-icon--in">call_received</mat-icon>
-              {{balance.gratitudesReceived}}
+              {{result.gratitudesReceived}}
             </span>
-            <span class="ranking__extra" *ngIf="balance.gratitudesSent !== undefined" [matTooltip]="'Gratitudes sent' | translate">
+            <span class="ranking__extra" *ngIf="result.gratitudesSent !== undefined" [matTooltip]="'Gratitudes sent' | translate">
               <mat-icon class="ranking__extra-icon--out">call_made</mat-icon>
-              {{balance.gratitudesSent}}
+              {{result.gratitudesSent}}
             </span>
 
           </div>

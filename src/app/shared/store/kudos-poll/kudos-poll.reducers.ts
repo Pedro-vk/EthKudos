@@ -4,6 +4,9 @@ import * as kudosPollActions from './kudos-poll.actions';
 import { KudosPollData, KudosPollGratitudes, KudosPollGeneratedData } from './kudos-poll.models';
 
 export function generateResultsFromState(state: Partial<KudosPollData> = {}): KudosPollGeneratedData {
+  if (!state.gratitudes) {
+    return <any>{};
+  }
   const allGratitudes = Object.entries(state.gratitudes || {})
     .map(([to, gratitudes]) =>
       gratitudes.map(({from, kudos, message}) => ({to, kudos: kudos / 10 ** (state.decimals || 0), message, from})),
@@ -25,8 +28,8 @@ export function generateResultsFromState(state: Partial<KudosPollData> = {}): Ku
       .map(([member, kudos]: [string, number]) => ({
         member,
         kudos,
-        gratitudesReceived: gratitudesByMember.received[member],
-        gratitudesSent: gratitudesByMember.sent[member],
+        gratitudesReceived: gratitudesByMember.received[member] || 0,
+        gratitudesSent: gratitudesByMember.sent[member] || 0,
         achievements: {
           topSender: gratitudesByMember.sent[member] === maxGratitudesSent,
           onTop: (gratitudesByMember.sent[member] >= (maxGratitudesSent * 0.8)),
@@ -87,7 +90,7 @@ export function kudosPollReducer(state: KudosPollState = initialState, action: k
               ...(type ? {[type]: true} : {}),
             },
             ...data,
-            ...generateResultsFromState(data),
+            ...generateResultsFromState({...data, decimals: 0}),
           },
         },
       };
@@ -127,7 +130,7 @@ export function kudosPollReducer(state: KudosPollState = initialState, action: k
           ...state.kudosPolls,
           [address]: {
             ...kudosPoll,
-            ...generateResultsFromState(kudosPoll),
+            ...generateResultsFromState({...kudosPoll, decimals: 0}),
           },
         },
       };
