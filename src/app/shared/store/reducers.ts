@@ -66,6 +66,8 @@ export const getStatus = createSelector(getStatusState, fromStatus.getStatus);
 export const getKudosPollByAddressWithAccountData = (address: string) => createSelector(getAccount, getKudosPollByAddress(address),
   (account, kudosPoll) => kudosPoll && ({
     ...kudosPoll,
+    maxKudosToMember: kudosPoll.maxKudosToMember / 10 ** kudosPoll.decimals,
+    kudosByMember: kudosPoll.kudosByMember / 10 ** kudosPoll.decimals,
     imMember: !!(kudosPoll.members || []).find(member => member === account),
     myBalance: ((kudosPoll.balances || {})[account] || 0) / 10 ** kudosPoll.decimals,
     myKudos: ((kudosPoll.kudos || {})[account] || 0) / 10 ** kudosPoll.decimals,
@@ -117,7 +119,7 @@ export const getKudosTokenByAddressWithPolls = (address: string) => createSelect
     const polls = previousPolls.map(kudosPollAddress => getKudosPollWithContacts(kudosPollAddress, kudosToken.address)(state));
     const allPolls = allPollsAddress.map(kudosPollAddress => getKudosPollWithContacts(kudosPollAddress, kudosToken.address)(state));
 
-    const loaded = allPolls.findIndex(kudosPoll => !kudosPoll || kudosPoll.loading) === -1;
+    const loaded = allPolls.findIndex(kudosPoll => !kudosPoll || kudosPoll.loading || !(kudosPoll.loaded || {} as any).basic) === -1;
     return {
       ...kudosToken,
       allPolls: loaded ? allPolls : [],

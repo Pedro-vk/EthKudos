@@ -1,19 +1,18 @@
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
 
-import { Web3Service, KudosTokenFactoryService } from '../../../shared';
+import { KudosTokenFactoryService } from '../../../shared';
+import * as fromRoot from '../../../shared/store/reducers';
 
 type suggestedReward = 'custom' | 1 | .5 | .25 | .1;
 
@@ -26,8 +25,9 @@ type suggestedReward = 'custom' | 1 | .5 | .25 | .1;
 export class PollActiveComponent implements OnInit {
   tokenDecimals = 0;
   tokenStep = 0;
-  reward: {member: string, kudos: number, message: string, working: boolean} = <any>{};
+  maxKudosInput: number;
   maxKudos: number;
+  reward: {member: string, kudos: number, message: string, working: boolean} = <any>{};
   suggested: suggestedReward = 'custom';
   @ViewChild('rewardInput') rewardInput: ElementRef;
 
@@ -36,80 +36,52 @@ export class PollActiveComponent implements OnInit {
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
     .shareReplay()
     .filter(_ => !!_);
-  readonly token$ = this.kudosTokenService$.mergeMap(s => s.getTokenInfo());
-
-  readonly imMember$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.imMember()));
   readonly getActivePollContract$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getActivePollContract()))
     .filter(_ => !!_)
     .shareReplay();
-  readonly getActivePollMembersNumber$ = this.getActivePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.membersNumber()))
-    .share();
-  readonly getActivePollRemainingKudos$ = this.getActivePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(async _ => {
-      return await _.fromInt(await _.remainingKudos());
-    }))
-    .share();
-  readonly getActivePollCreation$ = this.getActivePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.creation()))
-    .share();
-  readonly maxKudosToSend$ = this.getActivePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(async _ => ({
-      remaining: await _.fromInt(await _.remainingKudos()),
-      maxKudos: await _.fromInt(await _.maxKudosToMember()),
-    })))
-    .map(({remaining, maxKudos}) => Math.min(remaining, maxKudos))
-    .share();
-  readonly getOtherMembers$ = this.getActivePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.getMembers()))
-    .mergeMap(members => this.kudosTokenService$.map(s => s.getContactsOf(members)))
-    .mergeMap(_ => Observable.fromPromise(_))
-    .combineLatest(this.web3Service.account$)
-    .map(([contacts, account]) => contacts.filter(_ => (_.member || '').toLowerCase() !== (account || '').toLowerCase()))
-    .share();
-  readonly myGratitudesSent$ = this.getActivePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.myGratitudesSent()))
-    .combineLatest(this.kudosTokenService$)
-    .map(([gratitudes, kudosTokenService]) => gratitudes
-      .map(async _ => ({
-        ..._,
-        kudos: await kudosTokenService.fromInt(_.kudos),
-        toName: await kudosTokenService.getContact(_.to),
-      }))
-    )
-    .mergeMap(_ => Observable.fromPromise(Promise.all(_)))
+
+  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
+    .filter(_ => !!_)
     .shareReplay();
-  readonly canBeClosed$ = this.getActivePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.canBeClosed()))
-    .share();
-  readonly activePollRemaining$ = this.getActivePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.minDeadline()))
-    .map(_ => _ * 1000)
-    .catch(() => Observable.empty())
-    .share();
+  readonly activePoll$ = this.kudosToken$
+    .map(_ => _.activePoll)
+    .filter(_ => !!_ && _.loaded && _.loaded.basic);
+
+  readonly getOtherMembers$ = this.activePoll$
+    .combineLatest(this.kudosToken$, this.store.select(fromRoot.getAccount).distinctUntilChanged())
+    .map(([kudosPoll, kudosToken, account]) =>
+      kudosPoll.members
+        .filter(member => member !== account)
+        .map((member) => ({member, name: kudosToken.contacts[member]})),
+    );
+  readonly myGratitudesSent$ = this.activePoll$
+    .combineLatest(this.store.select(fromRoot.getAccount).distinctUntilChanged())
+    .map(([kudosPoll, account]) =>
+      kudosPoll.allGratitudes
+        .filter(({from}) => from === account),
+    );
 
   constructor(
-    private web3Service: Web3Service,
+    private store: Store<fromRoot.State>,
     private router: Router,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getActivePollContract()))
-      .filter(_ => !_)
+    this.kudosToken$
+      .filter(({decimals}) => !isNaN(decimals))
       .first()
-      .catch(() => Observable.empty())
-      .subscribe(() => this.router.navigate(['/']));
-    this.token$
-      .first()
-      .catch(() => Observable.empty())
       .subscribe(({decimals}) => {
         this.tokenDecimals = decimals;
         this.tokenStep = 10 ** -decimals;
       });
-    this.maxKudosToSend$
-      .subscribe(maxKudos => this.maxKudos = maxKudos);
+    this.activePoll$
+      .filter(({maxKudosToMember}) => !isNaN(maxKudosToMember))
+      .subscribe(({maxKudosToMember, myBalance}) => {
+        this.maxKudos = maxKudosToMember;
+        this.maxKudosInput = Math.min(maxKudosToMember, myBalance);
+      });
   }
 
   setRewardKudos(inputNumber: {value: number}, value?: number) {
@@ -118,8 +90,8 @@ export class PollActiveComponent implements OnInit {
     if (number <= 0) {
       number = undefined;
     }
-    if (number > this.maxKudos) {
-      number = this.maxKudos;
+    if (number > this.maxKudosInput) {
+      number = this.maxKudosInput;
     }
     if (this.reward.kudos !== number || number !== +inputNumber.value) {
       this.reward.kudos = number;

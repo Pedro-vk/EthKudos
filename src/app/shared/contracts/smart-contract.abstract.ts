@@ -125,24 +125,29 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
         if (environment.defaultGasLimit) {
           config.gas = environment.defaultGasLimit;
         }
-        this.web3Contract.methods[action](...args)
-          .send(config)
-          .on('transactionHash', txHash => {
-            tx = txHash;
-            subject.next('waiting');
-            this.store.dispatch(new accountActions.AddNewTransactionAction(tx));
-          })
-          .on('confirmation', confirmations => {
-            this.store.dispatch(new accountActions.SetTransactionConfirmationsAction(tx, confirmations));
-          })
-          .on('error', error => {
-            subject.next('error');
-            reject({error});
-          })
-          .then(receipt => {
-            subject.next('done');
-            resolve(receipt);
-          });
+        try {
+          this.web3Contract.methods[action](...args)
+            .send(config)
+            .on('transactionHash', txHash => {
+              tx = txHash;
+              subject.next('waiting');
+              this.store.dispatch(new accountActions.AddNewTransactionAction(tx));
+            })
+            .on('confirmation', confirmations => {
+              this.store.dispatch(new accountActions.SetTransactionConfirmationsAction(tx, confirmations));
+            })
+            .on('error', error => {
+              subject.next('error');
+              reject({error});
+            })
+            .then(receipt => {
+              subject.next('done');
+              resolve(receipt);
+            });
+        } catch (error) {
+          subject.next('error');
+          reject({error});
+        }
       });
       promise.$observable = subject.asObservable();
       return promise;
