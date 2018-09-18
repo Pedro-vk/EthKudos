@@ -1,13 +1,13 @@
-<div class="side">
-  <mat-card *ngIf="getActivePollContract$ | async as activePollContract" class="active-poll relative">
+<div class="side" *ngIf="activePoll$ | async as activePoll">
+  <mat-card class="active-poll relative">
     <mat-card-header>
-      <eth-kudos-blockie [address]="activePollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
+      <eth-kudos-blockie [address]="activePoll.address" variant="card" mat-card-avatar></eth-kudos-blockie>
       <mat-card-title translate>Active polling</mat-card-title>
       <mat-card-subtitle>
         <div class="icon-block">
           <mat-icon>person</mat-icon>
           <span>
-            {{'MEMBERS_SHORT' | translate : {NUMBER: (getActivePollMembersNumber$ | async) || ''} }}
+            {{'MEMBERS_SHORT' | translate : {NUMBER: activePoll?.members?.length || ''} }}
           </span>
         </div>
         <div class="icon-block bp-l" *ngIf="canBeClosed$ | async" [matTooltip]="'The owner can close the polling at any time' | translate">
@@ -16,34 +16,34 @@
         </div>
         <div
           class="icon-block bp-l"
-          [matTooltip]="'CLOSABLE_REMAINING_DATE_LONG' | translate : {DATE: (activePollRemaining$ | async | date : 'short') || ''}"
+          [matTooltip]="'CLOSABLE_REMAINING_DATE_LONG' | translate : {DATE: (activePoll?.minDeadline | date : 'short') || ''}"
           *ngIf="!(canBeClosed$ | async)">
 
           <mat-icon>timer</mat-icon>
           <span>
-            {{'CLOSABLE_REMAINING_DATE' | translate : {DATE: (activePollRemaining$ | async | date : 'short') || ''} }}
+            {{'CLOSABLE_REMAINING_DATE' | translate : {DATE: (activePoll?.minDeadline | date : 'short') || ''} }}
           </span>
         </div>
       </mat-card-subtitle>
     </mat-card-header>
 
-    <div class="remaining-wrapper" *ngIf="imMember$ | async">
+    <div class="remaining-wrapper" *ngIf="activePoll.imMember">
       {{'Remaining' | translate}}
 
       <code class="remaining">
-        {{(getActivePollRemainingKudos$ | async) || 0}}<span class="remaining__symbol">{{(token$ | async)?.symbol}}</span>
+        {{activePoll?.myBalance || 0}}<span class="remaining__symbol">{{(kudosToken$ | async)?.symbol}}</span>
       </code>
     </div>
   </mat-card>
 
-  <form #rewardForm="ngForm" novalidate *ngIf="imMember$ | async">
+  <form #rewardForm="ngForm" novalidate *ngIf="activePoll.imMember">
     <mat-card [attr.disabled]="reward.working" class="relative">
       <mat-progress-bar class="on-disabled" mode="indeterminate"></mat-progress-bar>
 
       <mat-card-header>
         <mat-card-title translate>Send gratitudes</mat-card-title>
         <mat-card-subtitle>
-          {{ 'SEND_KUDOS_AND_GRATITUDES' | translate : {SYMBOL: (token$ | async)?.symbol || ''} }}
+          {{ 'SEND_KUDOS_AND_GRATITUDES' | translate : {SYMBOL: (kudosToken$ | async)?.symbol || ''} }}
         </mat-card-subtitle>
       </mat-card-header>
 
@@ -95,13 +95,13 @@
             (click)="setRewardKudosType($event.target.value)"
             (keyup)="setRewardKudosType($event.target.value)"
             type="number"
-            [max]="maxKudosToSend$ | async"
+            [max]="maxKudosInput"
             [min]="0"
             [step]="tokenStep"
             name="rewardKudos"
-            [placeholder]="'HOW_MANY_KUDOS_SEND'  | translate : {SYMBOL: (token$ | async)?.symbol || ''}"
+            [placeholder]="'HOW_MANY_KUDOS_SEND'  | translate : {SYMBOL: (kudosToken$ | async)?.symbol || ''}"
             required>
-          <span class="symbol-suffix" matSuffix>{{(token$ | async)?.symbol}}</span>
+          <span class="symbol-suffix" matSuffix>{{(kudosToken$ | async)?.symbol}}</span>
         </mat-form-field>
 
         <mat-button-toggle-group
@@ -165,14 +165,14 @@
         <span translate>is going to receive:</span>
       </mat-card-title>
       <mat-card-title *ngIf="!gratitude.toName">
-        <code>{{gratitude.to}}</code>
+        <code>{{gratitude.to}}</code>&nbsp;
         <span translate>is going to receive:</span>
       </mat-card-title>
       <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>
     </mat-card-header>
 
     <span class="gratitude__kudos">
-      {{gratitude.kudos}}<span>{{(token$ | async)?.symbol}}</span>
+      {{gratitude.kudos}}<span>{{(kudosToken$ | async)?.symbol}}</span>
     </span>
   </mat-card>
 </div>
