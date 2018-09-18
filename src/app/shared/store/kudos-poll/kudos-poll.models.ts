@@ -37,6 +37,7 @@ export interface KudosPollData extends KudosPollGeneratedData {
   creation: number;
 
   // Dynamic information
+  canBeClosed: boolean;
   active: boolean;
   members: string[];
   balances: {[member: string]: number};

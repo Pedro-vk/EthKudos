@@ -174,7 +174,7 @@ describe('KudosPoll - Effects', () => {
 
     const dataGetter = setDataSpy.calls.mostRecent().args[3];
     const serviceSpy = jasmine.createSpyObj('service', [
-      'active', 'getMembers', 'getBalances', 'allGratitudes', 'decimals',
+      'decimals', 'canBeClosed', 'active', 'getMembers', 'getBalances', 'allGratitudes',
     ]);
 
     expect(await dataGetter(serviceSpy)).toBeDefined();

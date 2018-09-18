@@ -5,7 +5,6 @@ import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 
-import { KudosTokenFactoryService, KudosPollService } from '../../shared';
 import * as fromRoot from '../../shared/store/reducers';
 
 @Component({
@@ -22,12 +21,11 @@ export class HomeComponent {
 
   constructor(
     private store: Store<fromRoot.State>,
-    private kudosTokenFactoryService: KudosTokenFactoryService,
     private activatedRoute: ActivatedRoute,
   ) { }
 
-  trackPoll(index: number, contract: {address: string}): string {
-    return contract.address;
+  trackPoll(index: number, poll: {address: string}): string {
+    return poll && poll.address;
   }
   trackMember(index: number, {member}: {member: string} & any): string {
     return member || undefined;

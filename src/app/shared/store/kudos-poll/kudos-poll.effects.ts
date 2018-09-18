@@ -56,6 +56,7 @@ export class KudosPollEffects {
         force,
         async(kudosPollService) => ({
           decimals: await kudosPollService.decimals(),
+          canBeClosed: await kudosPollService.canBeClosed(),
           active: await kudosPollService.active(),
           members: await kudosPollService.getMembers(),
           balances: (await kudosPollService.getBalances() || []).reduce((acc, _) => ({...acc, [_.member]: _.balance}), {}),
