@@ -4,21 +4,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
-import 'rxjs/add/operator/startWith';
 
 import * as fromRoot from '../../shared/store/reducers';
 
-import { Web3Service, KudosTokenFactoryService } from '../../shared';
+import { KudosTokenFactoryService } from '../../shared';
 
 @Component({
   selector: 'eth-kudos-admin',
@@ -37,45 +31,23 @@ export class AdminComponent implements OnInit {
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
     .shareReplay();
-  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData);
+  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
+    .filter(_ => !!_)
+    .shareReplay();
 
-  readonly activePollContract$ = this.web3Service.changes$
-    .startWith(undefined)
-    .mergeMap(() => this.kudosTokenService$.mergeMap(s => Observable.fromPromise(s.getActivePollContract())))
-    .filter(_ => !!_);
-  readonly activePollCanBeClosed$ = this.activePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.canBeClosed()))
-    .catch(() => Observable.of(false))
-    .distinctUntilChanged()
-    .share();
-  readonly kudosSentOnActivePoll$ = this.activePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(async _ => {
-      const totalSupply = await _.totalSupply();
-      const kudosByMember = await _.kudosByMember();
-      const members = (await _.getMembers()).length;
-
-      const initialTotal = kudosByMember * members;
-      return {
-        sent: await _.fromInt(initialTotal - totalSupply),
-        total: await _.fromInt(initialTotal),
-      };
-    }))
-    .catch(() => Observable.of({sent: 0, total: 0}))
-    .distinctUntilChanged()
-    .share();
-  readonly percentageKudosSentOnActivePoll$ = this.kudosSentOnActivePoll$
-    .map(({sent, total}) => sent / total)
-    .share();
-  readonly activePollMinDeadline$ = this.activePollContract$
-    .mergeMap(kudosPollService => kudosPollService.checkUpdates(_ => _.minDeadline()))
-    .map(_ => _ * 1000)
-    .catch(() => Observable.empty())
-    .distinctUntilChanged()
-    .share();
+  readonly activePoll$ = this.kudosToken$
+    .map(({activePoll}) => activePoll);
+  readonly kudosSentOnActivePoll$ = this.activePoll$
+    .filter(kudosPoll => kudosPoll && kudosPoll.totalSupply && kudosPoll.members && !!kudosPoll.kudosByMember)
+    .map(kudosPoll => {
+      const remaining = kudosPoll.totalSupply;
+      const total = (kudosPoll.members || []).length * kudosPoll.kudosByMember;
+      const sent = total - remaining;
+      return {sent, total, progress: sent / total};
+    });
 
   constructor(
     private store: Store<fromRoot.State>,
-    private web3Service: Web3Service,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -83,17 +55,12 @@ export class AdminComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.kudosTokenService$
-      .subscribe(kudosTokenService => {
-        kudosTokenService
-          .checkUpdates(_ => _.imOwner())
-          .filter(imOnwer => !imOnwer)
-          .first()
-          .subscribe(() => this.router.navigate(['../'], {relativeTo: this.activatedRoute}));
-      });
+    this.kudosToken$
+      .filter(({imOwner}) => imOwner === false)
+      .subscribe(() => this.router.navigate(['../'], {relativeTo: this.activatedRoute}));
 
     this.kudosToken$
-      .filter(_ => !!_)
+      .filter(_ => _ && _.members && !!_.members.length)
       .subscribe(({members}) => {
         members.forEach(({member, name}) => this.memberName[member] = this.memberName[member] || name);
       });

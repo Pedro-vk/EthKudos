@@ -1,115 +1,117 @@
-<div class="side">
-  <mat-card *ngIf="pollContract$ | async as pollContract" class="active-poll">
-    <mat-card-header>
-      <eth-kudos-blockie [address]="pollContract.address" variant="card" mat-card-avatar></eth-kudos-blockie>
-      <mat-card-title translate>Closed poll</mat-card-title>
-      <mat-card-subtitle>
-        <div class="icon-block">
-          <mat-icon>person</mat-icon>
-          <span>
-            {{'MEMBERS_SHORT' | translate : {NUMBER: (pollContractMembersNumber$ | async) || ''} }}
-          </span>
-        </div>
-        <div class="icon-block bp-l">
-          <mat-icon>date_range</mat-icon>
-          <span>
-            {{'AT_DATE' | translate : {DATE: ((pollContractCreation$ | async) * 1000 | date : 'short') || ''} }}
-          </span>
-        </div>
-      </mat-card-subtitle>
-    </mat-card-header>
-  </mat-card>
-
-  <h2 class="heading" *ngIf="(pollContractMyGratitudes$ | async)?.length" translate>Gratitudes received</h2>
-
-  <mat-card
-    *ngFor="let gratitude of pollContractMyGratitudes$ | async; let last = last; trackBy: trackGratitude"
-    [class.half-margin]="!last"
-    class="gratitude">
-
-    <mat-card-header>
-      <eth-kudos-blockie [address]="gratitude.from" variant="card" mat-card-avatar></eth-kudos-blockie>
-      <mat-card-title *ngIf="gratitude.fromName">
-        {{gratitude.fromName}}
-        <span translate>sent:</span>
-      </mat-card-title>
-      <mat-card-title *ngIf="!gratitude.fromName">
-        <code>{{gratitude.from}}</code>
-        <span translate>sent:</span>
-      </mat-card-title>
-      <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>
-    </mat-card-header>
-
-    <span class="gratitude__kudos">
-      {{gratitude.kudos}}<span>{{(token$ | async)?.symbol}}</span>
-    </span>
-  </mat-card>
-</div>
-
-<div class="side" *ngIf="(pollContractResults$ | async)?.length !== 0">
-  <h2 class="heading heading--button">
-    <span translate>Most awarded</span>
-    <button
-      mat-button
-      color="primary"
-      [routerLink]="['../../', 'graph', (this.activatedRoute.params | async)?.address]">
-
-      {{'open graph' | translate}}
-    </button>
-  </h2>
-
-  <mat-accordion>
-    <mat-expansion-panel
-      *ngFor="let result of pollContractResults$ | async; let i = index; trackBy: trackMember"
-      [hideToggle]="true"
-      [disabled]="true">
-
-      <mat-expansion-panel-header>
-        <mat-panel-title class="ranking-wrapper">
-          <div class="ranking" [attr.data-n]="i + 1" [attr.data-kudos]="result.kudos || 0">
-            <span class="ranking__balance-wrapper">
-              <span class="ranking__balance">{{result.kudos}}<code>{{(token$ | async)?.symbol}}</code></span>
-            </span>
-
-            <eth-kudos-blockie [address]="result.member"></eth-kudos-blockie>
-
-            <span class="ranking__name" [class.ranking__name--address]="!result.name">{{result.name || result.member}}</span>
-
-            <mat-icon
-              class="ranking__extra ranking__icon--top-sender"
-              [matTooltip]="'The most grateful' | translate"
-              *ngIf="result?.achievements?.topSender">
-
-              whatshot
-            </mat-icon>
-
-            <mat-icon
-              class="ranking__extra ranking__icon--on-top"
-              [matTooltip]="'One of the most grateful' | translate"
-              *ngIf="result?.achievements?.onTop && !result?.achievements?.topSender">
-
-              whatshot
-            </mat-icon>
-
-            <mat-icon
-              class="ranking__extra ranking__icon--no-participation"
-              [matTooltip]="'No participation' | translate"
-              *ngIf="result?.achievements?.noParticipation">
-
-              ac_unit
-            </mat-icon>
-
-            <span class="ranking__extra" *ngIf="result.gratitudesReceived !== undefined" [matTooltip]="'Gratitudes received' | translate">
-              <mat-icon class="ranking__extra-icon--in">call_received</mat-icon>
-              {{result.gratitudesReceived}}
-            </span>
-            <span class="ranking__extra" *ngIf="result.gratitudesSent !== undefined" [matTooltip]="'Gratitudes sent' | translate">
-              <mat-icon class="ranking__extra-icon--out">call_made</mat-icon>
-              {{result.gratitudesSent}}
+<ng-container *ngIf="kudosPoll$ | async as kudosPoll">
+  <div class="side">
+    <mat-card class="active-poll">
+      <mat-card-header>
+        <eth-kudos-blockie [address]="kudosPoll.address" variant="card" mat-card-avatar></eth-kudos-blockie>
+        <mat-card-title translate>Closed poll</mat-card-title>
+        <mat-card-subtitle>
+          <div class="icon-block">
+            <mat-icon>person</mat-icon>
+            <span>
+              {{'MEMBERS_SHORT' | translate : {NUMBER: kudosPoll?.members?.length || ''} }}
             </span>
           </div>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-    </mat-expansion-panel>
-  </mat-accordion>
-</div>
+          <div class="icon-block bp-l">
+            <mat-icon>date_range</mat-icon>
+            <span>
+              {{'AT_DATE' | translate : {DATE: (kudosPoll?.creation | date : 'short') || ''} }}
+            </span>
+          </div>
+        </mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
+
+    <h2 class="heading" *ngIf="kudosPoll?.myGratitudes?.length" translate>Gratitudes received</h2>
+
+    <mat-card
+      *ngFor="let gratitude of kudosPoll?.myGratitudes; let last = last; trackBy: trackGratitude"
+      [class.half-margin]="!last"
+      class="gratitude">
+
+      <mat-card-header>
+        <eth-kudos-blockie [address]="gratitude.from" variant="card" mat-card-avatar></eth-kudos-blockie>
+        <mat-card-title *ngIf="gratitude.name">
+          {{gratitude.name}}
+          <span translate>sent:</span>
+        </mat-card-title>
+        <mat-card-title *ngIf="!gratitude.name">
+          <code>{{gratitude.from}}</code>
+          <span translate>sent:</span>
+        </mat-card-title>
+        <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>
+      </mat-card-header>
+
+      <span class="gratitude__kudos">
+        {{gratitude.kudos}}<span>{{(kudosToken$ | async)?.symbol}}</span>
+      </span>
+    </mat-card>
+  </div>
+
+  <div class="side" *ngIf="kudosPoll?.results?.length !== 0">
+    <h2 class="heading heading--button">
+      <span translate>Most awarded</span>
+      <button
+        mat-button
+        color="primary"
+        [routerLink]="['../../', 'graph', kudosPoll?.address]">
+
+        {{'open graph' | translate}}
+      </button>
+    </h2>
+
+    <mat-accordion>
+      <mat-expansion-panel
+        *ngFor="let result of kudosPoll?.results; let i = index; trackBy: trackMember"
+        [hideToggle]="true"
+        [disabled]="true">
+
+        <mat-expansion-panel-header>
+          <mat-panel-title class="ranking-wrapper">
+            <div class="ranking" [attr.data-n]="i + 1" [attr.data-kudos]="result.kudos || 0">
+              <span class="ranking__balance-wrapper">
+                <span class="ranking__balance">{{result.kudos}}<code>{{(kudosToken$ | async)?.symbol}}</code></span>
+              </span>
+
+              <eth-kudos-blockie [address]="result.member"></eth-kudos-blockie>
+
+              <span class="ranking__name" [class.ranking__name--address]="!result.name">{{result.name || result.member}}</span>
+
+              <mat-icon
+                class="ranking__extra ranking__icon--top-sender"
+                [matTooltip]="'The most grateful' | translate"
+                *ngIf="result?.achievements?.topSender">
+
+                whatshot
+              </mat-icon>
+
+              <mat-icon
+                class="ranking__extra ranking__icon--on-top"
+                [matTooltip]="'One of the most grateful' | translate"
+                *ngIf="result?.achievements?.onTop && !result?.achievements?.topSender">
+
+                whatshot
+              </mat-icon>
+
+              <mat-icon
+                class="ranking__extra ranking__icon--no-participation"
+                [matTooltip]="'No participation' | translate"
+                *ngIf="result?.achievements?.noParticipation">
+
+                ac_unit
+              </mat-icon>
+
+              <span class="ranking__extra" *ngIf="result.gratitudesReceived !== undefined" [matTooltip]="'Gratitudes received' | translate">
+                <mat-icon class="ranking__extra-icon--in">call_received</mat-icon>
+                {{result.gratitudesReceived}}
+              </span>
+              <span class="ranking__extra" *ngIf="result.gratitudesSent !== undefined" [matTooltip]="'Gratitudes sent' | translate">
+                <mat-icon class="ranking__extra-icon--out">call_made</mat-icon>
+                {{result.gratitudesSent}}
+              </span>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</ng-container>
