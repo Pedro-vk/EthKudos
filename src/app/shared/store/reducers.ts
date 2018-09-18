@@ -143,10 +143,13 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
       return {
         ...kudosToken,
         ...results,
-        results: results.results.map(result => ({
-          ...result,
-          achievements: {...result.achievements, beginner: membersList.indexOf(result.member) === -1},
-        })),
+        results: results.results
+          .map(result => ({
+            ...result,
+            name: kudosToken.contacts[result.member],
+            achievements: {...result.achievements, beginner: membersList.indexOf(result.member) === -1},
+          }))
+          .sort((a, b) => b.kudos - a.kudos),
       };
     }
   },

@@ -98,8 +98,16 @@ describe('KudosPoll - Reducers', () => {
       {},
       {[newAccount(1)]: {loading: true, loaded: {}}},
       {[newAccount(1)]: {loading: false, loaded: {basic: true}, name: 'test'}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true}, name: 'test', gratitudes: {
-        [newAccount(11)]: [{from: newAccount(90), kudos: 5, message: 'test'}]}
+      {[newAccount(1)]: {
+        loading: false,
+        loaded: {basic: true},
+        name: 'test',
+        gratitudes: {[newAccount(11)]: [{from: newAccount(90), kudos: 5, message: 'test'}]},
+        allGratitudes: [{from: newAccount(90), to: newAccount(11), kudos: 5, message: 'test'}],
+        kudos: {[newAccount(11)]: 5},
+        results: [{member: newAccount(11), kudos: 5, gratitudesReceived: 1, gratitudesSent: 0, achievements: {
+          topSender: false, onTop: false, noParticipation: false,
+        }}],
       }},
     ]);
   });
@@ -166,7 +174,7 @@ describe('KudosPoll - Effects', () => {
 
     const dataGetter = setDataSpy.calls.mostRecent().args[3];
     const serviceSpy = jasmine.createSpyObj('service', [
-      'active', 'getMembers', 'getBalances', 'allGratitudes',
+      'active', 'getMembers', 'getBalances', 'allGratitudes', 'decimals',
     ]);
 
     expect(await dataGetter(serviceSpy)).toBeDefined();
