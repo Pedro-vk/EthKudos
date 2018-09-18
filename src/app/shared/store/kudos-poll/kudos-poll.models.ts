@@ -5,7 +5,23 @@ export interface KudosPollGratitude {
 }
 export type KudosPollGratitudes = {[member: string]: KudosPollGratitude[]};
 
-export interface KudosPollData {
+export interface KudosPollGeneratedData {
+  allGratitudes: {to: string, from: string, kudos: number, message: string}[];
+  kudos: {[member: string]: number};
+  results: {
+    member: string,
+    kudos: number,
+    gratitudesReceived: number,
+    gratitudesSent: number,
+    achievements: {
+      topSender: boolean,
+      onTop: boolean,
+      noParticipation: boolean,
+    };
+  }[]
+}
+
+export interface KudosPollData extends KudosPollGeneratedData {
   // Basic information
   address: string;
   version: string;
