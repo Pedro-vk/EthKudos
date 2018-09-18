@@ -35,12 +35,12 @@ export class KudosPollEffects {
           // version: await kudosPollService.version(),
           // name: await kudosPollService.name(),
           // symbol: await kudosPollService.symbol(),
-          // decimals: await kudosPollService.decimals(),
+          decimals: await kudosPollService.decimals(),
           totalSupply: await kudosPollService.totalSupply(),
           kudosByMember: await kudosPollService.kudosByMember(),
           maxKudosToMember: await kudosPollService.maxKudosToMember(),
-          minDeadline: await kudosPollService.minDeadline(),
-          creation: await kudosPollService.creation(),
+          minDeadline: await kudosPollService.minDeadline() * 1000,
+          creation: await kudosPollService.creation() * 1000,
         }),
       ),
     );
@@ -55,6 +55,7 @@ export class KudosPollEffects {
         'dynamic',
         force,
         async(kudosPollService) => ({
+          decimals: await kudosPollService.decimals(),
           active: await kudosPollService.active(),
           members: await kudosPollService.getMembers(),
           balances: (await kudosPollService.getBalances() || []).reduce((acc, _) => ({...acc, [_.member]: _.balance}), {}),

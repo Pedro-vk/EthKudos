@@ -37,7 +37,7 @@ export class AdminComponent implements OnInit {
   readonly kudosTokenService$ = this.activatedRoute.parent.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
     .shareReplay();
-  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithAccountData);
+  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData);
 
   readonly activePollContract$ = this.web3Service.changes$
     .startWith(undefined)

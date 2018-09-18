@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
   readonly kudosTokenService$ = this.activatedRoute.params
     .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
     .shareReplay();
-  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithAccountData);
+  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData);
 
   constructor(
     private store: Store<fromRoot.State>,

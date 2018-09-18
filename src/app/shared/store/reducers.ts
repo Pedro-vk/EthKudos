@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { routerReducer, RouterReducerState } from '@ngrx/router-store';
 
 import { AccountState, accountReducer } from './account/account.reducers';
-import { KudosPollState, kudosPollReducer } from './kudos-poll/kudos-poll.reducers';
+import { KudosPollState, kudosPollReducer, generateResultsFromState } from './kudos-poll/kudos-poll.reducers';
 import { KudosTokenState, kudosTokenReducer } from './kudos-token/kudos-token.reducers';
 import { StatusState, statusReducer } from './status/status.reducers';
 
@@ -62,12 +62,29 @@ export const getKudosTokenActivePoll = (address: string) => createSelector(getKu
 export const getStatus = createSelector(getStatusState, fromStatus.getStatus);
 
 // Mixes
+// KudosPoll + KudosToken
+export const getKudosPollWithContacts = (pollAddress: string, tokenAddress) => createSelector(
+  getKudosPollByAddress(pollAddress),
+  getKudosTokenByAddress(tokenAddress),
+  (kudosPollState, kudosTokenState) => ({
+    ...kudosPollState,
+    allGratitudes: kudosPollState.allGratitudes
+      .map(gratitude => ({
+        ...gratitude,
+        fromName: kudosTokenState.contacts[gratitude.from],
+        toName: kudosTokenState.contacts[gratitude.to],
+      })),
+    results: kudosPollState.results.map(result => ({...result, name: kudosTokenState.contacts[result.member]})),
+  }),
+);
+
 // Account + KudosPoll
 export const getKudosPollByAddressWithAccountData = (address: string) => createSelector(getAccount, getKudosPollByAddress(address),
   (account, kudosPoll) => kudosPoll && ({
     ...kudosPoll,
     imMember: !!(kudosPoll.members || []).find(member => member === account),
     myBalance: ((kudosPoll.balances || {})[account] || 0) / 10 ** kudosPoll.decimals,
+    myKudos: ((kudosPoll.kudos || {})[account] || 0) / 10 ** kudosPoll.decimals,
   }),
 );
 
@@ -82,11 +99,55 @@ export const getKudosTokenByAddressWithAccountData = (address: string) => create
   }),
 );
 
-// Account + KudosToken + router
-export const getCurrentKudosTokenWithAccountData = createSelector(getRouterState, _ => _,
+// Account + KudosToken + KudosPoll
+export const getKudosTokenByAddressWithPolls = (address: string) => createSelector(
+  _ => _,
+  getKudosTokenByAddressWithAccountData(address),
+  getKudosTokenPreviousPolls(address),
+  getKudosTokenActivePoll(address),
+  (state, kudosToken, previousPolls, activePoll) => {
+    const polls = previousPolls.map(kudosPollAddress => getKudosPollByAddressWithAccountData(kudosPollAddress)(state));
+    return {
+      ...kudosToken,
+      previousPolls: polls.findIndex(kudosPoll => !kudosPoll || kudosPoll.loading) === -1 ? polls : [],
+      activePoll: getKudosPollByAddressWithAccountData(activePoll)(state),
+    };
+  },
+);
+
+// Account + KudosToken + KudosPoll + router
+export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _ => _,
   (router, state) => {
     if (router && router.state.root.firstChild && router.state.root.firstChild.params.tokenAddress) {
-      return getKudosTokenByAddressWithAccountData(router.state.root.firstChild.params.tokenAddress)(state);
+      const kudosToken = getKudosTokenByAddressWithPolls(router.state.root.firstChild.params.tokenAddress)(state);
+      const {members, decimals, previousPolls} = kudosToken;
+      if (
+        [members, decimals, previousPolls].indexOf(undefined) !== -1
+        || previousPolls.length === 0
+        || previousPolls.findIndex(kudosPoll => !(kudosPoll && kudosPoll.gratitudes)) !== -1
+      ) {
+        return kudosToken;
+      }
+      const membersList = previousPolls.map(kudosPoll => kudosPoll.members).reduce((acc, _) => [...acc, ..._], []);
+      const results = generateResultsFromState({
+        members: members.map(({member}) => member),
+        decimals,
+        gratitudes: previousPolls
+          .map(kudosPoll => Object.entries(kudosPoll.gratitudes))
+          .reduce((acc, _) => [...acc, ..._], [])
+          .reduce((acc, [member, gratitudes]) => ({
+            ...acc,
+            [member]: [...(acc[member] || []), ...gratitudes],
+          }), {}),
+      });
+      return {
+        ...kudosToken,
+        ...results,
+        results: results.results.map(result => ({
+          ...result,
+          achievements: {...result.achievements, beginner: membersList.indexOf(result.member) === -1},
+        })),
+      };
     }
   },
 );

@@ -101,9 +101,9 @@ export const getKudosTokenLoading = (address: string) => createSelector(getKudos
 export const getKudosTokenLoaded = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).loaded);
 export const getKudosTokenPolls = (address: string) => createSelector(getKudosTokenByAddress(address), state => (state || {} as any).polls);
 export const getKudosTokenPreviousPolls = (address: string) => createSelector(getKudosTokenByAddress(address),
-  state => ((state || {} as any).polls || []).slice(0, -(state || {} as any).isActivePoll),
+  (state): string[] => ((state || {} as any).polls || []).slice(0, -(state || {} as any).isActivePoll).reverse(),
 );
 export const getKudosTokenActivePoll = (address: string) => createSelector(getKudosTokenByAddress(address),
-  state => state && state.isActivePoll ? state.polls[state.polls.length - 1] : undefined,
+  (state): string => state && state.isActivePoll ? state.polls[state.polls.length - 1] : undefined,
 );
 

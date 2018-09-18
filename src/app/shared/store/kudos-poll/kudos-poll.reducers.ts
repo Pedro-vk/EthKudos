@@ -1,12 +1,12 @@
 import { createSelector } from '@ngrx/store';
 
 import * as kudosPollActions from './kudos-poll.actions';
-import { KudosPollData, KudosPollGratitudes } from './kudos-poll.models';
+import { KudosPollData, KudosPollGratitudes, KudosPollGeneratedData } from './kudos-poll.models';
 
-function generateResultsFromState(state: Partial<KudosPollData> = <any>{}) {
+export function generateResultsFromState(state: Partial<KudosPollData> = {}): KudosPollGeneratedData {
   const allGratitudes = Object.entries(state.gratitudes || {})
     .map(([to, gratitudes]) =>
-      gratitudes.map(({from, kudos, message}) => ({to, kudos: kudos * 10 ** (state.decimals || 0), message, from})),
+      gratitudes.map(({from, kudos, message}) => ({to, kudos: kudos / 10 ** (state.decimals || 0), message, from})),
     )
     .reduce((acc, _) => [...acc, ..._], []);
   const initial = (state.members || []).reduce((acc, _) => ({...acc, [_]: 0}), {});
@@ -17,12 +17,12 @@ function generateResultsFromState(state: Partial<KudosPollData> = <any>{}) {
     }), {received: {...initial}, sent: {...initial}});
   const kudosByMember = allGratitudes
     .reduce((acc, {to, kudos}) => ({...acc, [to]: (acc[to] || 0) + kudos}), {...initial});
-  const maxGratitudesSent = Math.max(...Object.values<number>(kudosByMember));
+  const maxGratitudesSent = Math.max(...Object.values<number>(gratitudesByMember.sent));
   return {
-    gratitudes: state.gratitudes,
     allGratitudes,
+    kudos: kudosByMember,
     results: Object.entries(kudosByMember)
-      .map(([member, kudos]) => ({
+      .map(([member, kudos]: [string, number]) => ({
         member,
         kudos,
         gratitudesReceived: gratitudesByMember.received[member],
