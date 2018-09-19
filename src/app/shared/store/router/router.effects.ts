@@ -5,6 +5,7 @@ import { ROUTER_NAVIGATION, RouterNavigationAction } from '@ngrx/router-store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/merge';
+import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/distinct';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -23,20 +24,32 @@ export class RouterEffects {
   loadKudosTokenOnOpen$: Observable<Action> = this.actions$
     .ofType(ROUTER_NAVIGATION)
     .map(({payload}: RouterNavigationAction) => payload)
-    .map(({routerState}) => routerState.root.firstChild && routerState.root.firstChild.params.tokenAddress)
+    .map(({routerState}) => routerState.root.firstChild && {
+      address: routerState.root.firstChild.params.tokenAddress,
+      selectedPoll:
+        routerState.url.match(/\/active/) ?
+          'active' :
+          routerState.root.firstChild.firstChild && routerState.root.firstChild.firstChild.params.address,
+    })
     .filter(_ => !!_)
-    .distinctUntilChanged()
-    .mergeMap(address =>
+    .distinctUntilChanged((a, b) => a.address === b.address)
+    .mergeMap(({address, selectedPoll}) =>
       Observable.merge(
         Observable.from([
           new kudosTokenActions.LoadBasicDataAction(address),
           new kudosTokenActions.LoadTotalDataAction(address),
         ]),
         this.store.select(fromRoot.getKudosTokenPolls(address))
-          .mergeMap(kudosPolls => Observable.from([...(kudosPolls || [])].reverse()))
+          .mergeMap((kudosPolls = []) => {
+            const firstPoll = selectedPoll === 'active' || !selectedPoll ? kudosPolls[kudosPolls.length - 1] : selectedPoll;
+            const polls = (kudosPolls || []).filter(_ => _ !== firstPoll).reverse();
+            return Observable.merge(
+              Observable.of(firstPoll),
+              Observable.from(kudosPolls).delay(selectedPoll ? 4000 : 2000),
+            );
+          })
           .filter(_ => !!_)
           .distinct()
-          .delay(1000)
           .mergeMap(kudosPollAddress => Observable.from([
             new kudosPollActions.LoadBasicDataAction(kudosPollAddress),
             new kudosPollActions.LoadDynamicDataAction(kudosPollAddress),
