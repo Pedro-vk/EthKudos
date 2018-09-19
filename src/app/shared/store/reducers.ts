@@ -118,10 +118,16 @@ export const getKudosTokenByAddressWithPolls = (address: string) => createSelect
   (state, kudosToken = <any>{}, previousPolls = [], activePoll, allPollsAddress = []) => {
     const polls = previousPolls.map(kudosPollAddress => getKudosPollWithContacts(kudosPollAddress, kudosToken.address)(state));
     const allPolls = allPollsAddress.map(kudosPollAddress => getKudosPollWithContacts(kudosPollAddress, kudosToken.address)(state));
-
-    const loaded = allPolls.findIndex(kudosPoll => !kudosPoll || kudosPoll.loading || !(kudosPoll.loaded || {} as any).basic) === -1;
+    const pendingPolls = allPolls.filter(kudosPoll => !kudosPoll || kudosPoll.loading || !(kudosPoll.loaded || {} as any).basic).length;
+    const pendingFullPolls = allPolls
+      .filter(kudosPoll =>
+        !kudosPoll || kudosPoll.loading || !(kudosPoll.loaded || {} as any).basic || !(kudosPoll.loaded || {} as any).dynamic,
+      )
+      .length;
+    const loaded = pendingPolls === 0;
     return {
       ...kudosToken,
+      loadingPolls: {total: allPolls.length, pending: pendingPolls, pendingFull: pendingFullPolls, loaded},
       allPolls: loaded ? allPolls : [],
       previousPolls: loaded ? polls : [],
       activePoll: getKudosPollWithContacts(activePoll, kudosToken.address)(state),
@@ -135,13 +141,21 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
     if (router && router.state.root.firstChild && router.state.root.firstChild.params.tokenAddress) {
       const selectedKudosPollAddress = router.state.root.firstChild.firstChild && router.state.root.firstChild.firstChild.params.address;
       const kudosToken = getKudosTokenByAddressWithPolls(router.state.root.firstChild.params.tokenAddress)(state);
+      const loadedStatus = {
+        loaded: {
+          ...kudosToken.loaded,
+          polls: kudosToken.loadingPolls && kudosToken.loadingPolls.loaded,
+          pollsProgress: kudosToken.loadingPolls,
+        },
+        loadingPolls: <never>undefined,
+      };
       const {members, decimals, previousPolls} = kudosToken;
       if (
         [members, decimals, previousPolls].indexOf(undefined) !== -1
         || previousPolls.length === 0
         || previousPolls.findIndex(kudosPoll => !(kudosPoll && kudosPoll.gratitudes)) !== -1
       ) {
-        return <never>kudosToken;
+        return <never>{...kudosToken, ...loadedStatus};
       }
       const membersList = previousPolls.map(kudosPoll => kudosPoll.members).reduce((acc, _) => [...acc, ..._], []);
       const results = generateResultsFromState({
@@ -158,6 +172,7 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
       return {
         ...kudosToken,
         ...results,
+        ...loadedStatus,
         selectedPoll: (kudosToken.allPolls || []).find(({address}) => address === selectedKudosPollAddress),
         results: results.results
           .map(result => ({

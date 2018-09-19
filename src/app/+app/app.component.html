@@ -60,6 +60,15 @@
    --><code> {{((kudosToken$ | async)?.myBalance || 0) | number}} <span class="symbol">{{(kudosToken$ | async)?.symbol}}</span></code>
     </div>
   </div>
+
+  <mat-progress-bar
+    *ngIf="loadingStatus$ | async as loadingStatus"
+    [value]="loadingStatus?.value || 0"
+    [bufferValue]="loadingStatus?.buffer || 0"
+    class="main-loading"
+    [class.main-loading--hidden]="loadingStatus?.value === 100"
+    [mode]="loadingStatus === true ? 'indeterminate' : 'buffer'">
+  </mat-progress-bar>
 </mat-toolbar>
 
 <mat-toolbar

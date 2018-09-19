@@ -33,7 +33,7 @@ export class RouterEffects {
           new kudosTokenActions.LoadTotalDataAction(address),
         ]),
         this.store.select(fromRoot.getKudosTokenPolls(address))
-          .mergeMap(kudosPolls => Observable.from(kudosPolls || []))
+          .mergeMap(kudosPolls => Observable.from([...(kudosPolls || [])].reverse()))
           .filter(_ => !!_)
           .distinct()
           .delay(1000)
