@@ -143,7 +143,7 @@ describe('KudosPoll - Effects', () => {
       a: new kudosPollActions.LoadBasicDataAction(newAccount(1)),
     });
 
-    const expected = cold('-r', {
+    const expected = cold('-(rrr)', {
       r: {type: 'mock'},
     });
 

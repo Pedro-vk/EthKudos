@@ -25,23 +25,29 @@ export class KudosPollEffects {
     .ofType(kudosPollActions.LOAD_BASIC_DATA)
     .map(({payload}: kudosPollActions.LoadBasicDataAction) => payload)
     .mergeMap(({address, force}) =>
-      this.setData(
-        address,
-        'basic',
-        force,
-        async(kudosPollService) => ({
+      Observable.merge(
+        this.setData(address, undefined, true, async(kudosPollService) => ({address})),
+        this.setData(
           address,
-          // version: await kudosPollService.version(),
-          // name: await kudosPollService.name(),
-          // symbol: await kudosPollService.symbol(),
-          decimals: await kudosPollService.decimals(),
-          totalSupply: await kudosPollService.totalSupply(),
-          kudosByMember: await kudosPollService.kudosByMember(),
-          maxKudosToMember: await kudosPollService.maxKudosToMember(),
-          minDeadline: await kudosPollService.minDeadline() * 1000,
-          creation: await kudosPollService.creation() * 1000,
-        }),
-      ),
+          'basic',
+          force,
+          async(kudosPollService) => ({
+            address,
+            minDeadline: await kudosPollService.minDeadline() * 1000,
+            creation: await kudosPollService.creation() * 1000,
+          }),
+        ),
+        this.setData(
+          address,
+          undefined,
+          true,
+          async(kudosPollService) => ({
+            kudosByMember: await kudosPollService.kudosByMember(),
+            maxKudosToMember: await kudosPollService.maxKudosToMember(),
+            totalSupply: await kudosPollService.totalSupply(),
+          }),
+        ),
+      )
     );
 
   @Effect()
