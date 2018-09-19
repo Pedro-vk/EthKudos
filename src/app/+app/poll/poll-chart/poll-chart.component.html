@@ -9,7 +9,7 @@
 
 <button
   mat-icon-button
-  [routerLink]="['../../', 'closed', (this.activatedRoute.params | async)?.address]">
+  [routerLink]="['../../', 'closed', (kudosToken$ | async)?.address]">
 
   <mat-icon>close</mat-icon>
 </button>
@@ -21,6 +21,6 @@
   [large]="true"
   [nodes]="gratitudesNodes$ | async"
   [edgesList]="gratitudesEdges$ | async"
-  [symbol]="(token$ | async)?.symbol"
-  [decimals]="(token$ | async)?.decimals">
+  [symbol]="(kudosToken$ | async)?.symbol"
+  [decimals]="(kudosToken$ | async)?.decimals">
 </eth-kudos-graph>
