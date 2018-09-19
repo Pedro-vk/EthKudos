@@ -16,10 +16,13 @@ import * as fromRoot from '../../shared/store/reducers';
 })
 export class HomeComponent {
   readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
-    .filter(_ => !!_)
+    .filter(_ => !!_ && !!_.address)
     .shareReplay();
-  readonly activePoll$ = this.kudosToken$.map(_ => _.activePoll);
-  readonly previousPolls$ = this.kudosToken$.map(_ => _.previousPolls || []);
+  readonly activePoll$ = this.kudosToken$
+    .map(_ => _.activePoll)
+    .filter(_ => !!_ && !!_.address);
+  readonly previousPolls$ = this.kudosToken$
+    .map(_ => _.previousPolls || []);
 
   constructor(
     private store: Store<fromRoot.State>,

@@ -225,6 +225,22 @@ $header--secondary---height: 48px !default;
   }
 }
 
+.main-loading {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 5;
+  transition: height .3s ease 1s;
+
+  /deep/ &.mat-progress-bar[mode=buffer] .mat-progress-bar-background {
+    opacity: .6;
+  }
+  &--hidden {
+    height: 0;
+  }
+}
+
 .footer {
   @include transition;
 
