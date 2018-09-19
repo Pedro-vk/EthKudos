@@ -30,10 +30,10 @@ export class MembershipMixin extends SmartContract<MembershipConstants, {}, Memb
 
   // Constants
   get isMember() { return (address: string) => this.generateConstant('isMember')(address); }
-  get memberIndex() { return (address: string) => this.generateConstant('memberIndex')(address); }
+  get memberIndex() { return (address: string) => this.generateConstant('memberIndex', this.n)(address); }
   get getMembers() { return () => this.generateConstant('getMembers')(); }
   get getMember() { return (index: number) => this.generateConstant('getMember')(index); }
-  get membersNumber() { return () => this.generateConstant('membersNumber')(); }
+  get membersNumber() { return () => this.generateConstant('membersNumber', this.n)(); }
 
   // Actions
   get addMember() { return (member: string, name: string) => this.generateAction('addMember')(member, name); }

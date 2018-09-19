@@ -29,9 +29,9 @@ export class BasicTokenMixin extends SmartContract<BasicTokenConstants, {}, Basi
   // Constants
   get name() { return () => this.generateConstant('name')(); }
   get symbol() { return () => this.generateConstant('symbol')(); }
-  get decimals() { return () => this.generateConstant('decimals')(); }
-  get totalSupply() { return () => this.generateConstant('totalSupply')(); }
-  get balanceOf() { return (address: string) => this.generateConstant('balanceOf')(address); }
+  get decimals() { return () => this.generateConstant('decimals', this.n)(); }
+  get totalSupply() { return () => this.generateConstant('totalSupply', this.n)(); }
+  get balanceOf() { return (address: string) => this.generateConstant('balanceOf', this.n)(address); }
 
   // Actions
   get transfer() { return (to: string, value: number) => this.generateAction('transfer')(to, value); }

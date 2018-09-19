@@ -1,3 +1,4 @@
+/* tslint:disable:max-line-length */
 import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { ROOT_EFFECTS_INIT } from '@ngrx/effects';
@@ -40,12 +41,12 @@ describe('KudosPoll - Reducers', () => {
 
     expect(kudosPolls).toEqual([
       {},
-      {[newAccount(1)]: {loading: true, loaded: {}}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true}}},
-      {[newAccount(1)]: {loading: true, loaded: {basic: true}}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true, dynamic: true}}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true, dynamic: true}}, [newAccount(2)]: {loading: true, loaded: {}}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true, dynamic: true}}, [newAccount(2)]: {loading: false, loaded: {basic: true}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: true, loaded: {}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: false, loaded: {basic: true}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: true, loaded: {basic: true}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: false, loaded: {basic: true, dynamic: true}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: false, loaded: {basic: true, dynamic: true}}, [newAccount(2)]: {address: newAccount(2), loading: true, loaded: {}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: false, loaded: {basic: true, dynamic: true}}, [newAccount(2)]: {address: newAccount(2), loading: false, loaded: {basic: true}}},
     ]);
   });
 
@@ -61,10 +62,10 @@ describe('KudosPoll - Reducers', () => {
 
     expect(kudosPolls).toEqual([
       {},
-      {[newAccount(1)]: {loading: true, loaded: {}}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true}, name: 'test'}},
-      {[newAccount(1)]: {loading: true, loaded: {basic: true}, name: 'test'}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true, dynamic: true}, name: 'test', active: true}},
+      {[newAccount(1)]: {address: newAccount(1), loading: true, loaded: {}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: false, loaded: {basic: true}, name: 'test'}},
+      {[newAccount(1)]: {address: newAccount(1), loading: true, loaded: {basic: true}, name: 'test'}},
+      {[newAccount(1)]: {address: newAccount(1), loading: false, loaded: {basic: true, dynamic: true}, name: 'test', active: true}},
     ]);
   });
 
@@ -79,9 +80,9 @@ describe('KudosPoll - Reducers', () => {
 
     expect(kudosPolls).toEqual([
       {},
-      {[newAccount(1)]: {loading: true, loaded: {}}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true}, name: 'test'}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true}, name: 'test', balances: {[newAccount(11)]: 9 * 10 ** 17}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: true, loaded: {}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: false, loaded: {basic: true}, name: 'test'}},
+      {[newAccount(1)]: {address: newAccount(1), loading: false, loaded: {basic: true}, name: 'test', balances: {[newAccount(11)]: 9 * 10 ** 17}}},
     ]);
   });
 
@@ -96,9 +97,10 @@ describe('KudosPoll - Reducers', () => {
 
     expect(kudosPolls).toEqual([
       {},
-      {[newAccount(1)]: {loading: true, loaded: {}}},
-      {[newAccount(1)]: {loading: false, loaded: {basic: true}, name: 'test'}},
+      {[newAccount(1)]: {address: newAccount(1), loading: true, loaded: {}}},
+      {[newAccount(1)]: {address: newAccount(1), loading: false, loaded: {basic: true}, name: 'test'}},
       {[newAccount(1)]: {
+        address: newAccount(1),
         loading: false,
         loaded: {basic: true},
         name: 'test',

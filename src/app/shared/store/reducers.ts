@@ -66,12 +66,15 @@ export const getStatus = createSelector(getStatusState, fromStatus.getStatus);
 export const getKudosPollByAddressWithAccountData = (address: string) => createSelector(getAccount, getKudosPollByAddress(address),
   (account, kudosPoll) => kudosPoll && ({
     ...kudosPoll,
+    totalSupply: kudosPoll.totalSupply / 10 ** kudosPoll.decimals,
     maxKudosToMember: kudosPoll.maxKudosToMember / 10 ** kudosPoll.decimals,
     kudosByMember: kudosPoll.kudosByMember / 10 ** kudosPoll.decimals,
     imMember: !!(kudosPoll.members || []).find(member => member === account),
     myBalance: ((kudosPoll.balances || {})[account] || 0) / 10 ** kudosPoll.decimals,
     myKudos: ((kudosPoll.kudos || {})[account] || 0) / 10 ** kudosPoll.decimals,
+    allGratitudes: (kudosPoll.allGratitudes || []).map(gratitude => ({...gratitude, kudos: gratitude.kudos / 10 ** kudosPoll.decimals})),
     myGratitudes: ((kudosPoll.gratitudes || {})[account] || []).map(gratitude => ({...gratitude, kudos: gratitude.kudos / 10 ** kudosPoll.decimals})),
+    results: (kudosPoll.results || []).map(result => ({...result, kudos: result.kudos / 10 ** kudosPoll.decimals}))
   }),
 );
 
@@ -79,28 +82,32 @@ export const getKudosPollByAddressWithAccountData = (address: string) => createS
 export const getKudosPollWithContacts = (pollAddress: string, tokenAddress) => createSelector(
   getKudosPollByAddressWithAccountData(pollAddress),
   getKudosTokenByAddress(tokenAddress),
-  (kudosPoll = <any> {}, kudosToken = <any> {}) => ({
-    ...kudosPoll,
-    allGratitudes: (kudosPoll.allGratitudes || [])
+  (kudosPoll = <any> {}, kudosToken = <any> {}) => {
+    const mapGratitudes = list => (list || [])
       .map(gratitude => ({
         ...gratitude,
         fromName: kudosToken.contacts[gratitude.from],
         toName: kudosToken.contacts[gratitude.to],
-      })),
-    results: (kudosPoll.results || [])
-      .map(result => ({
-        ...result,
-        name: kudosToken.contacts[result.member],
-        kudos: result.kudos / 10 ** kudosPoll.decimals,
-      }))
-      .sort((a, b) => b.kudos - a.kudos),
-  }),
+      }));
+    return {
+      ...kudosPoll,
+      allGratitudes: mapGratitudes(kudosPoll.allGratitudes),
+      myGratitudes: mapGratitudes(kudosPoll.myGratitudes),
+      results: (kudosPoll.results || [])
+        .map(result => ({
+          ...result,
+          name: kudosToken.contacts[result.member],
+        }))
+        .sort((a, b) => b.kudos - a.kudos),
+    };
+  },
 );
 
 // Account + KudosToken
 export const getKudosTokenByAddressWithAccountData = (address: string) => createSelector(getAccount, getKudosTokenByAddress(address),
   (account, kudosToken) => kudosToken && ({
     ...kudosToken,
+    totalSupply: kudosToken.totalSupply / 10 ** kudosToken.decimals,
     imOwner: kudosToken.owner && kudosToken.owner === account,
     imMember: !!(kudosToken.members || []).find(({member}) => member === account),
     myBalance: ((kudosToken.balances || {})[account] || 0) / 10 ** kudosToken.decimals,
@@ -116,8 +123,12 @@ export const getKudosTokenByAddressWithPolls = (address: string) => createSelect
   getKudosTokenActivePoll(address),
   getKudosTokenPolls(address),
   (state, kudosToken = <any>{}, previousPolls = [], activePoll, allPollsAddress = []) => {
-    const polls = previousPolls.map(kudosPollAddress => getKudosPollWithContacts(kudosPollAddress, kudosToken.address)(state));
-    const allPolls = allPollsAddress.map(kudosPollAddress => getKudosPollWithContacts(kudosPollAddress, kudosToken.address)(state));
+    const getPolls = kudosPollAddress => ({
+      ...getKudosPollWithContacts(kudosPollAddress, kudosToken.address)(state),
+      address: kudosPollAddress,
+    });
+    const polls = previousPolls.map(kudosPollAddress => getPolls(kudosPollAddress));
+    const allPolls = allPollsAddress.map(kudosPollAddress => getPolls(kudosPollAddress));
     const pendingPolls = allPolls.filter(kudosPoll => !kudosPoll || kudosPoll.loading || !(kudosPoll.loaded || {} as any).basic).length;
     const pendingFullPolls = allPolls
       .filter(kudosPoll =>
@@ -128,8 +139,8 @@ export const getKudosTokenByAddressWithPolls = (address: string) => createSelect
     return {
       ...kudosToken,
       loadingPolls: {total: allPolls.length, pending: pendingPolls, pendingFull: pendingFullPolls, loaded},
-      allPolls: loaded ? allPolls : [],
-      previousPolls: loaded ? polls : [],
+      allPolls,
+      previousPolls: polls,
       activePoll: getKudosPollWithContacts(activePoll, kudosToken.address)(state),
     };
   },
@@ -149,23 +160,26 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
         },
         loadingPolls: <never>undefined,
       };
-      const {members, decimals, previousPolls} = kudosToken;
+      const selectedPoll = (kudosToken.allPolls || [])
+        .find(({address}) => (address || '').toLowerCase() === (selectedKudosPollAddress || '').toLowerCase());
+      const {members, previousPolls} = kudosToken;
       if (
-        [members, decimals, previousPolls].indexOf(undefined) !== -1
+        [members, previousPolls].indexOf(undefined) !== -1
         || previousPolls.length === 0
         || previousPolls.findIndex(kudosPoll => !(kudosPoll && kudosPoll.gratitudes)) !== -1
       ) {
         return <never>{
           ...kudosToken,
           ...loadedStatus,
+          selectedPoll,
           results: Object.entries(kudosToken.balances || {})
-            .map(([member, kudos]) => ({member, kudos: kudos / 10 ** kudosToken.decimals, name: (kudosToken.contacts || {})[member]})),
+            .map(([member, kudos]) => ({member, kudos: kudos / 10 ** kudosToken.decimals, name: (kudosToken.contacts || {})[member]}))
+            .sort((a, b) => b.kudos - a.kudos),
         };
       }
       const membersList = previousPolls.map(kudosPoll => kudosPoll.members).reduce((acc, _) => [...acc, ..._], []);
       const results = generateResultsFromState({
         members: members.map(({member}) => member),
-        decimals,
         gratitudes: previousPolls
           .map(kudosPoll => Object.entries(kudosPoll.gratitudes))
           .reduce((acc, _) => [...acc, ..._], [])
@@ -178,10 +192,11 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
         ...kudosToken,
         ...results,
         ...loadedStatus,
-        selectedPoll: (kudosToken.allPolls || []).find(({address}) => address === selectedKudosPollAddress),
+        selectedPoll,
         results: results.results
           .map(result => ({
             ...result,
+            kudos: result.kudos / 10 ** kudosToken.decimals,
             name: kudosToken.contacts[result.member],
             achievements: {...result.achievements, beginner: membersList.indexOf(result.member) === -1},
           }))

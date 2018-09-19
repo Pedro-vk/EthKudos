@@ -66,16 +66,16 @@ export class KudosPollService
   // Constants
   readonly version = () => this.generateConstant('version')();
   readonly active = () => this.generateConstant('active')();
-  readonly kudosByMember = () => this.generateConstant('kudosByMember')();
-  readonly maxKudosToMember = () => this.generateConstant('maxKudosToMember')();
+  readonly kudosByMember = () => this.generateConstant('kudosByMember', this.n)();
+  readonly maxKudosToMember = () => this.generateConstant('maxKudosToMember', this.n)();
   readonly members = () => this.generateConstant('members')();
-  readonly minDeadline = () => this.generateConstant('minDeadline')();
-  readonly creation = () => this.generateConstant('creation')();
+  readonly minDeadline = () => this.generateConstant('minDeadline', this.n)();
+  readonly creation = () => this.generateConstant('creation', this.n)();
   readonly canBeClosed = () => this.generateConstant('canBeClosed')();
   readonly getGratitudeOf = (member: string, index: number) =>
-    this.generateConstant('getGratitudeOf', ([kudos, message, from]) => ({kudos, message, from}))(member, index)
+    this.generateConstant('getGratitudeOf', ([kudos, message, from]) => ({kudos: +kudos, message, from}))(member, index)
   readonly getGratitudesSizeOf = (member: string) => this.generateConstant('getGratitudesSizeOf')(member);
-  readonly getKudosOf = (member: string) => this.generateConstant('getKudosOf')(member);
+  readonly getKudosOf = (member: string) => this.generateConstant('getKudosOf', this.n)(member);
   readonly getPollResult = (index: number) => this.generateConstant('getPollResult', ([member, kudos]) => ({member, kudos}))(index);
   readonly getPollResultsSize = () => this.generateConstant('getPollResultsSize')();
 
@@ -84,7 +84,7 @@ export class KudosPollService
     () => this.membersNumber(),
     async i => {
       const member = await this.getMember(i);
-      return {member, balance: await this.balanceOf(member)};
+      return {member, balance: +await this.balanceOf(member)};
     },
   )
   readonly getGratitudesOf = (member: string) =>

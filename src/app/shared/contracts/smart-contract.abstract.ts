@@ -162,4 +162,8 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
           .share(),
       );
   }
+
+  protected n(number: any): number {
+    return +number || 0;
+  }
 }

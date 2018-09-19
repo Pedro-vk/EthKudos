@@ -74,7 +74,7 @@ export class KudosTokenService
     async i => {
       const member = await this.getMember(i);
       const name = await this.getContact(member);
-      return {member, name, balance: await this.balanceOf(member)};
+      return {member, name, balance: +await this.balanceOf(member)};
     },
   )
 

@@ -50,7 +50,7 @@ export class KudosTokenEffects {
           organisationName: await kudosTokenService.organisationName() || await kudosTokenService.name(),
           name: await kudosTokenService.name(),
           symbol: await kudosTokenService.symbol(),
-          decimals: await kudosTokenService.decimals(),
+          decimals: +await kudosTokenService.decimals(),
           totalSupply: await kudosTokenService.totalSupply(),
           members: await kudosTokenService.getMembers(),
           balances: (await kudosTokenService.getBalances() || []).reduce((acc, _) => ({...acc, [_.member]: _.balance}), {}),
