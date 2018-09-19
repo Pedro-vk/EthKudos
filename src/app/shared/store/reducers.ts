@@ -180,7 +180,8 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
             name: kudosToken.contacts[result.member],
             achievements: {...result.achievements, beginner: membersList.indexOf(result.member) === -1},
           }))
-          .sort((a, b) => b.kudos - a.kudos),
+          .sort((a, b) => b.kudos - a.kudos)
+          .filter(result => kudosToken.members.find((({member}) => member === result.member)),
       };
     }
   },

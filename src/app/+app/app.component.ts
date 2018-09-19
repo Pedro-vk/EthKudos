@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
   readonly loadingStatus$ = this.kudosToken$
     .filter(_ => !!_ && !!_.polls)
     .map(({loaded, polls, activePoll}) => {
-      const total = (loaded.pollsProgress.total * 2) + 2;
+      const total = (loaded.pollsProgress.total * 2) + 3;
       const pollsSize = loaded.pollsProgress.total;
       const loadedPolls = loaded.pollsProgress.total - loaded.pollsProgress.pending;
       const fullLoadedPolls = loaded.pollsProgress.total - loaded.pollsProgress.pendingFull;

@@ -37,9 +37,8 @@ describe('Router - Effects', () => {
   });
 
   it('should request the loading of the current kudos token', () => {
-
     actions = hot('-n', {
-      n: {type: ROUTER_NAVIGATION, payload: {routerState: {root: {firstChild: {params: {tokenAddress: newAccount(1)}}}}}},
+      n: {type: ROUTER_NAVIGATION, payload: {routerState: {url: '', root: {firstChild: {params: {tokenAddress: newAccount(1)}}}}}},
     });
 
     const expected = cold('-(ab)', {
