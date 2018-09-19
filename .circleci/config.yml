@@ -204,7 +204,7 @@ jobs:
             git config --global user.email "deploy@circleci.com"
             git config --global user.name "CircleCI Deploy"
           name: Git configuration
-      - run: npm run deploy -- --branch gh-pages-pre
+      - run: npm run deploy -- -- --branch gh-pages-pre
   cleanup-cloudflare:
     <<: *NODE
     steps:
