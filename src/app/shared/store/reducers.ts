@@ -155,7 +155,12 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
         || previousPolls.length === 0
         || previousPolls.findIndex(kudosPoll => !(kudosPoll && kudosPoll.gratitudes)) !== -1
       ) {
-        return <never>{...kudosToken, ...loadedStatus};
+        return <never>{
+          ...kudosToken,
+          ...loadedStatus,
+          results: Object.entries(kudosToken.balances || {})
+            .map(([member, kudos]) => ({member, kudos: kudos / 10 ** kudosToken.decimals, name: (kudosToken.contacts || {})[member]})),
+        };
       }
       const membersList = previousPolls.map(kudosPoll => kudosPoll.members).reduce((acc, _) => [...acc, ..._], []);
       const results = generateResultsFromState({

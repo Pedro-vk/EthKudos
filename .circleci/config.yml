@@ -9,6 +9,7 @@ workflows:
             branches:
               ignore:
                 - gh-pages
+                - gh-pages-pre
       - test-ng:
           requires:
             - npm-install
