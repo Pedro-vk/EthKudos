@@ -34,6 +34,18 @@ workflows:
       - build-app:
           requires:
             - npm-install
+      - hold-deploy:
+          type: approval
+          filters:
+            branches:
+              ignore:
+                - master
+          requires:
+            - post-test
+            - test-e2e
+            - lint-ng
+            - lint-sol
+            - build-app
       - deploy-github:
           filters:
             branches:
@@ -45,6 +57,13 @@ workflows:
             - lint-ng
             - lint-sol
             - build-app
+      - deploy-github-pre:
+          filters:
+            branches:
+              ignore:
+                - master
+          requires:
+            - hold-deploy
       - cleanup-cloudflare:
           filters:
             branches:
@@ -166,7 +185,6 @@ jobs:
   # Deploy
   deploy-github:
     <<: *NODE
-    environment:
     steps:
       - checkout
       - *CHECKOUT-WORKSPACE
@@ -176,6 +194,17 @@ jobs:
             git config --global user.name "CircleCI Deploy"
           name: Git configuration
       - run: npm run deploy
+  deploy-github-pre:
+    <<: *NODE
+    steps:
+      - checkout
+      - *CHECKOUT-WORKSPACE
+      - run:
+          command: |
+            git config --global user.email "deploy@circleci.com"
+            git config --global user.name "CircleCI Deploy"
+          name: Git configuration
+      - run: npm run deploy -- --branch gh-pages-pre
   cleanup-cloudflare:
     <<: *NODE
     steps:
