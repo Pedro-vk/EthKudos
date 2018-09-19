@@ -181,7 +181,7 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
             achievements: {...result.achievements, beginner: membersList.indexOf(result.member) === -1},
           }))
           .sort((a, b) => b.kudos - a.kudos)
-          .filter(result => kudosToken.members.find((({member}) => member === result.member)),
+          .filter(result => kudosToken.members.find(({member}) => member === result.member)),
       };
     }
   },
