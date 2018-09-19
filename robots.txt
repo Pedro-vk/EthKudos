@@ -1,0 +1,3 @@
+User-Agent: *
+
+Sitemap: https://eth-kudos.com/sitemap.xml

@@ -1,0 +1,65 @@
+{
+  "configVersion": 1,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/favicon.png",
+        "/index.html"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/assets/app-store-badge.png",
+        "/assets/bg-colorful.png",
+        "/assets/cipher.png",
+        "/assets/donation-qr.svg",
+        "/assets/google-play-badge.png",
+        "/assets/metamask-network.png",
+        "/assets/toshi.png",
+        "/i18n/en.json",
+        "/i18n/es.json"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/assets/app-store-badge.png": "f573798aa1e1106c4ad3e3a593d7785287b375d1",
+    "/assets/bg-colorful.png": "a76d79d85e272def58628f8bb6128a3129b2f158",
+    "/assets/cipher.png": "9d68ca2d08a26dac20b5fd34d6a8394e65e8c0bb",
+    "/assets/donation-qr.svg": "35ea2d45cfcd2db20ece8c219777d7496c95c78a",
+    "/assets/google-play-badge.png": "dcb52ad53369d3388215d2a6d0c2895a733f7bf8",
+    "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
+    "/assets/toshi.png": "7caff517a62f64857544f555d1fee96b3e173828",
+    "/favicon.png": "75d5ba3d1973c0a65dd96d20456c23c110cee8d8",
+    "/i18n/en.json": "477ace3318752af4beac8009c32827738394b5cb",
+    "/i18n/es.json": "46cd2b603c128e893bfa7549bd209fd932a822ec",
+    "/index.html": "a7ee91b67ace32969c71c8694aaad201623e4abc"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}
