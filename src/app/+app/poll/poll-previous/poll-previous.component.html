@@ -30,12 +30,12 @@
 
       <mat-card-header>
         <eth-kudos-blockie [address]="gratitude.from" variant="card" mat-card-avatar></eth-kudos-blockie>
-        <mat-card-title *ngIf="gratitude.name">
-          {{gratitude.name}}
+        <mat-card-title *ngIf="gratitude.fromName">
+          {{gratitude.fromName}}
           <span translate>sent:</span>
         </mat-card-title>
-        <mat-card-title *ngIf="!gratitude.name">
-          <code>{{gratitude.from}}</code>
+        <mat-card-title *ngIf="!gratitude.fromName">
+          <code>{{gratitude.from}}</code>&nbsp;
           <span translate>sent:</span>
         </mat-card-title>
         <mat-card-subtitle>{{gratitude.message}}</mat-card-subtitle>

@@ -58,7 +58,8 @@ export class PollActiveComponent implements OnInit {
     .combineLatest(this.store.select(fromRoot.getAccount).distinctUntilChanged())
     .map(([kudosPoll, account]) =>
       kudosPoll.allGratitudes
-        .filter(({from}) => from === account),
+        .filter(({from}) => from === account)
+        .map(gratitude => ({...gratitude, kudos: gratitude.kudos})),
     );
 
   constructor(

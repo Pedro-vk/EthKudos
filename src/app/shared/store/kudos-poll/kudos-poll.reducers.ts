@@ -9,7 +9,7 @@ export function generateResultsFromState(state: Partial<KudosPollData> = {}): Ku
   }
   const allGratitudes = Object.entries(state.gratitudes || {})
     .map(([to, gratitudes]) =>
-      gratitudes.map(({from, kudos, message}) => ({to, kudos: kudos / 10 ** (state.decimals || 0), message, from})),
+      gratitudes.map(({from, kudos, message}) => ({to, kudos, message, from})),
     )
     .reduce((acc, _) => [...acc, ..._], []);
   const initial = (state.members || []).reduce((acc, _) => ({...acc, [_]: 0}), {});
@@ -66,6 +66,7 @@ export function kudosPollReducer(state: KudosPollState = initialState, action: k
         kudosPolls: {
           ...state.kudosPolls,
           [address]: {
+            address,
             ...(state.kudosPolls[address] || {} as any),
             loading: true,
             loaded: {
@@ -90,7 +91,7 @@ export function kudosPollReducer(state: KudosPollState = initialState, action: k
               ...(type ? {[type]: true} : {}),
             },
             ...data,
-            ...generateResultsFromState({...data, decimals: 0}),
+            ...generateResultsFromState(data),
           },
         },
       };
@@ -130,7 +131,7 @@ export function kudosPollReducer(state: KudosPollState = initialState, action: k
           ...state.kudosPolls,
           [address]: {
             ...kudosPoll,
-            ...generateResultsFromState({...kudosPoll, decimals: 0}),
+            ...generateResultsFromState(kudosPoll),
           },
         },
       };

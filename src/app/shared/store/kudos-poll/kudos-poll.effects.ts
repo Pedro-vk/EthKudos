@@ -4,6 +4,7 @@ import { Effect, Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/distinct';
 import 'rxjs/add/operator/filter';
@@ -60,7 +61,7 @@ export class KudosPollEffects {
         'dynamic',
         force,
         async(kudosPollService) => ({
-          decimals: await kudosPollService.decimals(),
+          decimals: +await kudosPollService.decimals(),
           canBeClosed: await kudosPollService.canBeClosed(),
           active: await kudosPollService.active(),
           members: await kudosPollService.getMembers(),
