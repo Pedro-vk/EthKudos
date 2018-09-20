@@ -1,6 +1,7 @@
 @import '../../../styles/index';
 
 @include gratitude-card();
+@include remaining-wrapper();
 
 :host {
   @include host(true);
@@ -31,25 +32,6 @@ mat-card-actions {
     top: 0;
     left: 0;
     right: 0;
-  }
-}
-
-.remaining {
-  font-size: 20px;
-  display: block;
-
-  &__symbol {
-    padding-left: 4px;
-    font-size: 12px;
-    opacity: .7;
-  }
-
-  &-wrapper {
-    text-align: right;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
   }
 }
 

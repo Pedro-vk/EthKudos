@@ -89,7 +89,7 @@ export const getKudosPollWithContacts = (pollAddress: string, tokenAddress) => c
         fromName: kudosToken.contacts[gratitude.from],
         toName: kudosToken.contacts[gratitude.to],
       }));
-    return {
+    return pollAddress && {
       ...kudosPoll,
       allGratitudes: mapGratitudes(kudosPoll.allGratitudes),
       myGratitudes: mapGratitudes(kudosPoll.myGratitudes),

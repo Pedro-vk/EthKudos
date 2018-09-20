@@ -420,12 +420,60 @@ $header--secondary---height: 48px !default;
     }
     mat-icon {
       height: 17px;
+      width: 17px;
+      margin-right: 4px;
       line-height: 14px;
     }
     span {
       position: relative;
+      display: inline-block;
       top: 1px;
-      padding-left: 4px;
+      padding-left: 10px;
     }
   }
+  .loading .loading,
+  .loading.loading {
+    &__icon,
+    &__text {
+      color: transparent !important;
+      background: rgba(#000000, .1);
+      animation: gray-loading 1.5s linear infinite;
+    }
+    &__icon {
+      border-radius: 50%;
+    }
+    &__icon + .loading__text {
+      margin-left: 4px;
+    }
+    &__text {
+      min-width: 120px;
+
+      &--short {
+        min-width: 80px;
+      }
+      &--shorter {
+        min-width: 60px;
+      }
+      &--micro {
+        min-width: 20px;
+      }
+      &--auto-left {
+        margin-left: auto;
+      }
+      &--inline-block {
+        display: inline-block;
+      }
+    }
+  }
+
+  @keyframes gray-loading {
+    0%,
+    100% {
+      background: rgba(#000000, .15);
+    }
+    50% {
+      background: rgba(#000000, .05);
+    }
+  }
+
 }

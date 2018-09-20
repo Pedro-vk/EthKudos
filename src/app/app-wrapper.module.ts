@@ -62,7 +62,7 @@ export function getCurrentValidLocale() {
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot(effects),
     StoreRouterConnectingModule,
-    StoreDevtoolsModule.instrument(),
+    StoreDevtoolsModule.instrument({name: 'EthKudos' + (environment.production ? '' : ' (local)')}),
 
     AppCommonModule,
 

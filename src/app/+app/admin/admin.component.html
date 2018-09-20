@@ -78,13 +78,17 @@
 
     <div class="transfered">
       <div class="transfered__title" translate>Kudos sent</div>
-      <code>
+      <code [class.loading]="!(kudosSentOnActivePoll$ | async)?.progress && (kudosSentOnActivePoll$ | async)?.progress !== 0">
         <span class="transfered__number transfered__number--left">
-          {{(kudosSentOnActivePoll$ | async)?.sent || 0}}<span class="transfered__symbol">{{(kudosToken$ | async)?.symbol}}</span>
+          <span class="loading__text loading__text--inline-block loading__text--shorter">
+            {{((kudosSentOnActivePoll$ | async)?.sent | number) || 0}}<span class="transfered__symbol">{{(kudosToken$ | async)?.symbol}}</span>
+          </span>
         </span>
         <span class="transfered__of"></span>
         <span class="transfered__number transfered__number--right">
-          {{(kudosSentOnActivePoll$ | async)?.total || 0}}<span class="transfered__symbol">{{(kudosToken$ | async)?.symbol}}</span>
+          <span class="loading__text loading__text--inline-block loading__text--shorter">
+            {{((kudosSentOnActivePoll$ | async)?.total | number) || 0}}<span class="transfered__symbol">{{(kudosToken$ | async)?.symbol}}</span>
+          </span>
         </span>
       </code>
 

@@ -10,7 +10,9 @@
         <mat-icon>settings</mat-icon>
       </button><!--
  --></div><!--
- --><span>{{(kudosToken$ | async)?.organisationName}}</span>
+ --><span class="loading__text" [class.loading]="!(kudosToken$ | async)?.organisationName">
+      {{(kudosToken$ | async)?.organisationName || '&nbsp;'}}
+    </span>
   </div>
   <span>
     <button
