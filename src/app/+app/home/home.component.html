@@ -7,19 +7,19 @@
     <mat-card-header>
       <eth-kudos-blockie [address]="activePoll.address" variant="card" mat-card-avatar></eth-kudos-blockie>
       <mat-card-title translate>Active polling</mat-card-title>
-      <mat-card-subtitle class="bp-l">
+      <mat-card-subtitle class="loading__text bp-l" [class.loading]="!activePoll?.members">
         {{'MEMBERS_LONG' | translate : {NUMBER: (activePoll?.members?.length || '')} }}
       </mat-card-subtitle>
-      <mat-card-subtitle class="bp-s">
+      <mat-card-subtitle class="loading__text bp-s" [class.loading]="!activePoll?.members">
         {{'MEMBERS_SHORT' | translate : {NUMBER: (activePoll?.members?.length || '')} }}
       </mat-card-subtitle>
     </mat-card-header>
 
-    <div class="remaining-wrapper" *ngIf="(kudosToken$ | async)?.imMember">
-      {{'Remaining' | translate}}
+    <div class="remaining-wrapper" *ngIf="(kudosToken$ | async)?.imMember" [class.loading]="!activePoll.myBalance && activePoll.myBalance !== 0">
+      <span class="loading__text loading__text--short">{{'Remaining' | translate}}</span>
 
-      <code class="remaining">
-        {{activePoll.myBalance || 0 | number}}<span class="remaining__symbol">{{(kudosToken$ | async)?.symbol}}</span>
+      <code class="loading__text loading__text--shorter loading__text--auto-left remaining">
+        {{activePoll?.myBalance || 0 | number}}<span class="remaining__symbol">{{(kudosToken$ | async)?.symbol}}</span>
       </code>
     </div>
   </mat-card>
@@ -43,8 +43,9 @@
 
   <mat-accordion *ngIf="previousPolls$ | async as previousPolls">
     <mat-expansion-panel
-      class="pointer"
       *ngFor="let poll of previousPolls; let i = index; trackBy: trackPoll"
+      class="pointer"
+      [class.loading]="!poll.creation"
       [routerLink]="['./closed', poll.address]"
       [hideToggle]="true"
       [disabled]="true">
@@ -57,9 +58,9 @@
 
             <span class="previous__number">#{{previousPolls.length - i | number : '2.0-0'}}</span>
 
-            <mat-icon class="bp-l">date_range</mat-icon>
+            <mat-icon class="loading__icon bp-l">date_range</mat-icon>
 
-            <span class="previous__date bp-l">{{'AT_DATE' | translate : {DATE: (poll.creation | date : 'short') || ''} }}</span>
+            <span class="loading__text previous__date bp-l">{{'AT_DATE' | translate : {DATE: (poll.creation | date : 'longDate') || ''} }}</span>
 
             <div class="previous__right" *ngIf="poll.myKudos">
               {{'Gratified' | translate}}
@@ -127,13 +128,13 @@
               fiber_new
             </mat-icon>
 
-            <span class="ranking__extra" *ngIf="result.gratitudesReceived !== undefined" [matTooltip]="'Gratitudes received' | translate">
-              <mat-icon class="ranking__extra-icon--in">call_received</mat-icon>
-              {{result.gratitudesReceived}}
+            <span class="ranking__extra" [class.loading]="result.gratitudesReceived === undefined" [matTooltip]="'Gratitudes received' | translate">
+              <mat-icon class="loading__icon ranking__extra-icon--in">call_received</mat-icon>
+              <span class="loading__text loading__text--micro">{{result.gratitudesReceived || 0}}</span>
             </span>
-            <span class="ranking__extra" *ngIf="result.gratitudesSent !== undefined" [matTooltip]="'Gratitudes sent' | translate">
-              <mat-icon class="ranking__extra-icon--out">call_made</mat-icon>
-              {{result.gratitudesSent}}
+            <span class="ranking__extra" [class.loading]="result.gratitudesReceived === undefined" [matTooltip]="'Gratitudes sent' | translate">
+              <mat-icon class="loading__icon ranking__extra-icon--out">call_made</mat-icon>
+              <span class="loading__text loading__text--micro">{{result.gratitudesSent || 0}}</span>
             </span>
 
           </div>

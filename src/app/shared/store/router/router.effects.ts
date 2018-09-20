@@ -45,7 +45,7 @@ export class RouterEffects {
             const polls = (kudosPolls || []).filter(_ => _ !== firstPoll).reverse();
             return Observable.merge(
               Observable.of((firstPoll || '').toLowerCase()),
-              Observable.from(kudosPolls).delay(selectedPoll ? 8000 : 2000),
+              Observable.from(kudosPolls).delay(selectedPoll ? 6000 : 2000),
             );
           })
           .filter(_ => !!_)

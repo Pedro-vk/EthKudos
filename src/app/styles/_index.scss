@@ -356,6 +356,12 @@ $landing-header-size: 70px;
         padding-left: 4px;
       }
 
+      span {
+        display: inline-block;
+        position: relative;
+        top: 1px;
+      }
+
       &-icon {
         &--in {
           color: #009688;
@@ -368,9 +374,11 @@ $landing-header-size: 70px;
       mat-icon.mat-icon {
         vertical-align: middle;
         font-size: 16px;
-        height: 16px;
+        height: 18px;
         width: 18px;
         opacity: .6;
+        position: relative;
+        top: -1px;
       }
     }
   }
@@ -410,6 +418,34 @@ $landing-header-size: 70px;
         opacity: .6;
         padding-left: 2px;
         font-size: .7em;
+      }
+    }
+  }
+}
+
+@mixin remaining-wrapper {
+  .remaining {
+    font-size: 20px;
+    display: block;
+    line-height: 20px;
+    margin-top: 2px;
+
+    &__symbol {
+      padding-left: 4px;
+      font-size: 12px;
+      opacity: .7;
+    }
+
+    &-wrapper {
+      text-align: right;
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      text-align: right;
+
+      & > * {
+        display: table;
       }
     }
   }

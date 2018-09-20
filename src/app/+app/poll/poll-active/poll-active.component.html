@@ -3,35 +3,35 @@
     <mat-card-header>
       <eth-kudos-blockie [address]="activePoll.address" variant="card" mat-card-avatar></eth-kudos-blockie>
       <mat-card-title translate>Active polling</mat-card-title>
-      <mat-card-subtitle>
+      <mat-card-subtitle [class.loading]="!activePoll?.members || !activePoll?.minDeadline">
         <div class="icon-block">
-          <mat-icon>person</mat-icon>
-          <span>
+          <mat-icon class="loading__icon">person</mat-icon>
+          <span class="loading__text loading__text--short">
             {{'MEMBERS_SHORT' | translate : {NUMBER: activePoll?.members?.length || ''} }}
           </span>
         </div>
-        <div class="icon-block bp-l" *ngIf="canBeClosed$ | async" [matTooltip]="'The owner can close the polling at any time' | translate">
-          <mat-icon>timer</mat-icon>
-          <span translate>Can be closed</span>
+        <div class="icon-block bp-l" *ngIf="activePoll?.canBeClosed" [matTooltip]="'The owner can close the polling at any time' | translate">
+          <mat-icon class="loading__icon">timer</mat-icon>
+          <span class="loading__text loading__text--short" translate>Can be closed</span>
         </div>
         <div
           class="icon-block bp-l"
           [matTooltip]="'CLOSABLE_REMAINING_DATE_LONG' | translate : {DATE: (activePoll?.minDeadline | date : 'short') || ''}"
-          *ngIf="!(canBeClosed$ | async)">
+          *ngIf="!activePoll?.canBeClosed">
 
-          <mat-icon>timer</mat-icon>
-          <span>
+          <mat-icon class="loading__icon">timer</mat-icon>
+          <span class="loading__text loading__text--short">
             {{'CLOSABLE_REMAINING_DATE' | translate : {DATE: (activePoll?.minDeadline | date : 'short') || ''} }}
           </span>
         </div>
       </mat-card-subtitle>
     </mat-card-header>
 
-    <div class="remaining-wrapper" *ngIf="activePoll.imMember">
-      {{'Remaining' | translate}}
+    <div class="remaining-wrapper" *ngIf="(kudosToken$ | async)?.imMember" [class.loading]="!activePoll.myBalance && activePoll.myBalance !== 0">
+      <span class="loading__text loading__text--short">{{'Remaining' | translate}}</span>
 
-      <code class="remaining">
-        {{activePoll?.myBalance || 0}}<span class="remaining__symbol">{{(kudosToken$ | async)?.symbol}}</span>
+      <code class="loading__text loading__text--shorter loading__text--auto-left remaining">
+        {{activePoll?.myBalance || 0 | number}}<span class="remaining__symbol">{{(kudosToken$ | async)?.symbol}}</span>
       </code>
     </div>
   </mat-card>

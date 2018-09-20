@@ -1,6 +1,7 @@
 @import '../../styles/index';
 
 @include ranking();
+@include remaining-wrapper();
 
 :host {
   @include host(true);
@@ -71,7 +72,9 @@ mat-card-actions {
     opacity: .7;
     width: 24px;
     position: relative;
+    text-align: center;
     top: 1px;
+    margin-right: 8px;
   }
 
   &__date {
@@ -97,25 +100,6 @@ mat-card-actions {
       font-size: 12px;
       opacity: .6;
     }
-  }
-}
-
-.remaining {
-  font-size: 20px;
-  display: block;
-
-  &__symbol {
-    padding-left: 4px;
-    font-size: 12px;
-    opacity: .7;
-  }
-
-  &-wrapper {
-    text-align: right;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
   }
 }
 
