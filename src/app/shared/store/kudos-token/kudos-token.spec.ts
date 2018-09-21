@@ -96,6 +96,7 @@ describe('KudosToken - Effects', () => {
       imports: [
         StoreModule.forRoot({
           ...reducers,
+          accountReducer: () => ({account: newAccount(900)}),
         }),
       ],
       providers: [
@@ -192,5 +193,46 @@ describe('KudosToken - Effects', () => {
     });
 
     expect(effects.watchKudosTokenChanges$).toBeObservable(expected);
+  });
+
+  it('should request the balance of the current account', () => {
+    hot('---a---b', {a: newAccount(10), b: newAccount(20)})
+      .subscribe(address => store.dispatch(new kudosTokenActions.LoadBasicDataAction(address)));
+
+    actions = hot('-i', {
+      i: {type: ROOT_EFFECTS_INIT},
+    });
+
+    const expected = cold('---a---(ab)', {
+      a: new kudosTokenActions.LoadAccountBalanceAction(newAccount(10), newAccount(900)),
+      b: new kudosTokenActions.LoadAccountBalanceAction(newAccount(20), newAccount(900)),
+    });
+
+    expect(effects.loadBalanceOfCurrentAccount$).toBeObservable(expected);
+  });
+
+  it('should get total KudosToken data', async() => {
+    const getKudosTokenServiceDataSpy = spyOn(effects, 'getKudosTokenServiceData').and.returnValue(Observable.of(123));
+    hot('i', {i: undefined})
+      .subscribe(() => store.dispatch(new kudosTokenActions.SetTokenDataAction(newAccount(1), 'basic', {balances: {}})));
+
+    actions = hot('-a', {
+      a: new kudosTokenActions.LoadAccountBalanceAction(newAccount(1), newAccount(20)),
+    });
+
+    const expected = cold('-r', {
+      r: new kudosTokenActions.SetBalanceAction(newAccount(1), newAccount(20), 123),
+    });
+
+    expect(effects.getBalanceOfAccount$).toBeObservable(expected);
+
+    expect(getKudosTokenServiceDataSpy).toHaveBeenCalledWith(newAccount(1), jasmine.any(Function));
+
+    const dataGetter = getKudosTokenServiceDataSpy.calls.mostRecent().args[1];
+    const serviceSpy = jasmine.createSpyObj('service', [
+      'balanceOf',
+    ]);
+
+    await dataGetter(serviceSpy);
   });
 });

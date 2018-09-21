@@ -80,11 +80,12 @@ export class KudosTokenEffects {
   getBalanceOfAccount$: Observable<Action> = this.actions$
     .ofType(kudosTokenActions.LOAD_ACCOUNT_BALANCE)
     .map(({payload}: kudosTokenActions.LoadAccountBalanceAction) => payload)
+    .filter(({address, account}) => !!address && !!account)
     .mergeMap(({address, account}) =>
       this.store.select(fromRoot.getKudosTokenByAddress(address))
         .first()
-        .map(kudosToken => ((kudosToken && kudosToken.balances) || {})[account])
         .filter(_ => !!_)
+        .map(kudosToken => (kudosToken.balances || {})[account])
         .mergeMap(() => this.getKudosTokenServiceData(address, (async kudosTokenService => await kudosTokenService.balanceOf(account))))
         .map(balance => new kudosTokenActions.SetBalanceAction(address, account, balance)),
     );
