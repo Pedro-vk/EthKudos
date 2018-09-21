@@ -31,7 +31,7 @@ export class RouterEffects {
           'active' :
           routerState.root.firstChild.firstChild && routerState.root.firstChild.firstChild.params.address,
     })
-    .filter(_ => !!_)
+    .filter(({address}) => address)
     .distinctUntilChanged((a, b) => a.address === b.address)
     .mergeMap(({address, selectedPoll}) =>
       Observable.merge(
