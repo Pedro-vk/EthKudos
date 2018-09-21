@@ -5,7 +5,6 @@ $header---height: 64px !default;
 $header--small---height: 48px !default;
 $header--secondary---height: 48px !default;
 
-.header,
 .footer,
 .container {
   &:not(.visible) {
@@ -58,6 +57,7 @@ $header--secondary---height: 48px !default;
   position: fixed;
   width: 100%;
   top: 0;
+  transition: all .26s ease;
 
   svg,
   svg path {
@@ -157,6 +157,12 @@ $header--secondary---height: 48px !default;
       top: $header--small---height;
     }
   }
+  &--primary#{&}--hidden {
+    top: -$header---height;
+  }
+  &--secondary#{&}--hidden {
+    top: -$header--secondary---height;
+  }
 
   &__account {
     padding-left: 10px;
@@ -167,7 +173,7 @@ $header--secondary---height: 48px !default;
       display: flex;
     }
     &-row {
-      display: block;
+      display: table;
 
       &--no-member,
       &--name {
@@ -189,6 +195,7 @@ $header--secondary---height: 48px !default;
         font-size: 12px;
         line-height: 14px;
         opacity: .6;
+        margin-top: 2px;
       }
     }
 
@@ -196,7 +203,7 @@ $header--secondary---height: 48px !default;
       display: none;
     }
     &--no-member &-row--no-member {
-      display: block;
+      display: table;
     }
 
     @media (max-width: 600px) {
@@ -210,8 +217,9 @@ $header--secondary---height: 48px !default;
     text-align: right;
 
     &-row {
-      height: ($header--secondary---height - 8px) / 2;
-      line-height: ($header--secondary---height - 8px) / 2;
+      height: ($header--secondary---height - 16px) / 2;
+      line-height: ($header--secondary---height - 16px) / 2;
+      margin: 4px 0;
       font-weight: 300;
 
       code {
@@ -441,6 +449,11 @@ $header--secondary---height: 48px !default;
     }
     &__icon {
       border-radius: 50%;
+
+      .blockie {
+        background-image: none !important;
+        box-shadow: none;
+      }
     }
     &__icon + .loading__text {
       margin-left: 4px;

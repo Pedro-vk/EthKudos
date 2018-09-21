@@ -1,4 +1,4 @@
-<mat-toolbar [class.visible]="(status$ | async) === 'total'" class="header header--primary">
+<mat-toolbar [class.header--hidden]="(status$ | async) !== 'total'" class="header header--hidden header--primary">
   <div class="title">
     <div class="icon-wrapper" [class.icon-wrapper--visible]="!routeIs('/')">
       <button mat-icon-button routerLink="./" [attr.aria-label]="'Go home' | translate">
@@ -41,23 +41,26 @@
     </a>
   </span>
 </mat-toolbar>
-<mat-toolbar [class.visible]="(status$ | async) === 'total'" class="header header--secondary" color="accent">
+<mat-toolbar [class.header--hidden]="(status$ | async) !== 'total'" class="header header--hidden header--secondary" color="accent">
   <div>
-    <div class="header__account-wrapper" *ngIf="account$ | async as account">
-      <eth-kudos-blockie [address]="account" variant="big" noicon></eth-kudos-blockie>
+    <div
+      class="header__account-wrapper"
+      [class.loading]="!(account$ | async) || ((kudosToken$ | async)?.imMember === undefined)">
+
+      <eth-kudos-blockie [address]="account$ | async" variant="big" noicon class="loading__icon"></eth-kudos-blockie>
       <div class="header__account" [class.header__account--no-member]="!(kudosToken$ | async)?.imMember">
-        <span class="header__account-row header__account-row--name">{{(kudosToken$ | async)?.myContact || "&nbsp;"}}</span>
-        <span class="header__account-row header__account-row--no-member" translate>You are not member</span>
-        <span class="header__account-row header__account-row--address">{{account}}</span>
+        <span class="header__account-row header__account-row--name loading__text">{{(kudosToken$ | async)?.myContact || "&nbsp;"}}</span>
+        <span class="header__account-row header__account-row--no-member loading__text" translate>You are not member</span>
+        <span class="header__account-row header__account-row--address loading__text">{{account$ | async}}</span>
       </div>
     </div>
   </div>
   <div class="header__balance">
-    <div class="header__balance-row">
+    <div class="header__balance-row loading__text" [class.loading]="(balance$ | async) === undefined">
       <span class="bp-l" translate>Account balance:</span><!--
    --><code> {{((balance$ | async) || 0) | number : '.0-5'}} <span class="symbol">&Xi;</span></code>
     </div>
-    <div class="header__balance-row">
+    <div class="header__balance-row loading__text" [class.loading]="(kudosToken$ | async)?.myBalance === undefined">
       <span class="bp-l" translate>Kudos received:</span><!--
    --><code> {{((kudosToken$ | async)?.myBalance || 0) | number}} <span class="symbol">{{(kudosToken$ | async)?.symbol}}</span></code>
     </div>
