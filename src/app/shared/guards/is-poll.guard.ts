@@ -24,8 +24,8 @@ export class IsPollGuard implements CanActivate {
       .first()
       .mergeMap(() => Observable.fromPromise(kudosTokenService.getPreviousPolls()))
       .map(polls => polls.indexOf(pollAddress) !== -1)
-      .do(imOwner => {
-        if (!imOwner) {
+      .do(isPoll => {
+        if (!isPoll) {
           this.router.navigate([state.url.split('/').slice(0, -2).join('/')]);
         }
       });

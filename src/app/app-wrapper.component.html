@@ -4,3 +4,9 @@
   Update available
   <button mat-button color="warn" (click)="reload()">refresh</button>
 </mat-card>
+
+<div class="load-bar" [class.load-bar--hidden]="!(isRouterWaiting$ | async)">
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+</div>
