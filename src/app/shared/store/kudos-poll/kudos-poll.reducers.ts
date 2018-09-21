@@ -58,8 +58,7 @@ const initialState: KudosPollState = {
 export function kudosPollReducer(state: KudosPollState = initialState, action: kudosPollActions.Actions): KudosPollState {
   switch (action.type) {
     case kudosPollActions.LOAD_BASIC_DATA:
-    case kudosPollActions.LOAD_DYNAMIC_DATA:
-    case kudosPollActions.LOAD_ACCOUNT_GRATITUDES: {
+    case kudosPollActions.LOAD_DYNAMIC_DATA: {
       const {address} = action.payload;
       return {
         ...state,

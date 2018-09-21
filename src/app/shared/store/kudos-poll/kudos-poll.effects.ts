@@ -76,16 +76,6 @@ export class KudosPollEffects {
     );
 
   @Effect()
-  getGratitudesOf$: Observable<Action> = this.actions$
-    .ofType(kudosPollActions.LOAD_ACCOUNT_GRATITUDES)
-    .map(({payload}: kudosPollActions.LoadAccountGratitudesAction) => payload)
-    .mergeMap(({address, account}) =>
-      this.getKudosPollServiceData(address, async kudosPollService => await kudosPollService.getGratitudesOf(account))
-        .map(gratitudes => ({gratitudes, address, account})),
-    )
-    .map(({address, account, gratitudes}) => new kudosPollActions.SetGratitudesAction(address, account, gratitudes));
-
-  @Effect()
   watchKudosPollChanges$: Observable<Action> = this.actions$
     .ofType(kudosPollActions.LOAD_DYNAMIC_DATA, kudosPollActions.LOAD_BASIC_DATA)
     .map(({payload}: kudosPollActions.LoadDynamicDataAction | kudosPollActions.LoadBasicDataAction) => payload)
