@@ -9,6 +9,7 @@ import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
@@ -84,11 +85,16 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.kudosToken$
+      .first()
       .subscribe(kudosToken => {
         if (localStorage && kudosToken.address) {
           localStorage.setItem('kudos-address', kudosToken.address);
         }
       });
+    this.status$
+      .filter(_ => _ !== ConnectionStatus.Total)
+      .first()
+      .subscribe(() => this.router.navigate(['/error', status]));
   }
 
   goToEtherscan(tx: string): void {

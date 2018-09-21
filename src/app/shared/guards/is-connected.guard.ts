@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 
 import { Web3Service, ConnectionStatus } from '../web3.service';
+import * as fromRoot from '../store/reducers';
 
 @Injectable()
 export class IsConnectedGuard implements CanActivate, CanActivateChild {
 
-  constructor(private web3Service: Web3Service, private router: Router) { }
+  constructor(private store: Store<fromRoot.State>, private router: Router) { }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.web3Service
-      .status$
+    return this.store.select(fromRoot.getStatus)
+      .filter(_ => !!_)
       .first()
       .map(status => {
-        const connected = this.web3Service.status === ConnectionStatus.Total;
+        const connected = status === ConnectionStatus.Total;
         if (!connected) {
           this.router.navigate(['/error', status]);
         }

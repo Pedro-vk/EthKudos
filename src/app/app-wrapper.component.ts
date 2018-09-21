@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, LOCALE_ID, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, GuardsCheckStart, GuardsCheckEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,10 +8,13 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/scan';
+import 'rxjs/add/operator/shareReplay';
 
 import { environment } from '../environments/environment';
 
@@ -33,6 +36,18 @@ import { Web3Service, KudosTokenFactoryService, ServiceWorkerService } from './s
 })
 export class AppWrapperComponent implements OnInit {
   readonly hasUpdates$ = this.serviceWorkerService.onUpdate.map(() => true);
+  readonly isRouterWaiting$ = this.router.events
+    .scan((loading, event) => {
+      if (loading && event instanceof GuardsCheckEnd) {
+        return false;
+      }
+      if (!loading && event instanceof GuardsCheckStart) {
+        return true;
+      }
+      return loading;
+    }, false)
+    .shareReplay()
+    .distinctUntilChanged();
 
   constructor(
     private web3Service: Web3Service,
@@ -60,22 +75,25 @@ export class AppWrapperComponent implements OnInit {
       });
 
     this.router.events
-      .subscribe(event => {
-        if (event instanceof NavigationEnd) {
-          window.scrollTo(0, 0);
-
-          this.setTitleByUrl(event.urlAfterRedirects)
-            .then(() => {
-              if (environment.production && (<any>window).ga) {
-                (<any>window).ga('set', 'page', event.urlAfterRedirects);
-                (<any>window).ga('send', 'pageview');
-              }
-            });
-        }
+      .filter(event => event instanceof GuardsCheckEnd)
+      .first()
+      .subscribe(() => {
+        const loading = document.getElementById('loading-wrapper');
+        loading.parentNode.removeChild(loading);
       });
 
-    const loading = document.getElementById('loading-wrapper');
-    loading.parentNode.removeChild(loading);
+    this.router.events
+      .filter(event => event instanceof NavigationEnd)
+      .subscribe((event: NavigationEnd) => {
+        window.scrollTo(0, 0);
+        this.setTitleByUrl(event.urlAfterRedirects)
+          .then(() => {
+            if (environment.production && (<any>window).ga) {
+              (<any>window).ga('set', 'page', event.urlAfterRedirects);
+              (<any>window).ga('send', 'pageview');
+            }
+          });
+      });
   }
 
   async setTitleByUrl(url: string) {

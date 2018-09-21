@@ -24,7 +24,7 @@ describe('AppComponent', () => {
         HttpClientModule,
         NoopAnimationsModule,
 
-        StoreModule.forRoot(reducers),
+        StoreModule.forRoot({...reducers, statusReducer: () => ({status: 'total'})}),
         EffectsModule.forRoot(effects),
         StoreRouterConnectingModule,
       ],
