@@ -152,12 +152,15 @@ describe('KudosPoll - Effects', () => {
     expect(effects.getBasicKudosPollData$).toBeObservable(expected);
     expect(setDataSpy).toHaveBeenCalledWith(newAccount(1), 'basic', false, jasmine.any(Function));
 
-    const dataGetter = setDataSpy.calls.mostRecent().args[3];
     const serviceSpy = jasmine.createSpyObj('service', [
       'version', 'name', 'symbol', 'decimals', 'totalSupply', 'kudosByMember', 'maxKudosToMember', 'minDeadline', 'creation',
     ]);
-
-    expect(await dataGetter(serviceSpy)).toBeDefined();
+    const promises = setDataSpy.calls.all()
+      .map(async callInfo => {
+        const dataGetter = callInfo.args[3];
+        expect(await dataGetter(serviceSpy)).toBeDefined();
+      });
+    await Promise.all(promises);
   });
 
   it('should get dynamic KudosPoll data', async() => {

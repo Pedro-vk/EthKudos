@@ -24,12 +24,12 @@
     </div>
   </mat-card>
 
-  <div class="no-active-poll" *ngIf="!(activePoll$ | async)">
+  <div class="no-active-poll" *ngIf="(activePoll$ | async) === false">
     <mat-icon>not_interested</mat-icon>
     {{'No active poll' | translate}}
   </div>
 
-  <div class="no-active-poll no-active-poll--sub" *ngIf="!(activePoll$ | async)">
+  <div class="no-active-poll no-active-poll--sub" *ngIf="(activePoll$ | async) === false">
     <span *ngIf="(kudosToken$ | async)?.imOwner">
       {{'You can open a new polling.' | translate}}
       <button mat-button routerLink="./admin">{{'go to admin' | translate}}</button>
