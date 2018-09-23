@@ -443,9 +443,13 @@ $header--secondary---height: 48px !default;
   .loading.loading {
     &__icon,
     &__text {
-      color: transparent !important;
       background: rgba(#000000, .1);
       animation: gray-loading 1.5s linear infinite;
+
+      &,
+      & * {
+        color: transparent !important;
+      }
     }
     &__icon {
       border-radius: 50%;

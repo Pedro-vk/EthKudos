@@ -62,7 +62,11 @@
 
             <span class="loading__text previous__date bp-l">{{'AT_DATE' | translate : {DATE: (poll.creation | date : 'longDate') || ''} }}</span>
 
-            <div class="previous__right" *ngIf="poll.myKudos">
+            <div
+              *ngIf="((kudosToken$ | async)?.imMember || poll.myKudos) && poll.myKudos !== 0"
+              class="previous__right loading__text"
+              [class.loading]="!poll.myKudos && poll.myKudos !== 0">
+
               {{'Gratified' | translate}}
               <code class="previous__my-kudos">
                 {{poll.myKudos | number}}<!--
