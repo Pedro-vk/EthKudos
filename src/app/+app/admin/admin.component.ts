@@ -13,6 +13,7 @@ import 'rxjs/add/operator/shareReplay';
 import * as fromRoot from '../../shared/store/reducers';
 
 import { KudosTokenFactoryService, KudosTokenService } from '../../shared';
+import { AppCommonAbstract } from '../common.abstract';
 
 @Component({
   selector: 'eth-kudos-admin',
@@ -20,7 +21,7 @@ import { KudosTokenFactoryService, KudosTokenService } from '../../shared';
   styleUrls: ['./admin.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent extends AppCommonAbstract implements OnInit {
   newPoll: {kudosByMember: number, maxKudosToMember: number, minDurationInMinutes: number, working: boolean} = <any>{};
   closePollWorking: boolean;
   newMember: {member: string, contact: string, working: boolean} = <any>{};
@@ -50,8 +51,10 @@ export class AdminComponent implements OnInit {
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+    protected changeDetectorRef: ChangeDetectorRef,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.kudosToken$
@@ -149,21 +152,5 @@ export class AdminComponent implements OnInit {
       .removeMember(address)
       .then(() => done(true))
       .catch(err => console.warn(err) || done());
-  }
-
-  private onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {
-    if (success) {
-      if (form) {
-        setter(<any>{});
-        form.reset();
-      }
-    } else {
-      setter({...<any>obj, working: undefined});
-    }
-    this.changeDetectorRef.markForCheck();
-  }
-
-  trackMember(index: number, {member}: {member: string} & any): string {
-    return member || undefined;
   }
 }

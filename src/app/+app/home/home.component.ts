@@ -7,6 +7,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/shareReplay';
 
 import * as fromRoot from '../../shared/store/reducers';
+import { AppCommonAbstract } from '../common.abstract';
 
 @Component({
   selector: 'eth-kudos-home',
@@ -14,7 +15,7 @@ import * as fromRoot from '../../shared/store/reducers';
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {
+export class HomeComponent extends AppCommonAbstract {
   readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
     .filter(_ => !!_ && !!_.address)
     .shareReplay();
@@ -27,12 +28,7 @@ export class HomeComponent {
   constructor(
     private store: Store<fromRoot.State>,
     private activatedRoute: ActivatedRoute,
-  ) { }
-
-  trackPoll(index: number, poll: {address: string}): string {
-    return poll && poll.address;
-  }
-  trackMember(index: number, {member}: {member: string} & any): string {
-    return member || undefined;
+  ) {
+    super();
   }
 }

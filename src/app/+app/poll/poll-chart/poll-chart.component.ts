@@ -16,12 +16,14 @@ import { GraphComponent } from '../../../components';
 import { KudosTokenFactoryService, KudosPollFactoryService } from '../../../shared';
 import * as fromRoot from '../../../shared/store/reducers';
 
+import { AppCommonAbstract } from '../../common.abstract';
+
 @Component({
   selector: 'eth-kudos-poll-chart',
   templateUrl: './poll-chart.component.html',
   styleUrls: ['./poll-chart.component.scss']
 })
-export class PollChartComponent implements OnInit {
+export class PollChartComponent extends AppCommonAbstract implements OnInit {
   loaded = false;
   @ViewChild('graph') graph: GraphComponent;
   @ViewChild('wrapper') wrapper: ElementRef;
@@ -56,9 +58,11 @@ export class PollChartComponent implements OnInit {
 
   constructor(
     private store: Store<fromRoot.State>,
+    protected changeDetectorRef: ChangeDetectorRef,
     public activatedRoute: ActivatedRoute,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.gratitudesNodes$

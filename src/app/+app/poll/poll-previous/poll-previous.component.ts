@@ -7,13 +7,15 @@ import 'rxjs/add/operator/shareReplay';
 
 import * as fromRoot from '../../../shared/store/reducers';
 
+import { AppCommonAbstract } from '../../common.abstract';
+
 @Component({
   selector: 'eth-kudos-poll-previous',
   templateUrl: './poll-previous.component.html',
   styleUrls: ['./poll-previous.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PollPreviousComponent {
+export class PollPreviousComponent extends AppCommonAbstract {
   readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
     .filter(_ => !!_)
     .shareReplay();
@@ -23,12 +25,7 @@ export class PollPreviousComponent {
   constructor(
     private store: Store<fromRoot.State>,
     public activatedRoute: ActivatedRoute,
-  ) { }
-
-  trackGratitude(index: string): string {
-    return `${index}` || undefined;
-  }
-  trackMember(index: number, {member}: {member: string} & any): string {
-    return member || undefined;
+  ) {
+    super();
   }
 }

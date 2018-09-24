@@ -14,6 +14,8 @@ import 'rxjs/add/operator/shareReplay';
 import { KudosTokenFactoryService } from '../../../shared';
 import * as fromRoot from '../../../shared/store/reducers';
 
+import { AppCommonAbstract } from '../../common.abstract';
+
 type suggestedReward = 'custom' | 1 | .5 | .25 | .1;
 
 @Component({
@@ -22,7 +24,7 @@ type suggestedReward = 'custom' | 1 | .5 | .25 | .1;
   styleUrls: ['./poll-active.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PollActiveComponent implements OnInit {
+export class PollActiveComponent extends AppCommonAbstract implements OnInit {
   tokenDecimals = 0;
   tokenStep = 0;
   maxKudosInput: number;
@@ -67,7 +69,9 @@ export class PollActiveComponent implements OnInit {
     private router: Router,
     private kudosTokenFactoryService: KudosTokenFactoryService,
     private activatedRoute: ActivatedRoute,
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.kudosToken$
@@ -139,20 +143,4 @@ export class PollActiveComponent implements OnInit {
           });
       });
   }
-
-  trackGratitude(index: string): string {
-    return `${index}` || undefined;
-  }
-
-  private onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {
-    if (success) {
-      if (form) {
-        setter(<any>{});
-        form.reset();
-      }
-    } else {
-      setter({...<any>obj, working: undefined});
-    }
-  }
-
 }
