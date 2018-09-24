@@ -12,7 +12,7 @@ import 'rxjs/add/operator/shareReplay';
 
 import * as fromRoot from '../../shared/store/reducers';
 
-import { KudosTokenFactoryService } from '../../shared';
+import { KudosTokenFactoryService, KudosTokenService } from '../../shared';
 
 @Component({
   selector: 'eth-kudos-admin',
@@ -28,9 +28,8 @@ export class AdminComponent implements OnInit {
   memberName: {[address: string]: string} = {};
   memberWorking: {[address: string]: boolean} = {};
 
-  readonly kudosTokenService$ = this.activatedRoute.parent.params
-    .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
-    .shareReplay();
+  kudosTokenService: KudosTokenService;
+
   readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
     .filter(_ => !!_)
     .shareReplay();
@@ -77,6 +76,10 @@ export class AdminComponent implements OnInit {
         }
         this.newMember = {...this.newMember};
       });
+
+    this.activatedRoute.parent.params
+      .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
+      .subscribe(kudosTokenService => this.kudosTokenService = kudosTokenService);
   }
 
   isGoingToFinishOn(minutes: number): number {
@@ -84,22 +87,17 @@ export class AdminComponent implements OnInit {
     return Math.round(Date.now() / min) * min + (minutes * min);
   }
 
-  createPoll(form?: NgForm) {
+  async createPoll(form?: NgForm) {
     const done = (success?) => this.onActionFinished(success, this.newPoll, _ => this.newPoll = _, form);
 
-    this.newPoll.working = true;
-    this.kudosTokenService$
-      .first()
-      .subscribe(async kudosTokenService => {
-        kudosTokenService
-          .newPoll(
-            await kudosTokenService.fromDecimals(this.newPoll.kudosByMember),
-            await kudosTokenService.fromDecimals(this.newPoll.maxKudosToMember),
-            this.newPoll.minDurationInMinutes,
-          )
-          .then(() => done(true))
-          .catch(err => console.warn(err) || done());
-      });
+    this.kudosTokenService
+      .newPoll(
+        await this.kudosTokenService.fromDecimals(this.newPoll.kudosByMember),
+        await this.kudosTokenService.fromDecimals(this.newPoll.maxKudosToMember),
+        this.newPoll.minDurationInMinutes,
+      )
+      .then(() => done(true))
+      .catch(err => console.warn(err) || done());
   }
 
   closePoll() {
@@ -108,31 +106,23 @@ export class AdminComponent implements OnInit {
       this.changeDetectorRef.markForCheck();
     };
     this.closePollWorking = true;
-    this.kudosTokenService$
-      .first()
-      .subscribe(kudosTokenService => {
-        kudosTokenService
-          .closePoll()
-          .then(() => done(true))
-          .catch(err => console.warn(err) || done());
-      });
+    this.kudosTokenService
+      .closePoll()
+      .then(() => done(true))
+      .catch(err => console.warn(err) || done());
   }
 
   addMember(form?: NgForm) {
     const done = (success?) => this.onActionFinished(success, this.newMember, _ => this.newMember = _, form);
 
     this.newMember.working = true;
-    this.kudosTokenService$
-      .first()
-      .subscribe(kudosTokenService => {
-        kudosTokenService
-          .addMember(
-            this.newMember.member,
-            this.newMember.contact,
-          )
-          .then(() => done(true))
-          .catch(err => console.warn(err) || done());
-      });
+    this.kudosTokenService
+      .addMember(
+        this.newMember.member,
+        this.newMember.contact,
+      )
+      .then(() => done(true))
+      .catch(err => console.warn(err) || done());
   }
 
   editContact(address: string, name: string) {
@@ -141,14 +131,10 @@ export class AdminComponent implements OnInit {
       this.changeDetectorRef.markForCheck();
     };
     this.memberWorking[address] = true;
-    this.kudosTokenService$
-      .first()
-      .subscribe(kudosTokenService => {
-        kudosTokenService
-          .editContact(address, name)
-          .then(() => done(true))
-          .catch(err => console.warn(err) || done());
-      });
+    this.kudosTokenService
+      .editContact(address, name)
+      .then(() => done(true))
+      .catch(err => console.warn(err) || done());
   }
 
   removeMember(address: string) {
@@ -159,14 +145,10 @@ export class AdminComponent implements OnInit {
       }
     };
     this.memberWorking[address] = true;
-    this.kudosTokenService$
-      .first()
-      .subscribe(kudosTokenService => {
-        kudosTokenService
-          .removeMember(address)
-          .then(() => done(true))
-          .catch(err => console.warn(err) || done());
-      });
+    this.kudosTokenService
+      .removeMember(address)
+      .then(() => done(true))
+      .catch(err => console.warn(err) || done());
   }
 
   private onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {
