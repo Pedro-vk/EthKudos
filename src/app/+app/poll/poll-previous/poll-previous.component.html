@@ -2,7 +2,13 @@
   <div class="side">
     <mat-card class="active-poll">
       <mat-card-header>
-        <eth-kudos-blockie [address]="kudosPoll.address" variant="card" mat-card-avatar></eth-kudos-blockie>
+        <eth-kudos-blockie
+          [address]="kudosPoll.address"
+          variant="card"
+          [class.loading]="!kudosPoll.address"
+          class="loading__icon"
+          mat-card-avatar>
+        </eth-kudos-blockie>
         <mat-card-title translate>Closed poll</mat-card-title>
         <mat-card-subtitle [class.loading]="!kudosPoll?.members || !kudosPoll?.creation">
           <div class="icon-block">
