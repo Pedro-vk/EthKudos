@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/first';
+import { Observable } from 'rxjs';
+import { tap, first } from 'rxjs/operators';
 
 import { KudosTokenFactoryService } from '../kudos-token-factory.service';
 
@@ -15,13 +14,12 @@ export class IsTokenGuard implements CanActivate {
     const tokenAddress = next.params.tokenAddress || next.parent.params.tokenAddress;
     const kudosTokenService = this.kudosTokenFactoryService
       .getKudosTokenServiceAt(tokenAddress);
-    return kudosTokenService
-      .onIsValid
-      .first()
-      .do(isValid => {
+    return kudosTokenService.onIsValid.pipe(
+      first(),
+      tap(isValid => {
         if (!isValid) {
           this.router.navigate(['/']);
         }
-      });
+      }));
   }
 }

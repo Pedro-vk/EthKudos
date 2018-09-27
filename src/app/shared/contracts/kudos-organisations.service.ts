@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/toPromise';
+import { Observable } from 'rxjs';
+import { first, filter } from 'rxjs/operators';
 
 import * as KudosOrganisationsDefinition from '../../../../build/contracts/KudosOrganisations.json';
 
@@ -50,10 +48,9 @@ export class KudosOrganisationsService extends SmartContractExtender(KudosOrgani
 
   constructor(protected web3Service: Web3Service, protected store: Store<any>) {
     super(web3Service, store);
-    this.web3Service
-      .status$
-      .filter(status => status === ConnectionStatus.Total)
-      .first()
+    this.web3Service.status$.pipe(
+      filter(status => status === ConnectionStatus.Total),
+      first())
       .subscribe(() => {
         const kudosOrganisation = this.getContract(KudosOrganisationsDefinition);
 

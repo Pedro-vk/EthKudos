@@ -3,8 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf, Observable } from 'rxjs';
+
 
 import { PROVIDERS } from '../../../shared';
 
@@ -29,7 +29,7 @@ describe('PollChartComponent', () => {
         {
           provide: ActivatedRoute, useValue: ((_: any) => {
             _.parent = {};
-            _.params = _.parent.params = Observable.of({tokenAddress: `0x${'0'.repeat(40)}`});
+            _.params = _.parent.params = observableOf({tokenAddress: `0x${'0'.repeat(40)}`});
             return _;
           })({}),
         }

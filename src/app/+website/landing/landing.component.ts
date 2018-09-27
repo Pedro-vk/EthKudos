@@ -3,20 +3,11 @@ import { NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { combineLatest as observableCombineLatest, interval as observableInterval, of as observableOf,  Observable, Subject } from 'rxjs';
+import { startWith, map, filter, shareReplay, combineLatest, mergeMap, distinctUntilChanged } from 'rxjs/operators';
 import Web3 from 'web3';
 import * as Web3Module from 'web3';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/combineLatest';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/shareReplay';
-import 'rxjs/add/operator/startWith';
 
 import * as fromRoot from '../../shared/store/reducers';
 import * as kudosTokenActions from '../../shared/store/kudos-token/kudos-token.actions';
@@ -76,10 +67,10 @@ export class LandingComponent implements OnInit {
 
   readonly hasChild: boolean = !!this.activatedRoute.firstChild;
 
-  readonly hasError$: Observable<ConnectionStatus> = this.activatedRoute.params
-    .map(({errorMessage}) => errorMessage)
-    .filter(_ => !!_)
-    .shareReplay();
+  readonly hasError$: Observable<ConnectionStatus> = this.activatedRoute.params.pipe(
+    map(({errorMessage}) => errorMessage),
+    filter(_ => !!_),
+    shareReplay());
 
   readonly ranking: {name: string, member: string, balance: number}[] = [
     {balance: 21.75, name: 'Ifan Colon', member: 'RANDOM #####Ifan Colon#####'},
@@ -91,29 +82,32 @@ export class LandingComponent implements OnInit {
     {balance: 6, name: 'Robbie Shepherd', member: 'RANDOM #####Robbie Shepherd##### 2'},
   ];
 
-  readonly status$ = this.store.select(fromRoot.getStatus);
-  readonly organisations$ = this.kudosOrganisationsService.checkUpdates(_ => _.getOrganisations())
-    .combineLatest(this.newOrgAddress.startWith(undefined))
-    .map(([organisations, search]) =>
-      !search ? [] :
-        organisations
-          .filter(_ => _.indexOf(search) === 0),
+  readonly status$ = this.store.pipe(select(fromRoot.getStatus));
+  readonly organisations$ = observableCombineLatest(
+      this.kudosOrganisationsService.checkUpdates(_ => _.getOrganisations()),
+      this.newOrgAddress.pipe(startWith(undefined))
+    ).pipe(
+      map(([organisations, search]) =>
+        !search ? [] :
+          organisations
+            .filter(_ => _.indexOf(search) === 0),
+      ),
     );
-  readonly selectedOrganisation$ = this.newOrgAddress
-    .mergeMap(address => {
+  readonly selectedOrganisation$ = this.newOrgAddress.pipe(
+    mergeMap(address => {
       if (!address.match(/^0x[0-9a-fA-F]{40}$/)) {
-        return Observable.of(undefined);
+        return observableOf(undefined);
       }
       return this.getKudosTokenInfo(address);
-    })
-    .shareReplay();
-  readonly newOrganisation$ = this.newKudosTokenAddress
-    .mergeMap(address => this.getKudosTokenInfo(address))
-    .distinctUntilChanged();
-  readonly previousOrganisation$ = Observable.of(localStorage ? localStorage.getItem('kudos-address') : undefined)
-    .filter(_ => !!_)
-    .mergeMap(address => this.getKudosTokenInfo(address))
-    .distinctUntilChanged();
+    }),
+    shareReplay());
+  readonly newOrganisation$ = this.newKudosTokenAddress.pipe(
+    mergeMap(address => this.getKudosTokenInfo(address)),
+    distinctUntilChanged());
+  readonly previousOrganisation$ = observableOf(localStorage ? localStorage.getItem('kudos-address') : undefined).pipe(
+    filter(_ => !!_),
+    mergeMap(address => this.getKudosTokenInfo(address)),
+    distinctUntilChanged());
 
   constructor(
     private store: Store<fromRoot.State>,
@@ -127,7 +121,7 @@ export class LandingComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.store.select(fromRoot.getStatus)
+    this.store.pipe(select(fromRoot.getStatus))
       .subscribe(status => {
         if (status === ConnectionStatus.Total && this.router.url.match(/^\/error/)) {
           this.router.navigate(['/']);
@@ -149,15 +143,15 @@ export class LandingComponent implements OnInit {
   }
 
   getBalance(account: string, apiKey: string): Observable<number> {
-    return Observable.interval(30 * 1000)
-      .startWith(undefined)
-      .mergeMap(() =>
+    return observableInterval(30 * 1000).pipe(
+      startWith(undefined),
+      mergeMap(() =>
         this.http
           .get<{result: string}>(
             `https://api.etherscan.io/api?module=account&action=balance&address=${account}&tag=latest&apikey=${apiKey}`,
           ),
-      )
-      .map(({result}) => +(<Web3><any>Web3Module).utils.fromWei(result, 'ether'));
+      ),
+      map(({result}) => +(<Web3><any>Web3Module).utils.fromWei(result, 'ether')));
   }
 
   getDonationProgress(): number {
@@ -203,6 +197,6 @@ export class LandingComponent implements OnInit {
 
   private getKudosTokenInfo(address: string) {
     this.store.dispatch(new kudosTokenActions.LoadBasicDataAction(address));
-    return this.store.select(fromRoot.getKudosTokenByAddressWithAccountData(address));
+    return this.store.pipe(select(fromRoot.getKudosTokenByAddressWithAccountData(address)));
   }
 }

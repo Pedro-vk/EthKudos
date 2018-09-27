@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/filter';
+import { Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
 import * as blockies from 'blockies';
 import * as cytoscape from 'cytoscape';
 
@@ -30,9 +31,9 @@ export class GraphComponent implements OnInit {
   style: cytoscape.Stylesheet[];
 
   edgeHover$ = new Subject<{x: number, rX: number, y: number, rY: number, data: any, sourceMember: any, targetMember: any}>();
-  edgeHoverBuffer$ = this.edgeHover$.filter(_ => !!_);
+  edgeHoverBuffer$ = this.edgeHover$.pipe(filter(_ => !!_));
   nodeHover$ = new Subject<{x: number, rX: number, y: number, rY: number, data: any}>();
-  nodeHoverBuffer$ = this.nodeHover$.filter(_ => !!_);
+  nodeHoverBuffer$ = this.nodeHover$.pipe(filter(_ => !!_));
   private cy: cytoscape.Core;
 
   private readonly coseLayout = {

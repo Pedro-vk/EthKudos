@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import 'rxjs/add/operator/first';
+import { first } from 'rxjs/operators';
 
 import { TranslationLoaderService } from './translation-loader.service';
 
@@ -17,14 +17,14 @@ describe('TranslationLoaderService', () => {
   it('should return English as default translation', inject([TranslationLoaderService], (service: TranslationLoaderService) => {
     service
       .getTranslation()
-      .first()
+      .pipe(first())
       .subscribe(({$lang}) => expect($lang).toBe('en'));
   }));
 
   it('should return Spanish translation', inject([TranslationLoaderService], (service: TranslationLoaderService) => {
     service
       .getTranslation('es')
-      .first()
+      .pipe(first())
       .subscribe(({$lang}) => expect($lang).toBe('es'));
   }));
 });

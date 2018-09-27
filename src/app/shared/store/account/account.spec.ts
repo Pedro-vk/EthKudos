@@ -2,8 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store } from '@ngrx/store';
 import { ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf, Observable } from 'rxjs';
 import { hot, cold } from 'jasmine-marbles';
 
 import { PROVIDERS } from '../../';
@@ -192,7 +191,7 @@ describe('Account - Effects', () => {
   });
 
   it('should get the metadata of a transaction', () => {
-    spyOn((<any>effects).web3Service, 'getTransaction').and.callFake(hash => Observable.of({hash}));
+    spyOn((<any>effects).web3Service, 'getTransaction').and.callFake(hash => observableOf({hash}));
     spyOn((<any>effects).web3Service, 'getTransactionMetadata').and.callFake(transaction => ({...transaction, method: 'test'}));
 
     actions = hot('-a-b', {
@@ -239,7 +238,7 @@ describe('Account - Effects', () => {
     let transactions = {};
     const transactionsList = Object.values(transactionsRaw);
     let blockNumber = 0;
-    spyOn((<any>effects).web3Service, 'getTransaction').and.callFake(tx => Observable.of(transactions[tx]));
+    spyOn((<any>effects).web3Service, 'getTransaction').and.callFake(tx => observableOf(transactions[tx]));
     spyOn((<any>effects).web3Service, 'getBlock').and.callFake(() => {
       let block;
       const setTransactions = txsList => transactions = txsList.reduce((acc, _) => ({...acc, [_.hash]: _}), {});
@@ -260,7 +259,7 @@ describe('Account - Effects', () => {
         setTxs([], 0);
       }
       blockNumber++;
-      return Observable.of(block);
+      return observableOf(block);
     });
 
     actions = hot('-a', {

@@ -1,10 +1,8 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Store } from '@ngrx/store';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/shareReplay';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { shareReplay, filter, map } from 'rxjs/operators';
 
 import * as fromRoot from '../../shared/store/reducers';
 import { AppCommonAbstract } from '../common.abstract';
@@ -16,14 +14,15 @@ import { AppCommonAbstract } from '../common.abstract';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent extends AppCommonAbstract {
-  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
-    .filter(_ => !!_ && !!_.address)
-    .shareReplay();
-  readonly activePoll$ = this.kudosToken$
-    .map(_ => _.activePoll)
-    .filter(_ => !!_ && !!_.address);
-  readonly previousPolls$ = this.kudosToken$
-    .map(_ => _.previousPolls || []);
+  readonly kudosToken$ = this.store.pipe(
+    select(fromRoot.getCurrentKudosTokenWithFullData),
+    filter(_ => !!_ && !!_.address),
+    shareReplay());
+  readonly activePoll$ = this.kudosToken$.pipe(
+    map(_ => _.activePoll),
+    filter(_ => !!_ && !!_.address));
+  readonly previousPolls$ = this.kudosToken$.pipe(
+    map(_ => _.previousPolls || []));
 
   constructor(
     private store: Store<fromRoot.State>,

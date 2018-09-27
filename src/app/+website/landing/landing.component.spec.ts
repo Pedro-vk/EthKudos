@@ -5,8 +5,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/empty';
+import { EMPTY, Observable } from 'rxjs';
+
 
 import { AppCommonModule } from '../../app-common.module';
 import { PROVIDERS } from '../../shared';
@@ -37,7 +37,7 @@ describe('LandingComponent', () => {
         {
           provide: ActivatedRoute, useValue: ((_: any) => {
             _.parent = {};
-            _.parent.params = _.params = Observable.empty();
+            _.parent.params = _.params = EMPTY;
             return _;
           })({}),
         }

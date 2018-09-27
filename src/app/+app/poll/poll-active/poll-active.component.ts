@@ -1,15 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/combineLatest';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/shareReplay';
+import { Store, select } from '@ngrx/store';
+import { combineLatest as observableCombineLatest, Observable } from 'rxjs';
+import { map, mergeMap, distinctUntilChanged, shareReplay, filter, first } from 'rxjs/operators';
 
 import { KudosTokenFactoryService } from '../../../shared';
 import * as fromRoot from '../../../shared/store/reducers';
@@ -33,35 +27,45 @@ export class PollActiveComponent extends AppCommonAbstract implements OnInit {
   suggested: suggestedReward = 'custom';
   @ViewChild('rewardInput') rewardInput: ElementRef;
 
-  readonly kudosTokenService$ = this.activatedRoute.parent.params
-    .filter(({tokenAddress}) => !!tokenAddress)
-    .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
-    .shareReplay()
-    .filter(_ => !!_);
-  readonly getActivePollContract$ = this.kudosTokenService$.mergeMap(s => s.checkUpdates(_ => _.getActivePollContract()))
-    .filter(_ => !!_)
-    .shareReplay();
+  readonly kudosTokenService$ = this.activatedRoute.parent.params.pipe(
+    filter(({tokenAddress}) => !!tokenAddress),
+    map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress)),
+    shareReplay(),
+    filter(_ => !!_));
+  readonly getActivePollContract$ = this.kudosTokenService$.pipe(mergeMap(s => s.checkUpdates(_ => _.getActivePollContract())),
+    filter(_ => !!_),
+    shareReplay());
 
-  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
-    .filter(_ => !!_)
-    .shareReplay();
-  readonly activePoll$ = this.kudosToken$
-    .map(_ => _.activePoll)
-    .filter(_ => !!_ && _.loaded && _.loaded.basic);
+  readonly kudosToken$ = this.store.pipe(
+    select(fromRoot.getCurrentKudosTokenWithFullData),
+    filter(_ => !!_),
+    shareReplay());
+  readonly activePoll$ = this.kudosToken$.pipe(
+    map(_ => _.activePoll),
+    filter(_ => !!_ && _.loaded && _.loaded.basic));
 
-  readonly getOtherMembers$ = this.activePoll$
-    .combineLatest(this.kudosToken$, this.store.select(fromRoot.getAccount).distinctUntilChanged())
-    .map(([kudosPoll, kudosToken, account]) =>
-      kudosPoll.members
-        .filter(member => member !== account)
-        .map((member) => ({member, name: kudosToken.contacts[member]})),
+  readonly getOtherMembers$ = observableCombineLatest(
+      this.activePoll$,
+      this.kudosToken$,
+      this.store.pipe(select(fromRoot.getAccount), distinctUntilChanged())
+    )
+    .pipe(
+      map(([kudosPoll, kudosToken, account]) =>
+        kudosPoll.members
+          .filter(member => member !== account)
+          .map((member) => ({member, name: kudosToken.contacts[member]})),
+      ),
     );
-  readonly myGratitudesSent$ = this.activePoll$
-    .combineLatest(this.store.select(fromRoot.getAccount).distinctUntilChanged())
-    .map(([kudosPoll, account]) =>
-      kudosPoll.allGratitudes
-        .filter(({from}) => from === account)
-        .map(gratitude => ({...gratitude, kudos: gratitude.kudos})),
+  readonly myGratitudesSent$ = observableCombineLatest(
+      this.activePoll$,
+      this.store.pipe(select(fromRoot.getAccount), distinctUntilChanged()),
+    )
+    .pipe(
+      map(([kudosPoll, account]) =>
+        kudosPoll.allGratitudes
+          .filter(({from}) => from === account)
+          .map(gratitude => ({...gratitude, kudos: gratitude.kudos})),
+      ),
     );
 
   constructor(
@@ -74,15 +78,15 @@ export class PollActiveComponent extends AppCommonAbstract implements OnInit {
   }
 
   ngOnInit() {
-    this.kudosToken$
-      .filter(({decimals}) => !isNaN(decimals))
-      .first()
+    this.kudosToken$.pipe(
+      filter(({decimals}) => !isNaN(decimals)),
+      first())
       .subscribe(({decimals}) => {
         this.tokenDecimals = decimals;
         this.tokenStep = 10 ** -decimals;
       });
-    this.activePoll$
-      .filter(({maxKudosToMember}) => !isNaN(maxKudosToMember))
+    this.activePoll$.pipe(
+      filter(({maxKudosToMember}) => !isNaN(maxKudosToMember)))
       .subscribe(({maxKudosToMember, myBalance}) => {
         this.maxKudos = maxKudosToMember;
         this.maxKudosInput = Math.min(maxKudosToMember, myBalance);
@@ -123,8 +127,8 @@ export class PollActiveComponent extends AppCommonAbstract implements OnInit {
     const done = (success?) => this.onActionFinished(success, this.reward, _ => this.reward = _, form);
 
     this.reward.working = true;
-    this.getActivePollContract$
-      .first()
+    this.getActivePollContract$.pipe(
+      first())
       .subscribe(async kudosPollService => {
         kudosPollService
           .reward(

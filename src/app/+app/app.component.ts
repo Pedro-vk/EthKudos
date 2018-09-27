@@ -2,19 +2,9 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/shareReplay';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/operator/takeWhile';
+import { Store, select } from '@ngrx/store';
+import { from as observableFrom, of as observableOf, merge as observableMerge, Observable } from 'rxjs';
+import { mergeMap, shareReplay, map, filter, takeWhile, first, startWith, delay } from 'rxjs/operators';
 
 import { Web3Service, ConnectionStatus, KudosTokenFactoryService } from '../shared';
 import { ShareDialogComponent } from '../components';
@@ -40,17 +30,18 @@ import * as fromRoot from '../shared/store/reducers';
   ],
 })
 export class AppComponent implements OnInit {
-  readonly status$ = this.store.select(fromRoot.getStatus);
-  readonly account$ = this.store.select(fromRoot.getAccount);
-  readonly pendingTransactions$ = this.store.select(fromRoot.getPendingTransactions);
-  readonly balance$ = this.store.select(fromRoot.getBalance);
+  readonly status$ = this.store.pipe(select(fromRoot.getStatus));
+  readonly account$ = this.store.pipe(select(fromRoot.getAccount));
+  readonly pendingTransactions$ = this.store.pipe(select(fromRoot.getPendingTransactions));
+  readonly balance$ = this.store.pipe(select(fromRoot.getBalance));
 
-  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
-    .filter(_ => !!_)
-    .shareReplay();
-  readonly loadingStatus$ = this.kudosToken$
-    .filter(_ => !!_ && !!_.polls)
-    .map(({loaded, polls, activePoll}) => {
+  readonly kudosToken$ = this.store.pipe(
+    select(fromRoot.getCurrentKudosTokenWithFullData),
+    filter(_ => !!_),
+    shareReplay());
+  readonly loadingStatus$ = this.kudosToken$.pipe(
+    filter(_ => !!_ && !!_.polls),
+    map(({loaded, polls, activePoll}) => {
       const total = (loaded.pollsProgress.total * 2) + 3;
       const pollsSize = loaded.pollsProgress.total;
       const loadedPolls = loaded.pollsProgress.total - loaded.pollsProgress.pending;
@@ -62,18 +53,18 @@ export class AppComponent implements OnInit {
         value: (allPollsFullLoaded ? total : 1 + activePollLoaded + (allPollsLoaded ? pollsSize : 0)) / total * 100,
         buffer: (1 + activePollLoaded + (allPollsLoaded ? 1 : 0) + loadedPolls + fullLoadedPolls) / total * 100,
       };
-    })
-    .mergeMap(progress => {
+    }),
+    mergeMap(progress => {
       if (progress.value === 100) {
-        return Observable.merge(
-          Observable.of(progress),
-          Observable.from([undefined, false]).delay(2000),
+        return observableMerge(
+          observableOf(progress),
+          observableFrom([undefined, false]).pipe(delay(2000)),
         );
       }
-      return Observable.of(progress);
-    })
-    .takeWhile((_: any) => _ !== false)
-    .startWith(<any>true);
+      return observableOf(progress);
+    }),
+    takeWhile((_: any) => _ !== false),
+    startWith(<any>true));
 
   constructor(
     private store: Store<fromRoot.State>,
@@ -84,16 +75,16 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.kudosToken$
-      .first()
+    this.kudosToken$.pipe(
+      first())
       .subscribe(kudosToken => {
         if (localStorage && kudosToken.address) {
           localStorage.setItem('kudos-address', kudosToken.address);
         }
       });
-    this.status$
-      .filter(_ => _ !== ConnectionStatus.Total)
-      .first()
+    this.status$.pipe(
+      filter(_ => _ !== ConnectionStatus.Total),
+      first())
       .subscribe(() => this.router.navigate(['/error', status]));
   }
 

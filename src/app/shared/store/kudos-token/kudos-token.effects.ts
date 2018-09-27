@@ -1,15 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
-import { Effect, Actions, ROOT_EFFECTS_INIT } from '@ngrx/effects';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/distinct';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
+import { Store, Action, select } from '@ngrx/store';
+import { Effect, Actions, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
+import { from as observableFrom, Observable } from 'rxjs';
+import { distinct, first, map, distinctUntilChanged, filter, mergeMap } from 'rxjs/operators';
 
 import { Web3Service, KudosTokenService, KudosTokenFactoryService } from '../../';
 
@@ -21,25 +14,26 @@ import { KudosTokenData } from './kudos-token.models';
 export class KudosTokenEffects {
 
   @Effect()
-  loadBalanceOfCurrentAccount$: Observable<Action> = this.actions$
-    .ofType(ROOT_EFFECTS_INIT)
-    .mergeMap(() => this.store.select(fromRoot.getAccount))
-    .filter(_ => !!_)
-    .distinctUntilChanged()
-    .mergeMap(account =>
-      this.store.select(fromRoot.getKudosTokensById)
-        .map(_ => Object.keys(_))
-        .distinctUntilChanged((a, b) => a.toString() === b.toString())
-        .mergeMap((addresses: string[] = []) =>
-          Observable.from(addresses.map(address => new kudosTokenActions.LoadAccountBalanceAction(address, account))),
-        ),
-    );
+  loadBalanceOfCurrentAccount$: Observable<Action> = this.actions$.pipe(
+    ofType(ROOT_EFFECTS_INIT),
+    mergeMap(() => this.store.pipe(select(fromRoot.getAccount))),
+    filter(_ => !!_),
+    distinctUntilChanged(),
+    mergeMap(account =>
+      this.store.pipe(
+        select(fromRoot.getKudosTokensById),
+        map(_ => Object.keys(_)),
+        distinctUntilChanged((a, b) => a.toString() === b.toString()),
+        mergeMap((addresses: string[] = []) =>
+          observableFrom(addresses.map(address => new kudosTokenActions.LoadAccountBalanceAction(address, account))),
+        )),
+    ));
 
   @Effect()
-  getBasicKudosTokenData$: Observable<Action> = this.actions$
-    .ofType(kudosTokenActions.LOAD_BASIC_DATA)
-    .map(({payload}: kudosTokenActions.LoadBasicDataAction) => payload)
-    .mergeMap(({address, force}) =>
+  getBasicKudosTokenData$: Observable<Action> = this.actions$.pipe(
+    ofType(kudosTokenActions.LOAD_BASIC_DATA),
+    map(({payload}: kudosTokenActions.LoadBasicDataAction) => payload),
+    mergeMap(({address, force}) =>
       this.setData(
         address,
         'basic',
@@ -56,13 +50,13 @@ export class KudosTokenEffects {
           balances: (await kudosTokenService.getBalances() || []).reduce((acc, _) => ({...acc, [_.member]: _.balance}), {}),
         }),
       ),
-    );
+    ));
 
   @Effect()
-  getTotalKudosTokenData$: Observable<Action> = this.actions$
-    .ofType(kudosTokenActions.LOAD_TOTAL_DATA)
-    .map(({payload}: kudosTokenActions.LoadTotalDataAction) => payload)
-    .mergeMap(({address, force}) =>
+  getTotalKudosTokenData$: Observable<Action> = this.actions$.pipe(
+    ofType(kudosTokenActions.LOAD_TOTAL_DATA),
+    map(({payload}: kudosTokenActions.LoadTotalDataAction) => payload),
+    mergeMap(({address, force}) =>
       this.setData(
         address,
         'total',
@@ -74,34 +68,36 @@ export class KudosTokenEffects {
           isActivePoll: await kudosTokenService.isActivePoll(),
         }),
       ),
-    );
+    ));
 
   @Effect()
-  getBalanceOfAccount$: Observable<Action> = this.actions$
-    .ofType(kudosTokenActions.LOAD_ACCOUNT_BALANCE)
-    .map(({payload}: kudosTokenActions.LoadAccountBalanceAction) => payload)
-    .filter(({address, account}) => !!address && !!account)
-    .mergeMap(({address, account}) =>
-      this.store.select(fromRoot.getKudosTokenByAddress(address))
-        .first()
-        .filter(_ => !!_)
-        .map(kudosToken => (kudosToken.balances || {})[account])
-        .mergeMap(() => this.getKudosTokenServiceData(address, (async kudosTokenService => await kudosTokenService.balanceOf(account))))
-        .map(balance => new kudosTokenActions.SetBalanceAction(address, account, balance)),
-    );
+  getBalanceOfAccount$: Observable<Action> = this.actions$.pipe(
+    ofType(kudosTokenActions.LOAD_ACCOUNT_BALANCE),
+    map(({payload}: kudosTokenActions.LoadAccountBalanceAction) => payload),
+    filter(({address, account}) => !!address && !!account),
+    mergeMap(({address, account}) =>
+      this.store.pipe(
+        select(fromRoot.getKudosTokenByAddress(address)),
+        first(),
+        filter(_ => !!_),
+        map(kudosToken => (kudosToken.balances || {})[account]),
+        mergeMap(() => this.getKudosTokenServiceData(address, (async kudosTokenService => await kudosTokenService.balanceOf(account)))),
+        map(balance => new kudosTokenActions.SetBalanceAction(address, account, balance))),
+    ));
 
   @Effect()
-  watchKudosTokenChanges$: Observable<Action> = this.actions$
-    .ofType(kudosTokenActions.LOAD_TOTAL_DATA, kudosTokenActions.LOAD_BASIC_DATA)
-    .map(({payload}: kudosTokenActions.LoadTotalDataAction | kudosTokenActions.LoadBasicDataAction) => payload)
-    .map(({address}) => address)
-    .distinct()
-    .mergeMap((address) => this.web3Service.watchContractChanges(address))
-    .mergeMap((address: string) =>
-      this.store.select(_ => fromRoot.getKudosTokenLoaded(address)(_))
-        .first()
-        .filter(_ => !!_)
-        .mergeMap(({basic, total}) => {
+  watchKudosTokenChanges$: Observable<Action> = this.actions$.pipe(
+    ofType(kudosTokenActions.LOAD_TOTAL_DATA, kudosTokenActions.LOAD_BASIC_DATA),
+    map(({payload}: kudosTokenActions.LoadTotalDataAction | kudosTokenActions.LoadBasicDataAction) => payload),
+    map(({address}) => address),
+    distinct(),
+    mergeMap((address) => this.web3Service.watchContractChanges(address)),
+    mergeMap((address: string) =>
+      this.store.pipe(
+        select(_ => fromRoot.getKudosTokenLoaded(address)(_)),
+        first(),
+        filter(_ => !!_),
+        mergeMap(({basic, total}) => {
           const actions = [];
           if (basic) {
             actions.push(new kudosTokenActions.LoadBasicDataAction(address, true));
@@ -109,9 +105,9 @@ export class KudosTokenEffects {
           if (total) {
             actions.push(new kudosTokenActions.LoadTotalDataAction(address, true));
           }
-          return Observable.from(actions);
-        }),
-    );
+          return observableFrom(actions);
+        })),
+    ));
 
   constructor(
     private actions$: Actions,
@@ -126,11 +122,12 @@ export class KudosTokenEffects {
     force: boolean,
     dataGetter: (kudosTokenService: KudosTokenService) => Promise<Partial<KudosTokenData>>,
   ) {
-    return this.store.select(fromRoot.getKudosTokensById)
-      .first()
-      .filter(kudosTokens => !(kudosTokens && kudosTokens[address] && kudosTokens[address].loaded[type]) || force)
-      .mergeMap(() => this.getKudosTokenServiceData(address, dataGetter))
-      .map(data => new kudosTokenActions.SetTokenDataAction(address, type, data));
+    return this.store.pipe(
+      select(fromRoot.getKudosTokensById),
+      first(),
+      filter(kudosTokens => !(kudosTokens && kudosTokens[address] && kudosTokens[address].loaded[type]) || force),
+      mergeMap(() => this.getKudosTokenServiceData(address, dataGetter)),
+      map(data => new kudosTokenActions.SetTokenDataAction(address, type, data)));
   }
 
   getKudosTokenServiceData(
@@ -138,13 +135,13 @@ export class KudosTokenEffects {
     dataGetter: (kudosTokenService: KudosTokenService) => Promise<any>,
   ): Observable<any> {
     const kudosTokenService = this.kudosTokenFactoryService.getKudosTokenServiceAt(address);
-    return kudosTokenService.onIsValid
-      .filter(_ => !!_)
-      .first()
-      .mergeMap(() => this.resolvePromise(dataGetter(kudosTokenService)));
+    return kudosTokenService.onIsValid.pipe(
+      filter(_ => !!_),
+      first(),
+      mergeMap(() => this.resolvePromise(dataGetter(kudosTokenService))));
   }
 
   resolvePromise<T>(promise: Promise<T>): Observable<T> {
-    return Observable.fromPromise(promise);
+    return observableFrom(promise);
   }
 }

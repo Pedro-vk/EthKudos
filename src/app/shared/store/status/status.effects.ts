@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Effect, Actions, ROOT_EFFECTS_INIT } from '@ngrx/effects';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
+import { Effect, Actions, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
+import { Observable } from 'rxjs';
+import { map, mergeMap, first } from 'rxjs/operators';
 
 import { Web3Service } from '../../web3.service';
 
@@ -14,11 +12,11 @@ import * as statusActions from './status.actions';
 export class StatusEffects {
 
   @Effect()
-  watchStatusChanges$: Observable<Action> = this.actions$
-    .ofType(ROOT_EFFECTS_INIT)
-    .first()
-    .mergeMap(() => this.getWeb3Status())
-    .map(status => new statusActions.SetStatusAction(status));
+  watchStatusChanges$: Observable<Action> = this.actions$.pipe(
+    ofType(ROOT_EFFECTS_INIT),
+    first(),
+    mergeMap(() => this.getWeb3Status()),
+    map(status => new statusActions.SetStatusAction(status)));
 
   constructor(private actions$: Actions, private web3Service: Web3Service) { }
 

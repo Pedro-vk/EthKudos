@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/share';
+import { Observable } from 'rxjs';
+import { share, distinctUntilChanged } from 'rxjs/operators';
 
 import { Web3Service } from '../../web3.service';
 import { SmartContract, emptyPromise } from '../smart-contract.abstract';
@@ -48,8 +47,10 @@ export class BasicTokenMixin extends SmartContract<BasicTokenConstants, {}, Basi
         symbol: await ((<any>contract).symbol || emptyPromise)(),
         decimals: await ((<any>contract).decimals || emptyPromise)(),
       }))
-      .distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-      .share();
+      .pipe(
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        share(),
+      );
   }
 
   async myBalance(): Promise<number> {

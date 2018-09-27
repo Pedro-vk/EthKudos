@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
+import { first, filter } from 'rxjs/operators';
 
 import * as KudosPollDefinition from '../../../../build/contracts/KudosPoll.json';
 
@@ -101,10 +100,11 @@ export class KudosPollService
   }
 
   initAt(address: string): void {
-    this.web3Service
-      .status$
-      .filter(status => status === ConnectionStatus.Total)
-      .first()
+    this.web3Service.status$
+      .pipe(
+        filter(status => status === ConnectionStatus.Total),
+        first(),
+      )
       .subscribe(() => {
         this.web3Contract = this.getWeb3Contract(KudosPollDefinition.abi, address);
 

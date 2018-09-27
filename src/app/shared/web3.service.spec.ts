@@ -1,11 +1,8 @@
 import { TestBed, inject } from '@angular/core/testing';
 import * as Web3Module from 'web3';
 import { hot, cold, getTestScheduler } from 'jasmine-marbles';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/scan'; // tslint:disable-line
-import 'rxjs/add/operator/share';
+import { of as observableOf, Observable } from 'rxjs';
+import { share, first, scan } from 'rxjs/operators';
 
 import { Web3Service, ConnectionStatus } from './web3.service';
 
@@ -13,7 +10,7 @@ describe('Web3Service', () => {
   const newAccount = n => `0x${'0'.repeat(40 - String(n).length)}${n}`;
   const newTx = n => `0x${'0'.repeat(65 - String(n).length)}${n}`;
   const toPromise = _ => new Promise(resolve => resolve(_));
-  const toObservable = _ => _ === undefined ? Observable.of(undefined) : Observable.of(_);
+  const toObservable = _ => _ === undefined ? observableOf(undefined) : observableOf(_);
 
   const account = newAccount(0);
   const blockNumber = 1000;
@@ -69,7 +66,7 @@ describe('Web3Service', () => {
   it('should return the current Web3 account', done => {
     service
       .getAccount()
-      .first()
+      .pipe(first())
       .subscribe(_ => {
         expect(_).toBe(account);
         done();
@@ -79,7 +76,7 @@ describe('Web3Service', () => {
   it('should return the last block number', done => {
     service
       .getBlockNumber()
-      .first()
+      .pipe(first())
       .subscribe(_ => {
         expect(_).toBe(blockNumber);
         done();
@@ -89,7 +86,7 @@ describe('Web3Service', () => {
   it('should return current Ether balance', done => {
     service
       .getEthBalance()
-      .first()
+      .pipe(first())
       .subscribe(_ => {
         expect(_).toBe(balance * 10 ** -18);
         done();
@@ -136,12 +133,11 @@ describe('Web3Service', () => {
           .map(toObservable),
       );
 
-
     const web3Backup = (<any>service)._web3;
     (<any>service)._web3 = undefined;
     (<any>service).existInNetwork = false;
 
-    intervalMock =    hot('-x-x-x-x-x|', {x: undefined}).share();
+    intervalMock =    hot('-x-x-x-x-x|', {x: undefined}).pipe(share());
     const expected = cold('p--a-n---t|', {
       n: ConnectionStatus.NoNetwork,
       p: ConnectionStatus.NoProvider,
@@ -150,7 +146,7 @@ describe('Web3Service', () => {
     });
 
     intervalMock
-      .scan(acc => ++acc, 0)
+      .pipe(scan(acc => ++acc, 0))
       .subscribe(n => {
         switch (n) {
           case 2: (<any>service)._web3 = web3Backup; break;

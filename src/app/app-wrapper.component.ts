@@ -3,18 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd, GuardsCheckStart, GuardsCheckEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { EMPTY, from as observableFrom, Observable } from 'rxjs';
+import { catchError, map, scan, shareReplay, distinctUntilChanged, mergeMap, filter, first } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/shareReplay';
 
 import { environment } from '../environments/environment';
 
@@ -35,9 +26,9 @@ import { Web3Service, KudosTokenFactoryService, ServiceWorkerService } from './s
   ],
 })
 export class AppWrapperComponent implements OnInit {
-  readonly hasUpdates$ = this.serviceWorkerService.onUpdate.map(() => true);
-  readonly isRouterWaiting$ = this.router.events
-    .scan((loading, event) => {
+  readonly hasUpdates$ = this.serviceWorkerService.onUpdate.pipe(map(() => true));
+  readonly isRouterWaiting$ = this.router.events.pipe(
+    scan((loading, event) => {
       if (loading && event instanceof GuardsCheckEnd) {
         return false;
       }
@@ -45,9 +36,9 @@ export class AppWrapperComponent implements OnInit {
         return true;
       }
       return loading;
-    }, false)
-    .shareReplay()
-    .distinctUntilChanged();
+    }, <any>false),
+    shareReplay(),
+    distinctUntilChanged());
 
   constructor(
     private web3Service: Web3Service,
@@ -65,25 +56,27 @@ export class AppWrapperComponent implements OnInit {
 
   ngOnInit(): void {
     this.web3Service.account$
-      .mergeMap(account =>
-        this.web3Service.getEthBalance()
-          .filter(balance => balance <= 1)
-          .map(() => account),
-      )
+      .pipe(mergeMap(account =>
+        this.web3Service.getEthBalance().pipe(
+          filter(balance => balance <= 1),
+          map(() => account)),
+      ))
       .subscribe(account => {
         this.claimTestEtherOnRopsten(account);
       });
 
     this.router.events
-      .filter(event => event instanceof GuardsCheckEnd)
-      .first()
+      .pipe(
+        filter(event => event instanceof GuardsCheckEnd),
+        first(),
+      )
       .subscribe(() => {
         const loading = document.getElementById('loading-wrapper');
         loading.parentNode.removeChild(loading);
       });
 
     this.router.events
-      .filter(event => event instanceof NavigationEnd)
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         window.scrollTo(0, 0);
         this.setTitleByUrl(event.urlAfterRedirects)
@@ -104,9 +97,11 @@ export class AppWrapperComponent implements OnInit {
         case !!segmenets[0].match(/^0x[0-9a-fA-F]{40}$/): {
           const kudosTokenService = this.kudosTokenFactoryService.getKudosTokenServiceAt(segmenets[0]);
           const orgName = await kudosTokenService.onIsValid
-            .mergeMap(() => Observable.fromPromise(kudosTokenService.name()))
-            .first()
-            .catch(() => Observable.empty())
+            .pipe(
+              mergeMap(() => observableFrom(kudosTokenService.name())),
+              first(),
+              catchError(() => EMPTY),
+            )
             .toPromise();
 
           switch (true) {

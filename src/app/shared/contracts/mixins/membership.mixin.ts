@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { Web3Service } from '../../web3.service';
 import { SmartContract } from '../smart-contract.abstract';

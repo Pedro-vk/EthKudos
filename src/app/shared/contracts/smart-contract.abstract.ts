@@ -1,18 +1,9 @@
 import * as Web3Module from 'web3';
 import { Tx, ABIDefinition, TransactionReceipt, Contract as Web3Contract } from 'web3/types';
 import * as truffleContract from 'truffle-contract';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/share';
+import { EMPTY, from as observableFrom, merge as observableMerge,  Observable,  Subject, BehaviorSubject } from 'rxjs';
+import { share, catchError, distinctUntilChanged, mergeMap, filter } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 
@@ -27,7 +18,7 @@ export const emptyPromise: () => Promise<undefined> = () => Promise.resolve(unde
 
 export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   protected readonly _onInitialized: BehaviorSubject<any> = new BehaviorSubject(undefined);
-  readonly onInitialized: Observable<any> = this._onInitialized.filter(_ => !!_);
+  readonly onInitialized: Observable<any> = this._onInitialized.pipe(filter(_ => !!_));
   protected contract: TruffleContract<C, CI, A, E>;
   protected web3Contract: Web3Contract;
   protected readonly isBigNumber = _ => (new (<any>Web3Module)()).utils.isBigNumber(_) || (new (<any>Web3Module)()).utils.isBN(_);
@@ -48,13 +39,12 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   constructor(protected web3Service: Web3Service, protected store: Store<any>) { }
 
   checkUpdates<T>(fn: (context: this) => Promise<T>): Observable<T> {
-    return Observable
-      .merge(this.web3Service.changes$, this.onInitialized)
-      .filter(() => this.initialized)
-      .mergeMap(() => Observable.fromPromise(fn(this)))
-      .distinctUntilChanged()
-      .catch(e => console.warn('checkUpdates error: ', {fn, e}) || Observable.empty())
-      .share();
+    return observableMerge(this.web3Service.changes$, this.onInitialized).pipe(
+      filter(() => this.initialized),
+      mergeMap(() => observableFrom(fn(this))),
+      distinctUntilChanged(),
+      catchError(e => console.warn('checkUpdates error: ', {fn, e}) || EMPTY),
+      share());
   }
 
   async fromDecimals(value: number): Promise<number> {
@@ -155,12 +145,12 @@ export abstract class SmartContract<C, CI extends {[p: string]: any[]}, A, E> {
   }
 
   protected generateEventObservable<P extends string & keyof TruffleContractEventMethods<E>>(event: P): Observable<E[P]> {
-    return this.onInitialized
-      .mergeMap(() =>
+    return this.onInitialized.pipe(
+      mergeMap(() =>
         Observable
           .create(observer => (<any>this.contract)[event]().watch((e, _) => observer.next(_.args)))
           .share(),
-      );
+      ));
   }
 
   protected n(number: any): number {

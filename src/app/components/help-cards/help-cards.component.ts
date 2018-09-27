@@ -1,6 +1,5 @@
 import { Component, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
-import { Store } from '@ngrx/store';
-
+import { Store, select } from '@ngrx/store';
 import * as MetamaskLogo from 'metamask-logo';
 
 import * as fromRoot from '../../shared/store/reducers';
@@ -20,7 +19,7 @@ export class HelpCardsComponent implements AfterViewChecked {
   @ViewChild('metamaskLogo') metamaskLogo: ElementRef;
   private metamaskLogoViewer: any;
 
-  readonly status$ = this.store.select(fromRoot.getStatus);
+  readonly status$ = this.store.pipe(select(fromRoot.getStatus));
 
   constructor(private store: Store<fromRoot.State>, private web3Service: Web3Service) { }
 

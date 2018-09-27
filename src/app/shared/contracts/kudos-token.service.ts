@@ -1,14 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/shareReplay';
-import 'rxjs/add/operator/toPromise';
+import { from as observableFrom,  Observable, Subject } from 'rxjs';
+import { mergeMap, map, shareReplay, filter, first } from 'rxjs/operators';
 
 import * as KudosTokenDefinition from '../../../../build/contracts/KudosToken.json';
 
@@ -53,7 +46,7 @@ export class KudosTokenService
 
   isValid: boolean;
   private readonly _onIsValid = new Subject<boolean>();
-  readonly onIsValid = this._onIsValid.shareReplay();
+  readonly onIsValid = this._onIsValid.pipe(shareReplay());
 
   // Events
   readonly NewPoll$ = this.generateEventObservable('NewPoll');
@@ -90,9 +83,9 @@ export class KudosTokenService
 
   initAt(address: string): void {
     this.web3Service
-      .status$
-      .filter(status => status === ConnectionStatus.Total)
-      .first()
+      .status$.pipe(
+      filter(status => status === ConnectionStatus.Total),
+      first())
       .subscribe(() => {
         if (!this.web3Service.web3.utils.isAddress(address)) {
           this._onIsValid.next(this.isValid = false);
@@ -164,8 +157,8 @@ export class KudosTokenService
   }
 
   private checkIsValid(): Promise<boolean> {
-    return this.onInitialized
-      .map(async () => {
+    return this.onInitialized.pipe(
+      map(async () => {
         try {
           switch (false) {
             case this.initialized:
@@ -177,9 +170,9 @@ export class KudosTokenService
         } catch (e) {
           return false;
         }
-      })
-      .mergeMap(_ => Observable.fromPromise(_))
-      .first()
+      }),
+      mergeMap(_ => observableFrom(_)),
+      first())
       .toPromise();
   }
 }

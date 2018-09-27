@@ -3,9 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/do';
+import { of as observableOf, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { hot, cold } from 'jasmine-marbles';
 
 import { PROVIDERS } from '../../';
@@ -139,7 +138,7 @@ describe('KudosPoll - Effects', () => {
   });
 
   it('should get basic KudosPoll data', async() => {
-    const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
+    const setDataSpy = spyOn(effects, 'setData').and.returnValue(observableOf({type: 'mock'}));
 
     actions = hot('-a', {
       a: new kudosPollActions.LoadBasicDataAction(newAccount(1)),
@@ -164,7 +163,7 @@ describe('KudosPoll - Effects', () => {
   });
 
   it('should get dynamic KudosPoll data', async() => {
-    const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
+    const setDataSpy = spyOn(effects, 'setData').and.returnValue(observableOf({type: 'mock'}));
 
     actions = hot('-a', {
       a: new kudosPollActions.LoadDynamicDataAction(newAccount(1)),
@@ -186,9 +185,9 @@ describe('KudosPoll - Effects', () => {
   });
 
   it('should get data', done => {
-    spyOn(effects, 'resolvePromise').and.returnValue(Observable.of({name: 'test'}));
+    spyOn(effects, 'resolvePromise').and.returnValue(observableOf({name: 'test'}));
     const getKudosPollServiceAtSpy = spyOn((effects as any).kudosPollFactoryService, 'getKudosPollServiceAt')
-      .and.returnValue({onInitialized: Observable.of(true)});
+      .and.returnValue({onInitialized: observableOf(true)});
 
     effects.setData(newAccount(1), 'basic', false, async() => ({}))
       .subscribe(action => {
@@ -200,10 +199,10 @@ describe('KudosPoll - Effects', () => {
 
   it('should update the data of a KudosPoll when has changes', () => {
     let account1WatchStep = 0;
-    const account1Changes = hot('---c--------c', {c: newAccount(1)})
-      .do(() => store.dispatch(new kudosPollActions.SetPollDataAction(newAccount(1), account1WatchStep++ ? 'dynamic' : 'basic', {})));
-    const account2Changes = hot('-------c', {c: newAccount(2)})
-      .do(() => store.dispatch(new kudosPollActions.SetPollDataAction(newAccount(2), 'basic', {})));
+    const account1Changes = hot('---c--------c', {c: newAccount(1)}).pipe(
+      tap(() => store.dispatch(new kudosPollActions.SetPollDataAction(newAccount(1), account1WatchStep++ ? 'dynamic' : 'basic', {}))));
+    const account2Changes = hot('-------c', {c: newAccount(2)}).pipe(
+      tap(() => store.dispatch(new kudosPollActions.SetPollDataAction(newAccount(2), 'basic', {}))));
 
     spyOn((<any>effects).web3Service, 'watchContractChanges')
       .and.callFake(address => ({

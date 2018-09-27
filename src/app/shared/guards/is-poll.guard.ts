@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
+import { from as observableFrom, Observable } from 'rxjs';
+import { tap, map, mergeMap, first } from 'rxjs/operators';
 
 import { KudosTokenFactoryService } from '../kudos-token-factory.service';
 
@@ -19,15 +15,14 @@ export class IsPollGuard implements CanActivate {
     const pollAddress = next.params.address;
     const kudosTokenService = this.kudosTokenFactoryService
       .getKudosTokenServiceAt(tokenAddress);
-    return kudosTokenService
-      .onInitialized
-      .first()
-      .mergeMap(() => Observable.fromPromise(kudosTokenService.getPreviousPolls()))
-      .map(polls => polls.indexOf(pollAddress) !== -1)
-      .do(isPoll => {
+    return kudosTokenService.onInitialized.pipe(
+      first(),
+      mergeMap(() => observableFrom(kudosTokenService.getPreviousPolls())),
+      map(polls => polls.indexOf(pollAddress) !== -1),
+      tap(isPoll => {
         if (!isPoll) {
           this.router.navigate([state.url.split('/').slice(0, -2).join('/')]);
         }
-      });
+      }));
   }
 }

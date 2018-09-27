@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
-import { Effect, Actions } from '@ngrx/effects';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/distinct';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
+import { Store, Action, select } from '@ngrx/store';
+import { Effect, Actions, ofType } from '@ngrx/effects';
+import { from as observableFrom, merge as observableMerge, EMPTY, of as observableOf, Observable } from 'rxjs';
+import { distinct, first, filter, mergeMap, map } from 'rxjs/operators';
 
 import { Web3Service, KudosPollService, KudosPollFactoryService } from '../../';
 
@@ -22,11 +14,11 @@ import { KudosPollData } from './kudos-poll.models';
 export class KudosPollEffects {
 
   @Effect()
-  getBasicKudosPollData$: Observable<Action> = this.actions$
-    .ofType(kudosPollActions.LOAD_BASIC_DATA)
-    .map(({payload}: kudosPollActions.LoadBasicDataAction) => payload)
-    .mergeMap(({address, force}) =>
-      Observable.merge(
+  getBasicKudosPollData$: Observable<Action> = this.actions$.pipe(
+    ofType(kudosPollActions.LOAD_BASIC_DATA),
+    map(({payload}: kudosPollActions.LoadBasicDataAction) => payload),
+    mergeMap(({address, force}) =>
+      observableMerge(
         this.setData(address, undefined, true, async(kudosPollService) => ({address})),
         this.setData(
           address,
@@ -49,13 +41,13 @@ export class KudosPollEffects {
           }),
         ),
       )
-    );
+    ));
 
   @Effect()
-  getDynamicKudosPollData$: Observable<Action> = this.actions$
-    .ofType(kudosPollActions.LOAD_DYNAMIC_DATA)
-    .map(({payload}: kudosPollActions.LoadDynamicDataAction) => payload)
-    .mergeMap(({address, force}) =>
+  getDynamicKudosPollData$: Observable<Action> = this.actions$.pipe(
+    ofType(kudosPollActions.LOAD_DYNAMIC_DATA),
+    map(({payload}: kudosPollActions.LoadDynamicDataAction) => payload),
+    mergeMap(({address, force}) =>
       this.setData(
         address,
         'dynamic',
@@ -73,26 +65,27 @@ export class KudosPollEffects {
             }), {}),
         }),
       ),
-    );
+    ));
 
   @Effect()
-  watchKudosPollChanges$: Observable<Action> = this.actions$
-    .ofType(kudosPollActions.LOAD_DYNAMIC_DATA, kudosPollActions.LOAD_BASIC_DATA)
-    .map(({payload}: kudosPollActions.LoadDynamicDataAction | kudosPollActions.LoadBasicDataAction) => payload)
-    .map(({address}) => address)
-    .distinct()
-    .mergeMap((address) => this.web3Service.watchContractChanges(address))
-    .mergeMap((address: string) =>
-      this.store.select(_ => fromRoot.getKudosPollLoaded(address)(_))
-        .first()
-        .filter(_ => !!_)
-        .mergeMap(({dynamic}) => {
+  watchKudosPollChanges$: Observable<Action> = this.actions$.pipe(
+    ofType(kudosPollActions.LOAD_DYNAMIC_DATA, kudosPollActions.LOAD_BASIC_DATA),
+    map(({payload}: kudosPollActions.LoadDynamicDataAction | kudosPollActions.LoadBasicDataAction) => payload),
+    map(({address}) => address),
+    distinct(),
+    mergeMap((address) => this.web3Service.watchContractChanges(address)),
+    mergeMap((address: string) =>
+      this.store.pipe(
+        select(_ => fromRoot.getKudosPollLoaded(address)(_)),
+        first(),
+        filter(_ => !!_),
+        mergeMap(({dynamic}) => {
           if (dynamic) {
-            return Observable.of(new kudosPollActions.LoadDynamicDataAction(address, true));
+            return observableOf(new kudosPollActions.LoadDynamicDataAction(address, true));
           }
-          return Observable.empty();
-        }),
-    );
+          return EMPTY;
+        })),
+    ));
 
   constructor(
     private actions$: Actions,
@@ -107,11 +100,12 @@ export class KudosPollEffects {
     force: boolean,
     dataGetter: (kudosPollService: KudosPollService) => Promise<Partial<KudosPollData>>,
   ) {
-    return this.store.select(fromRoot.getKudosPollsById)
-      .first()
-      .filter(kudosPolls => !(kudosPolls && kudosPolls[address] && kudosPolls[address].loaded[type]) || force)
-      .mergeMap(() => this.getKudosPollServiceData(address, dataGetter))
-      .map(data => new kudosPollActions.SetPollDataAction(address, type, data));
+    return this.store.pipe(
+      select(fromRoot.getKudosPollsById),
+      first(),
+      filter(kudosPolls => !(kudosPolls && kudosPolls[address] && kudosPolls[address].loaded[type]) || force),
+      mergeMap(() => this.getKudosPollServiceData(address, dataGetter)),
+      map(data => new kudosPollActions.SetPollDataAction(address, type, data)));
   }
 
   getKudosPollServiceData(
@@ -119,12 +113,12 @@ export class KudosPollEffects {
     dataGetter: (kudosPollService: KudosPollService) => Promise<any>,
   ): Observable<any> {
     const kudosPollService = this.kudosPollFactoryService.getKudosPollServiceAt(address);
-    return kudosPollService.onInitialized
-      .first()
-      .mergeMap(() => this.resolvePromise(dataGetter(kudosPollService)));
+    return kudosPollService.onInitialized.pipe(
+      first(),
+      mergeMap(() => this.resolvePromise(dataGetter(kudosPollService))));
   }
 
   resolvePromise<T>(promise: Promise<T>): Observable<T> {
-    return Observable.fromPromise(promise);
+    return observableFrom(promise);
   }
 }

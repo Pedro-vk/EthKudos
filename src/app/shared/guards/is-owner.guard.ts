@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/mergeMap';
+import { from as observableFrom, Observable } from 'rxjs';
+import { tap, mergeMap, first } from 'rxjs/operators';
 
 import { KudosTokenFactoryService } from '../kudos-token-factory.service';
 
@@ -17,14 +14,13 @@ export class IsOwnerGuard implements CanActivate {
     const tokenAddress = next.params.tokenAddress || next.parent.params.tokenAddress;
     const kudosTokenService = this.kudosTokenFactoryService
       .getKudosTokenServiceAt(tokenAddress);
-    return kudosTokenService
-      .onInitialized
-      .first()
-      .mergeMap(() => Observable.fromPromise(kudosTokenService.imOwner()))
-      .do(imOwner => {
+    return kudosTokenService.onInitialized.pipe(
+      first(),
+      mergeMap(() => observableFrom(kudosTokenService.imOwner())),
+      tap(imOwner => {
         if (!imOwner) {
           this.router.navigate([state.url.split('/').slice(0, -1).join('/')]);
         }
-      });
+      }));
   }
 }

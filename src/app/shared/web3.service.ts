@@ -1,28 +1,15 @@
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
+import {
+  merge as observableMerge, of as observableOf, interval as observableInterval, from as observableFrom,
+  EMPTY,  Observable,  Subject, BehaviorSubject,
+} from 'rxjs';
+import { catchError, share, startWith, shareReplay, map, filter, distinctUntilChanged, mergeMap, scan } from 'rxjs/operators';
 import Web3 from 'web3';
 import * as Web3Module from 'web3';
 import { Transaction, ABIDataTypes, Block, BlockType } from 'web3/types';
 import * as abiDecoder from 'abi-decoder';
 import * as contract from 'truffle-contract';
 import { detect } from 'detect-browser';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/scan';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/shareReplay';
-import 'rxjs/add/operator/startWith';
 
 import * as Migrations from '../../../build/contracts/Migrations.json';
 
@@ -58,37 +45,36 @@ export class Web3Service {
   private _intervalMock: Function;
   private _newWatchingAddress$: BehaviorSubject<string> = new BehaviorSubject(undefined);
 
-  private readonly interval$: Observable<any> = Observable.of(undefined)
-    .mergeMap(() => (this._intervalMock && this._intervalMock()) || Observable.interval(100))
-    .share()
-    .startWith(undefined);
-  readonly newBlock$: Observable<number> = this.interval$
-    .mergeMap(() => this.getBlockNumber())
-    .distinctUntilChanged()
-    .scan((prev, block) => [prev[1], block], [])
-    .mergeMap(([prev, block]) => {
+  private readonly interval$: Observable<any> = observableOf(undefined).pipe(
+    mergeMap(() => (this._intervalMock && this._intervalMock()) || observableInterval(100)),
+    share(),
+    startWith(undefined));
+  readonly newBlock$: Observable<number> = this.interval$.pipe(
+    mergeMap(() => this.getBlockNumber()),
+    distinctUntilChanged(),
+    scan((prev, block) => [prev[1], block], <any>[]),
+    mergeMap(([prev, block]) => {
       if (!prev) {
-        return Observable.of(block);
+        return observableOf(block);
       }
-      return Observable.from(new Array(block - prev).fill(0).map((_, i) => prev + 1 + i));
-    })
-    .share();
-  readonly account$: Observable<string> = this.interval$
-    .mergeMap(() => this.getAccount())
-    .distinctUntilChanged()
-    .shareReplay();
-  readonly changes$: Observable<undefined> = Observable
-    .merge(this.newBlock$, this.account$)
-    .map(() => undefined)
-    .share();
-  readonly ethBalance$: Observable<number> = this.changes$
-    .mergeMap(() => this.getEthBalance())
-    .distinctUntilChanged()
-    .shareReplay();
-  readonly status$: Observable<ConnectionStatus> = this.interval$
-    .mergeMap(() => this.getAccount())
-    .filter(() => this.existInNetwork !== undefined)
-    .map((account): ConnectionStatus => {
+      return observableFrom(new Array(block - prev).fill(0).map((_, i) => prev + 1 + i));
+    }),
+    share());
+  readonly account$: Observable<string> = this.interval$.pipe(
+    mergeMap(() => this.getAccount()),
+    distinctUntilChanged(),
+    shareReplay());
+  readonly changes$: Observable<undefined> = observableMerge(this.newBlock$, this.account$).pipe(
+    map(() => undefined),
+    share());
+  readonly ethBalance$: Observable<number> = this.changes$.pipe(
+    mergeMap(() => this.getEthBalance()),
+    distinctUntilChanged(),
+    shareReplay());
+  readonly status$: Observable<ConnectionStatus> = this.interval$.pipe(
+    mergeMap(() => this.getAccount()),
+    filter(() => this.existInNetwork !== undefined),
+    map((account): ConnectionStatus => {
       if (!this.web3) {
         return ConnectionStatus.NoProvider;
       }
@@ -99,20 +85,20 @@ export class Web3Service {
         return ConnectionStatus.NoNetwork;
       }
       return ConnectionStatus.Total;
-    })
-    .distinctUntilChanged()
-    .shareReplay(1);
-  readonly watchingContractChanges$ = this._newWatchingAddress$
-    .scan((acc, address) => [...acc, String(address).toLowerCase()].filter((_, i, list) => list.indexOf(_) === i), [])
-    .filter(addrs => !!addrs.length)
-    .mergeMap(addrs =>
-      this.newBlock$
-        .mergeMap(blockNumber => this.getBlock(blockNumber, true))
-        .filter(_ => !!_)
-        .map(({transactions}) => transactions.map(transaction => String(transaction.to).toLowerCase()))
-        .mergeMap(changes => Observable.from(changes.filter(change => addrs.indexOf(change) !== -1))),
-    )
-    .share();
+    }),
+    distinctUntilChanged(),
+    shareReplay(1));
+  readonly watchingContractChanges$: Observable<string> = this._newWatchingAddress$.pipe(
+    scan((acc, address) => [...acc, String(address).toLowerCase()].filter((_, i, list) => list.indexOf(_) === i), <any>[]),
+    filter(addrs => !!addrs.length),
+    mergeMap(addrs =>
+      this.newBlock$.pipe(
+        mergeMap(blockNumber => this.getBlock(blockNumber, true)),
+        filter(_ => !!_),
+        map(({transactions}) => transactions.map(transaction => String(transaction.to).toLowerCase())),
+        mergeMap(changes => observableFrom(changes.filter(change => addrs.indexOf(change) !== -1)))),
+    ),
+    share());
 
   get web3(): Web3 {
     return this._web3 || this.initWeb3();
@@ -156,47 +142,46 @@ export class Web3Service {
 
   getAccount(): Observable<string> {
     if (this.web3 && this.web3.eth) {
-      return Observable
-        .fromPromise(this.web3.eth.getAccounts())
-        .map(accounts => accounts[0] || undefined);
+      return observableFrom(this.web3.eth.getAccounts()).pipe(
+        map(accounts => accounts[0] || undefined));
     }
-    return Observable.of(undefined);
+    return observableOf(undefined);
   }
 
   getEthBalance(): Observable<number> {
     if (!this.web3) {
-      return Observable.of(undefined);
+      return observableOf(undefined);
     }
-    return this.getAccount()
-      .mergeMap(account => Observable.fromPromise(this.web3.eth.getBalance(account)))
-      .map(balance => +this.web3.utils.fromWei(balance, 'ether'))
-      .catch(() => Observable.of(undefined));
+    return this.getAccount().pipe(
+      mergeMap(account => observableFrom(this.web3.eth.getBalance(account))),
+      map(balance => +this.web3.utils.fromWei(balance, 'ether')),
+      catchError(() => observableOf(undefined)));
   }
 
   getBlockNumber(): Observable<number> {
     if (this.web3) {
-      return Observable.fromPromise(this.web3.eth.getBlockNumber());
+      return observableFrom(this.web3.eth.getBlockNumber());
     }
-    return Observable.empty();
+    return EMPTY;
   }
 
   checkUpdates<T>(checkObservable: (Web3Service) => Observable<T>): Observable<T> {
-    return this.changes$
-      .mergeMap(() => checkObservable(this))
-      .distinctUntilChanged();
+    return this.changes$.pipe(
+      mergeMap(() => checkObservable(this)),
+      distinctUntilChanged());
   }
 
   getNetworkId(): Observable<number> {
     if (!this.web3) {
-      return Observable.empty();
+      return EMPTY;
     }
-    return Observable.fromPromise(this.web3.eth.net.getId())
-      .map(_ => (+_) || undefined);
+    return observableFrom(this.web3.eth.net.getId()).pipe(
+      map(_ => (+_) || undefined));
   }
 
   getNetworkType(): Observable<networkType> {
-    return this.getNetworkId()
-      .map(id => {
+    return this.getNetworkId().pipe(
+      map(id => {
         switch (id) {
           case 1: return 'main';
           case 2: return 'morden';
@@ -205,16 +190,16 @@ export class Web3Service {
           case 42: return 'kovan';
           default: return 'unknown';
         }
-      });
+      }));
   }
 
   watchContractChanges(address: string): Observable<string> {
     this._newWatchingAddress$.next(address);
-    return this.watchingContractChanges$.filter(_ => _ === address).share();
+    return this.watchingContractChanges$.pipe(filter(_ => _ === address), share());
   }
 
   getTransaction(tx: string): Observable<Transaction> {
-    return Observable.fromPromise(this.web3.eth.getTransaction(tx));
+    return observableFrom(this.web3.eth.getTransaction(tx));
   }
 
   getTransactionMetadata(transaction: Transaction): FullTransaction {
@@ -231,7 +216,7 @@ export class Web3Service {
   }
 
   getBlock(number: BlockType, returnTransactions: boolean = false): Observable<Block> {
-    return Observable.fromPromise(this.web3.eth.getBlock(number, returnTransactions));
+    return observableFrom(this.web3.eth.getBlock(number, returnTransactions));
   }
 
   getMetamaskInstallationLink(browser?: string): string {

@@ -2,9 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/do';
+import { of as observableOf, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { hot, cold } from 'jasmine-marbles';
 
 import { PROVIDERS } from '../../';
@@ -111,7 +110,7 @@ describe('KudosToken - Effects', () => {
   });
 
   it('should get basic KudosToken data', async() => {
-    const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
+    const setDataSpy = spyOn(effects, 'setData').and.returnValue(observableOf({type: 'mock'}));
 
     actions = hot('-a', {
       a: new kudosTokenActions.LoadBasicDataAction(newAccount(1)),
@@ -133,7 +132,7 @@ describe('KudosToken - Effects', () => {
   });
 
   it('should get total KudosToken data', async() => {
-    const setDataSpy = spyOn(effects, 'setData').and.returnValue(Observable.of({type: 'mock'}));
+    const setDataSpy = spyOn(effects, 'setData').and.returnValue(observableOf({type: 'mock'}));
 
     actions = hot('-a', {
       a: new kudosTokenActions.LoadTotalDataAction(newAccount(1)),
@@ -155,9 +154,9 @@ describe('KudosToken - Effects', () => {
   });
 
   it('should get data', done => {
-    spyOn(effects, 'resolvePromise').and.returnValue(Observable.of({name: 'test'}));
+    spyOn(effects, 'resolvePromise').and.returnValue(observableOf({name: 'test'}));
     const getKudosTokenServiceAtSpy = spyOn((effects as any).kudosTokenFactoryService, 'getKudosTokenServiceAt')
-      .and.returnValue({onIsValid: Observable.of(true)});
+      .and.returnValue({onIsValid: observableOf(true)});
 
     effects.setData(newAccount(1), 'basic', false, async() => ({}))
       .subscribe(action => {
@@ -169,10 +168,10 @@ describe('KudosToken - Effects', () => {
 
   it('should update the data of a KudosToken when has changes', () => {
     let account1WatchStep = 0;
-    const account1Changes = hot('---c--------c', {c: newAccount(1)})
-      .do(() => store.dispatch(new kudosTokenActions.SetTokenDataAction(newAccount(1), account1WatchStep++ ? 'total' : 'basic', {})));
-    const account2Changes = hot('-------c', {c: newAccount(2)})
-      .do(() => store.dispatch(new kudosTokenActions.SetTokenDataAction(newAccount(2), 'basic', {})));
+    const account1Changes = hot('---c--------c', {c: newAccount(1)}).pipe(
+      tap(() => store.dispatch(new kudosTokenActions.SetTokenDataAction(newAccount(1), account1WatchStep++ ? 'total' : 'basic', {}))));
+    const account2Changes = hot('-------c', {c: newAccount(2)}).pipe(
+      tap(() => store.dispatch(new kudosTokenActions.SetTokenDataAction(newAccount(2), 'basic', {}))));
 
     spyOn((<any>effects).web3Service, 'watchContractChanges')
       .and.callFake(address => ({
@@ -212,7 +211,7 @@ describe('KudosToken - Effects', () => {
   });
 
   it('should get total KudosToken data', async() => {
-    const getKudosTokenServiceDataSpy = spyOn(effects, 'getKudosTokenServiceData').and.returnValue(Observable.of(123));
+    const getKudosTokenServiceDataSpy = spyOn(effects, 'getKudosTokenServiceData').and.returnValue(observableOf(123));
     hot('i', {i: undefined})
       .subscribe(() => store.dispatch(new kudosTokenActions.SetTokenDataAction(newAccount(1), 'basic', {balances: {}})));
 

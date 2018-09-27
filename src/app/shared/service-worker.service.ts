@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/shareReplay';
+import { Subject } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ServiceWorkerService {
   private readonly _onUpdate = new Subject();
-  readonly onUpdate = this._onUpdate.asObservable().shareReplay();
+  readonly onUpdate = this._onUpdate.asObservable().pipe(shareReplay());
 
   constructor() {
     if ('serviceWorker' in navigator && environment.production) {

@@ -1,9 +1,8 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { shareReplay, map } from 'rxjs/operators';
 import * as blockies from 'blockies';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/shareReplay';
 
 import * as fromRoot from '../../shared/store/reducers';
 
@@ -20,9 +19,10 @@ export class BlockieComponent implements OnInit, OnChanges {
   @Input() random: number;
   blockie: SafeStyle;
 
-  readonly isActiveAccount$ = this.store.select(fromRoot.getAccount)
-    .map((account: string = '') => (this.address || '').toLowerCase() === account.toLowerCase())
-    .shareReplay(1);
+  readonly isActiveAccount$ = this.store.pipe(
+    select(fromRoot.getAccount),
+    map((account: string = '') => (this.address || '').toLowerCase() === account.toLowerCase()),
+    shareReplay(1));
 
   constructor(private store: Store<fromRoot.State>, private domSanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) { }
 

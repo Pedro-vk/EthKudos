@@ -1,14 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/shareReplay';
+import { Store, select } from '@ngrx/store';
+import { EMPTY, Observable } from 'rxjs';
+import { map, filter, shareReplay, catchError, first } from 'rxjs/operators';
 
 import * as fromRoot from '../../shared/store/reducers';
 
@@ -31,20 +26,21 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
 
   kudosTokenService: KudosTokenService;
 
-  readonly kudosToken$ = this.store.select(fromRoot.getCurrentKudosTokenWithFullData)
-    .filter(_ => !!_)
-    .shareReplay();
+  readonly kudosToken$ = this.store.pipe(
+    select(fromRoot.getCurrentKudosTokenWithFullData),
+    filter(_ => !!_),
+    shareReplay());
 
-  readonly activePoll$ = this.kudosToken$
-    .map(({activePoll}) => activePoll);
-  readonly kudosSentOnActivePoll$ = this.activePoll$
-    .filter(kudosPoll => kudosPoll && kudosPoll.totalSupply && kudosPoll.members && !!kudosPoll.kudosByMember)
-    .map(kudosPoll => {
+  readonly activePoll$ = this.kudosToken$.pipe(
+    map(({activePoll}) => activePoll));
+  readonly kudosSentOnActivePoll$ = this.activePoll$.pipe(
+    filter(kudosPoll => kudosPoll && kudosPoll.totalSupply && kudosPoll.members && !!kudosPoll.kudosByMember),
+    map(kudosPoll => {
       const remaining = kudosPoll.totalSupply;
       const total = (kudosPoll.members || []).length * kudosPoll.kudosByMember;
       const sent = total - remaining;
       return {sent, total, progress: sent / total};
-    });
+    }));
 
   constructor(
     private store: Store<fromRoot.State>,
@@ -57,19 +53,19 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
   }
 
   ngOnInit(): void {
-    this.kudosToken$
-      .filter(({imOwner}) => imOwner === false)
+    this.kudosToken$.pipe(
+      filter(({imOwner}) => imOwner === false))
       .subscribe(() => this.router.navigate(['../'], {relativeTo: this.activatedRoute}));
 
-    this.kudosToken$
-      .filter(_ => _ && _.members && !!_.members.length)
+    this.kudosToken$.pipe(
+      filter(_ => _ && _.members && !!_.members.length))
       .subscribe(({members}) => {
         members.forEach(({member, name}) => this.memberName[member] = this.memberName[member] || name);
       });
 
-    this.activatedRoute.params
-      .first()
-      .catch(() => Observable.empty())
+    this.activatedRoute.params.pipe(
+      first(),
+      catchError(() => EMPTY))
       .subscribe(({address, name}: any) => {
         if (address) {
           this.newMember.member = address;
@@ -80,8 +76,8 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
         this.newMember = {...this.newMember};
       });
 
-    this.activatedRoute.parent.params
-      .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
+    this.activatedRoute.parent.params.pipe(
+      map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress)))
       .subscribe(kudosTokenService => this.kudosTokenService = kudosTokenService);
   }
 
