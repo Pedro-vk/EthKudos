@@ -8,7 +8,11 @@
       "updateMode": "prefetch",
       "urls": [
         "/favicon.png",
-        "/index.html"
+        "/index.html",
+        "/main.ae5b243c89bc11ba8f46.js",
+        "/polyfills.25cec9eb998dda884ce9.js",
+        "/runtime.7f706c09ba7459279236.js",
+        "/styles.6830a36d5d686ed1fb76.js"
       ],
       "patterns": []
     },
@@ -38,11 +42,15 @@
     "/assets/donation-qr.svg": "35ea2d45cfcd2db20ece8c219777d7496c95c78a",
     "/assets/google-play-badge.png": "dcb52ad53369d3388215d2a6d0c2895a733f7bf8",
     "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
-    "/assets/toshi.png": "7caff517a62f64857544f555d1fee96b3e173828",
+    "/assets/toshi.png": "bd849fac4d6f00b5cdfffd0f84053610cb868530",
     "/favicon.png": "75d5ba3d1973c0a65dd96d20456c23c110cee8d8",
-    "/i18n/en.json": "477ace3318752af4beac8009c32827738394b5cb",
-    "/i18n/es.json": "46cd2b603c128e893bfa7549bd209fd932a822ec",
-    "/index.html": "ffd1630ae5fb03135322373f1440100c5c060c38"
+    "/i18n/en.json": "02d8f13b13a200a58721dbccad73968993252694",
+    "/i18n/es.json": "6a87811cbcff8f198f0b87c2ed7f2cfc22031be9",
+    "/index.html": "7df13b440658aaffe5eb6c07b888ce23d4ef1193",
+    "/main.ae5b243c89bc11ba8f46.js": "9e07b6cbb4e77fe372dcc135d87ea39fdf2a0fef",
+    "/polyfills.25cec9eb998dda884ce9.js": "f6071cb5c883c5f019ee4e4d9eb41880a96f4c5f",
+    "/runtime.7f706c09ba7459279236.js": "078e320cc6fdaf355836c3b1c52b059cdd33fc7e",
+    "/styles.6830a36d5d686ed1fb76.js": "b6c4c582957a19835edf56b612884fa6c47543de"
   },
   "navigationUrls": [
     {
