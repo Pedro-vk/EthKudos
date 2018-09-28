@@ -13,6 +13,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
+import Web3 from 'web3';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppCommonModule } from './app-common.module';
 
@@ -73,7 +75,10 @@ export function getCurrentValidLocale() {
     ...PROVIDERS,
     Title,
     {provide: LOCALE_ID, useValue: getCurrentValidLocale()},
-    {provide: WEB3_PROVIDER, useValue: environment.web3Provider || ((<any>window).web3 && (<any>window).web3.currentProvider)}
+    {
+      provide: WEB3_PROVIDER,
+      useValue: () => environment.web3Provider || Web3.givenProvider || ((<any>window).web3 && (<any>window).web3.currentProvider),
+    }
   ],
   bootstrap: [AppWrapperComponent]
 })

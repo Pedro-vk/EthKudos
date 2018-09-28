@@ -66,6 +66,31 @@ describe('Web3Service', () => {
       .toBe('https://metamask.io/');
   });
 
+  it('should return the provider name', () => {
+    expect(service.getProvider()).toBeUndefined();
+
+    (<any>service)._web3 = {currentProvider: {}};
+    expect(service.getProvider()).toBeUndefined();
+
+    (<any>service)._web3 = {currentProvider: {isMetaMask: true}};
+    expect(service.getProvider()).toBe('MetaMask');
+
+    (<any>service)._web3 = {currentProvider: {isToshi: true}};
+    expect(service.getProvider()).toBe('Toshi');
+
+    (<any>service)._web3 = {currentProvider: {isCipher: true}};
+    expect(service.getProvider()).toBe('Cipher');
+
+    (<any>service)._web3 = {currentProvider: {isTrust: true}};
+    expect(service.getProvider()).toBe('Trust');
+
+    (<any>service)._web3 = {currentProvider: new (class EthereumProvider {})};
+    expect(service.getProvider()).toBe('Mist');
+
+    (<any>service)._web3 = {currentProvider: new (class Web3FrameProvider {})};
+    expect(service.getProvider()).toBe('Parity');
+  });
+
   it('should return the current Web3 account', done => {
     service
       .getAccount()

@@ -48,6 +48,7 @@ export interface FullTransaction extends Transaction {
 }
 
 export type networkType = 'main' | 'morden' | 'ropsten' | 'rinkeby' | 'kovan' | 'unknown';
+export type providerType = 'MetaMask' | 'Toshi' | 'Cipher' | 'Trust' | 'Mist' | 'Parity';
 
 export const WEB3_PROVIDER = new InjectionToken('WEB3_PROVIDER');
 
@@ -134,7 +135,7 @@ export class Web3Service {
     return this._web3 || this.initWeb3();
   }
 
-  constructor(@Optional() @Inject(WEB3_PROVIDER) private _web3Provider: any) {
+  constructor(@Optional() @Inject(WEB3_PROVIDER) private _web3Provider: () => any) {
     this.checkContractInNetwork();
     this.listenChanges();
   }
@@ -152,8 +153,8 @@ export class Web3Service {
   }
 
   private initWeb3(): Web3 {
-    if (this._web3Provider) {
-      return this._web3 = new (<any>Web3Module)(this._web3Provider);
+    if (this._web3Provider && this._web3Provider()) {
+      return this._web3 = new (<any>Web3Module)(this._web3Provider());
     }
   }
 
@@ -222,6 +223,22 @@ export class Web3Service {
           default: return 'unknown';
         }
       });
+  }
+
+  getProvider(): providerType {
+    if (!this.web3) {
+      return;
+    }
+    const cp = <any>this.web3.currentProvider;
+    switch (true) {
+      case cp.isMetaMask: return 'MetaMask';
+      case cp.isToshi: return 'Toshi';
+      case cp.isCipher: return 'Cipher';
+      case cp.isTrust: return 'Trust';
+      case cp.constructor.name === 'EthereumProvider': return 'Mist';
+      case cp.constructor.name === 'Web3FrameProvider': return 'Parity';
+      default: return;
+    }
   }
 
   watchContractChanges(address: string): Observable<string> {

@@ -60,6 +60,10 @@ export const getKudosTokenActivePoll = (address: string) => createSelector(getKu
 
 // Status
 export const getStatus = createSelector(getStatusState, fromStatus.getStatus);
+export const getNetwork = createSelector(getStatusState, fromStatus.getNetwork);
+export const getNetworkId = createSelector(getStatusState, fromStatus.getNetworkId);
+export const getNetworkName = createSelector(getStatusState, fromStatus.getNetworkName);
+export const getProvider = createSelector(getStatusState, fromStatus.getProvider);
 
 // Mixes
 // Account + KudosPoll
