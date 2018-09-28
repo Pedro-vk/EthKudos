@@ -9,7 +9,7 @@
       "urls": [
         "/favicon.png",
         "/index.html",
-        "/main.d763fbf4db1ce2d259ab.js",
+        "/main.7ffb592324408dcfc588.js",
         "/polyfills.25cec9eb998dda884ce9.js",
         "/runtime.7f706c09ba7459279236.js",
         "/styles.6830a36d5d686ed1fb76.js"
@@ -44,10 +44,10 @@
     "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
     "/assets/toshi.png": "bd849fac4d6f00b5cdfffd0f84053610cb868530",
     "/favicon.png": "75d5ba3d1973c0a65dd96d20456c23c110cee8d8",
-    "/i18n/en.json": "477ace3318752af4beac8009c32827738394b5cb",
-    "/i18n/es.json": "46cd2b603c128e893bfa7549bd209fd932a822ec",
-    "/index.html": "8bac3bd169244ed1f007ea17710c985efb3afd71",
-    "/main.d763fbf4db1ce2d259ab.js": "514ddd29a6588cb7589dfc034f30514bd2b54743",
+    "/i18n/en.json": "43caaacae58326e512e2c2160bd1979573950ff4",
+    "/i18n/es.json": "85c96b0143fdd215e88ef214fd38b4837f20aff1",
+    "/index.html": "b3610af0f58831f33d2b2efc7667332c27ff1c59",
+    "/main.7ffb592324408dcfc588.js": "4422a93a81d2ede98a59a4bf09869499248593e3",
     "/polyfills.25cec9eb998dda884ce9.js": "f6071cb5c883c5f019ee4e4d9eb41880a96f4c5f",
     "/runtime.7f706c09ba7459279236.js": "078e320cc6fdaf355836c3b1c52b059cdd33fc7e",
     "/styles.6830a36d5d686ed1fb76.js": "b6c4c582957a19835edf56b612884fa6c47543de"
