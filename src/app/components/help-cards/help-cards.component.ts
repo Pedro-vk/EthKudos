@@ -21,6 +21,7 @@ export class HelpCardsComponent implements AfterViewChecked {
   private metamaskLogoViewer: any;
 
   readonly status$ = this.store.select(fromRoot.getStatus);
+  readonly provider$ = this.store.select(fromRoot.getProvider);
 
   constructor(private store: Store<fromRoot.State>, private web3Service: Web3Service) { }
 

@@ -92,6 +92,7 @@ export class LandingComponent implements OnInit {
   ];
 
   readonly status$ = this.store.select(fromRoot.getStatus);
+  readonly provider$ = this.store.select(fromRoot.getProvider);
   readonly organisations$ = this.kudosOrganisationsService.checkUpdates(_ => _.getOrganisations())
     .combineLatest(this.newOrgAddress.startWith(undefined))
     .map(([organisations, search]) =>
