@@ -96,7 +96,7 @@
             (keyup)="setRewardKudosType($event.target.value)"
             type="number"
             [max]="maxKudosInput"
-            [min]="0"
+            [min]="tokenStep"
             [step]="tokenStep"
             name="rewardKudos"
             [placeholder]="'HOW_MANY_KUDOS_SEND'  | translate : {SYMBOL: (kudosToken$ | async)?.symbol || ''}"

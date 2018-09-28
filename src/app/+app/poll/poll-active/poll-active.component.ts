@@ -93,7 +93,7 @@ export class PollActiveComponent extends AppCommonAbstract implements OnInit {
     const cleanNumber = +(+value || +inputNumber.value || 0).toFixed(this.tokenDecimals);
     let number = cleanNumber;
     if (number <= 0) {
-      number = undefined;
+      number = this.tokenStep;
     }
     if (number > this.maxKudosInput) {
       number = this.maxKudosInput;
@@ -135,7 +135,10 @@ export class PollActiveComponent extends AppCommonAbstract implements OnInit {
           .$observable
           .subscribe(status => {
             if (status === 'waiting') {
-              setTimeout(() => done(true), 2000);
+              setTimeout(() => {
+                done(true);
+                this.suggested = 'custom';
+              }, 2000);
             }
             if (status === 'error') {
               done();
