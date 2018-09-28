@@ -34,3 +34,8 @@
     <div class="metamask-image__circle metamask-image__circle--n2"></div>
   </div>
 </mat-card>
+
+<mat-card class="help-card-account" *ngIf="(status$ | async) === 'timeout'" @cardInOut>
+  <h3>Your MetaMask has hung</h3>
+  <h4>Try reloading MetaMask extension or restaring the browser.</h4>
+</mat-card>

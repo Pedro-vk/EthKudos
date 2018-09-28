@@ -203,6 +203,6 @@ export class LandingComponent implements OnInit {
 
   private getKudosTokenInfo(address: string) {
     this.store.dispatch(new kudosTokenActions.LoadBasicDataAction(address));
-    return this.store.select(fromRoot.getKudosTokenByAddressWithAccountData(address));
+    return this.store.select(fromRoot.getKudosTokenByAddressWithAccountData(address, true));
   }
 }

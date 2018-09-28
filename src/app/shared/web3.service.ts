@@ -14,7 +14,9 @@ import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/race';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
@@ -31,6 +33,7 @@ export enum ConnectionStatus {
   NoAccount = 'no-account',
   NoProvider = 'no-provider',
   NoNetwork = 'no-network',
+  Timeout = 'timeout',
 }
 
 export interface FullTransaction extends Transaction {
@@ -85,12 +88,25 @@ export class Web3Service {
     .mergeMap(() => this.getEthBalance())
     .distinctUntilChanged()
     .shareReplay();
-  readonly status$: Observable<ConnectionStatus> = this.interval$
+  readonly accountIfNetwork$: Observable<string> = this.interval$
     .mergeMap(() => this.getAccount())
-    .filter(() => this.existInNetwork !== undefined)
-    .map((account): ConnectionStatus => {
+    .filter(() => this.existInNetwork !== undefined);
+  readonly status$: Observable<ConnectionStatus> = Observable
+    .race(
+      this.accountIfNetwork$,
+      Observable.of(undefined)
+        .delay(4000)
+        .mergeMap(() => Observable.merge(
+          Observable.of('timeout'),
+          this.accountIfNetwork$,
+        )),
+    )
+    .map((account: string | 'timeout'): ConnectionStatus => {
       if (!this.web3) {
         return ConnectionStatus.NoProvider;
+      }
+      if (account === 'timeout') {
+        return ConnectionStatus.Timeout;
       }
       if (!account) {
         return ConnectionStatus.NoAccount;

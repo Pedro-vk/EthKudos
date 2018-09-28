@@ -104,8 +104,8 @@ export const getKudosPollWithContacts = (pollAddress: string, tokenAddress) => c
 );
 
 // Account + KudosToken
-export const getKudosTokenByAddressWithAccountData = (address: string) => createSelector(getAccount, getKudosTokenByAddress(address),
-  (account, kudosToken) => kudosToken && ({
+export const getKudosTokenByAddressWithAccountData = (address: string, onlyWithAccount?: boolean) => createSelector(getAccount, getKudosTokenByAddress(address),
+  (account, kudosToken) => (account || !onlyWithAccount) && kudosToken && ({
     ...kudosToken,
     totalSupply: kudosToken.totalSupply / 10 ** kudosToken.decimals,
     imOwner: kudosToken.owner && kudosToken.owner === account,
