@@ -8,7 +8,11 @@
       "updateMode": "prefetch",
       "urls": [
         "/favicon.png",
-        "/index.html"
+        "/index.html",
+        "/main.b295ab71d87dbaa2b263.js",
+        "/polyfills.25cec9eb998dda884ce9.js",
+        "/runtime.7f706c09ba7459279236.js",
+        "/styles.6830a36d5d686ed1fb76.js"
       ],
       "patterns": []
     },
@@ -42,7 +46,11 @@
     "/favicon.png": "75d5ba3d1973c0a65dd96d20456c23c110cee8d8",
     "/i18n/en.json": "477ace3318752af4beac8009c32827738394b5cb",
     "/i18n/es.json": "46cd2b603c128e893bfa7549bd209fd932a822ec",
-    "/index.html": "e6e5bdb17e30df00f7dc2b5a61e694a26c0a36b7"
+    "/index.html": "e6e5bdb17e30df00f7dc2b5a61e694a26c0a36b7",
+    "/main.b295ab71d87dbaa2b263.js": "f9fa3d34da449a1e072de9c76ee567a3d424f991",
+    "/polyfills.25cec9eb998dda884ce9.js": "f6071cb5c883c5f019ee4e4d9eb41880a96f4c5f",
+    "/runtime.7f706c09ba7459279236.js": "078e320cc6fdaf355836c3b1c52b059cdd33fc7e",
+    "/styles.6830a36d5d686ed1fb76.js": "b6c4c582957a19835edf56b612884fa6c47543de"
   },
   "navigationUrls": [
     {

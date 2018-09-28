@@ -147,7 +147,6 @@ jobs:
             chmod +x ./cc-test-reporter
       - run: ./cc-test-reporter format-coverage -t lcov ./lcov.info
       - run: ./cc-test-reporter upload-coverage
-      - run: curl -s https://codecov.io/bash | bash
   # e2e Tests
   test-e2e:
     <<: *NODE
