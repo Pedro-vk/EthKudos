@@ -76,7 +76,7 @@ describe('Web3Service', () => {
     expect(service.getProvider()).toBe('MetaMask');
 
     (<any>service)._web3 = {currentProvider: {isToshi: true}};
-    expect(service.getProvider()).toBe('Toshi');
+    expect(service.getProvider()).toBe('Coinbase Wallet');
 
     (<any>service)._web3 = {currentProvider: {isCipher: true}};
     expect(service.getProvider()).toBe('Cipher');

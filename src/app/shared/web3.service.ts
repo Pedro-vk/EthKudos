@@ -48,7 +48,7 @@ export interface FullTransaction extends Transaction {
 }
 
 export type networkType = 'main' | 'morden' | 'ropsten' | 'rinkeby' | 'kovan' | 'unknown';
-export type providerType = 'MetaMask' | 'Toshi' | 'Cipher' | 'Trust' | 'Mist' | 'Parity';
+export type providerType = 'MetaMask' | 'Coinbase Wallet' | 'Cipher' | 'Trust' | 'Mist' | 'Parity';
 
 export const WEB3_PROVIDER = new InjectionToken('WEB3_PROVIDER');
 
@@ -232,7 +232,7 @@ export class Web3Service {
     const cp = <any>this.web3.currentProvider;
     switch (true) {
       case cp.isMetaMask: return 'MetaMask';
-      case cp.isToshi: return 'Toshi';
+      case cp.isToshi: return 'Coinbase Wallet';
       case cp.isCipher: return 'Cipher';
       case cp.isTrust: return 'Trust';
       case cp.constructor.name === 'EthereumProvider': return 'Mist';
