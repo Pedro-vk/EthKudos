@@ -177,6 +177,7 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
           ...loadedStatus,
           selectedPoll,
           results: Object.entries(kudosToken.balances || {})
+            .filter(([_]) => kudosToken.members.find(({member}) => member === _))
             .map(([member, kudos]) => ({member, kudos: kudos / 10 ** kudosToken.decimals, name: (kudosToken.contacts || {})[member]}))
             .sort((a, b) => b.kudos - a.kudos),
         };
