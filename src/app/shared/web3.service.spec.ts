@@ -24,6 +24,7 @@ describe('Web3Service', () => {
 
   beforeEach(() => {
     spyOn(<any>Web3Service.prototype, 'listenChanges');
+    spyOn(Observable.prototype, 'debounceTime').and.callFake(function() { return this; });
 
     TestBed.configureTestingModule({
       providers: [Web3Service]

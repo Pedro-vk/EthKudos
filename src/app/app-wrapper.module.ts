@@ -14,6 +14,7 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import Web3 from 'web3';
+import moesif from 'moesif-browser-js';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppCommonModule } from './app-common.module';
@@ -22,11 +23,24 @@ import { AppWrapperComponent } from './app-wrapper.component';
 
 import { environment } from '../environments/environment';
 
-import { PROVIDERS, TranslationLoaderService, WEB3_PROVIDER } from './shared';
+import {
+  PROVIDERS, TranslationLoaderService, Web3Service,
+  WEB3_PROVIDER, MOESIF_INSTANCE_TOKEN, moesifSkipEvent, moesifGetMetadata,
+} from './shared';
 import { effects, reducers } from './shared/store';
 
 import { AppModule } from './+app/app.module';
 import { WebsiteModule } from './+website/website.module';
+
+
+if (environment.moesifToken) {
+  moesif.init({
+    applicationId: environment.moesifToken,
+    skip: event => moesifSkipEvent(event),
+    getMetadata: event => moesifGetMetadata(event, Web3Service.env),
+  });
+  moesif.start();
+}
 
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
@@ -78,8 +92,9 @@ export function getCurrentValidLocale() {
     {
       provide: WEB3_PROVIDER,
       useValue: () => environment.web3Provider || Web3.givenProvider || ((<any>window).web3 && (<any>window).web3.currentProvider),
-    }
+    },
+    ...(environment.moesifToken ? [{provide: MOESIF_INSTANCE_TOKEN, useValue: moesif}] : []),
   ],
-  bootstrap: [AppWrapperComponent]
+  bootstrap: [AppWrapperComponent],
 })
 export class AppWrapperModule { }

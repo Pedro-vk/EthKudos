@@ -69,49 +69,49 @@ describe('Landing page', () => {
   it('should go to FAQs page clicking on header help icon', async() => {
     await page.navigateTo();
     expect(await helpers.getPath()).toBe('/');
-    (await page.getHeaderFaqsButton()).click();
+    await (await page.getHeaderFaqsButton()).click();
     expect(await helpers.getPath()).toBe('/faqs');
   });
 
   it('should go to donation page clicking on support the project section', async() => {
     await page.navigateTo();
     expect(await helpers.getPath()).toBe('/');
-    (await page.getSectionDonateButton()).click();
+    await (await page.getSectionDonateButton()).click();
     expect(await helpers.getPath()).toBe('/donate');
   });
 
   it('should go to GitHub clicking on footer GitHub button', async() => {
     await page.navigateTo();
     expect(await helpers.getPath()).toBe('/');
-    (await page.getFooterGithubButton()).click();
+    await (await page.getFooterGithubButton()).click();
     expect(await helpers.getNewTabUrlAndClose()).toBe('https://github.com/Pedro-vk/EthKudos');
   });
 
   it('should go to FAQs page clicking on footer FAQs button', async() => {
     await page.navigateTo();
     expect(await helpers.getPath()).toBe('/');
-    (await page.getFooterFaqsButton()).click();
+    await (await page.getFooterFaqsButton()).click();
     expect(await helpers.getPath()).toBe('/faqs');
   });
 
   it('should go to About page clicking on footer About button', async() => {
     await page.navigateTo();
     expect(await helpers.getPath()).toBe('/');
-    (await page.getFooterAboutButton()).click();
+    await (await page.getFooterAboutButton()).click();
     expect(await helpers.getPath()).toBe('/about');
   });
 
   it('should go to Privacy Policy page clicking on footer Privacy Policy button', async() => {
     await page.navigateTo();
     expect(await helpers.getPath()).toBe('/');
-    (await page.getFooterPrivacyButton()).click();
+    await (await page.getFooterPrivacyButton()).click();
     expect(await helpers.getPath()).toBe('/privacy-policy');
   });
 
   it('should go to Donate page clicking on footer Donate button', async() => {
     await page.navigateTo();
     expect(await helpers.getPath()).toBe('/');
-    (await page.getFooterDonateButton()).click();
+    await (await page.getFooterDonateButton()).click();
     expect(await helpers.getPath()).toBe('/donate');
   });
 });

@@ -27,6 +27,8 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
 
+import { MOESIF_INSTANCE_TOKEN } from './moesif.helpers';
+
 import * as Migrations from '../../../build/contracts/Migrations.json';
 
 export enum ConnectionStatus {
@@ -55,6 +57,7 @@ export const WEB3_PROVIDER = new InjectionToken('WEB3_PROVIDER');
 
 @Injectable()
 export class Web3Service {
+  static env: {status?: ConnectionStatus, network?: networkType, provider?: providerType} = {};
   status: ConnectionStatus;
   account: string;
   networkType: networkType;
@@ -119,7 +122,6 @@ export class Web3Service {
       return ConnectionStatus.Total;
     })
     .distinctUntilChanged()
-    .debounceTime(100)
     .shareReplay(1);
   readonly watchingContractChanges$ = this._newWatchingAddress$
     .scan((acc, address) => [...acc, address].filter((_, i, list) => list.indexOf(_) === i), [])
@@ -140,7 +142,10 @@ export class Web3Service {
     return this._web3 || this.initWeb3();
   }
 
-  constructor(@Optional() @Inject(WEB3_PROVIDER) private _web3Provider: () => any) {
+  constructor(
+    @Optional() @Inject(WEB3_PROVIDER) private _web3Provider: () => any,
+    @Optional() @Inject(MOESIF_INSTANCE_TOKEN) private moesif: any,
+  ) {
     this.checkContractInNetwork();
     this.listenChanges();
   }
@@ -151,9 +156,16 @@ export class Web3Service {
 
   private listenChanges(): void {
     if (!this._intervalMock) {
-      this.status$.subscribe(status => this.status = status);
+      Web3Service.env.provider = this.getProvider();
+      this.status$.subscribe(status => Web3Service.env.status = this.status = status);
       this.account$.subscribe(account => this.account = account);
-      this.getNetworkType().subscribe(type => this.networkType = type);
+      this.getNetworkType().subscribe(type => Web3Service.env.network = this.networkType = type);
+      this.account$
+        .subscribe(account => {
+          if (this.moesif && this.moesif.identifyUser) {
+            this.moesif.identifyUser(account.toLowerCase());
+          }
+        });
     }
   }
 
