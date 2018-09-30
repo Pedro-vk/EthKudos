@@ -85,6 +85,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.kudosToken$
+      .filter(_ => _ && !!_.address)
       .first()
       .subscribe(kudosToken => {
         if (localStorage && kudosToken.address) {

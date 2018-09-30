@@ -16,6 +16,7 @@ import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/race';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
@@ -63,7 +64,7 @@ export class Web3Service {
   private _newWatchingAddress$: BehaviorSubject<string> = new BehaviorSubject(undefined);
 
   private readonly interval$: Observable<any> = Observable.of(undefined)
-    .mergeMap(() => (this._intervalMock && this._intervalMock()) || Observable.interval(100))
+    .mergeMap(() => (this._intervalMock && this._intervalMock()) || Observable.interval(250))
     .share()
     .startWith(undefined);
   readonly newBlock$: Observable<number> = this.interval$
@@ -118,16 +119,20 @@ export class Web3Service {
       return ConnectionStatus.Total;
     })
     .distinctUntilChanged()
+    .debounceTime(100)
     .shareReplay(1);
   readonly watchingContractChanges$ = this._newWatchingAddress$
-    .scan((acc, address) => [...acc, String(address).toLowerCase()].filter((_, i, list) => list.indexOf(_) === i), [])
+    .scan((acc, address) => [...acc, address].filter((_, i, list) => list.indexOf(_) === i), [])
     .filter(addrs => !!addrs.length)
     .mergeMap(addrs =>
       this.newBlock$
         .mergeMap(blockNumber => this.getBlock(blockNumber, true))
         .filter(_ => !!_)
-        .map(({transactions}) => transactions.map(transaction => String(transaction.to).toLowerCase()))
-        .mergeMap(changes => Observable.from(changes.filter(change => addrs.indexOf(change) !== -1))),
+        .map(({transactions}) => transactions.map(transaction => transaction.to))
+        .mergeMap(changes => Observable.from(
+          changes
+            .filter(change => addrs.map(_ => (_ || '').toLowerCase()).indexOf((change || '').toLowerCase()) !== -1),
+        )),
     )
     .share();
 
@@ -241,9 +246,12 @@ export class Web3Service {
     }
   }
 
-  watchContractChanges(address: string): Observable<string> {
+  watchContractChanges(address: string = ''): Observable<string> {
     this._newWatchingAddress$.next(address);
-    return this.watchingContractChanges$.filter(_ => _ === address).share();
+    return this.watchingContractChanges$
+      .filter((_ = '') => _.toLowerCase() === address.toLowerCase())
+      .debounceTime(100)
+      .share();
   }
 
   getTransaction(tx: string): Observable<Transaction> {
