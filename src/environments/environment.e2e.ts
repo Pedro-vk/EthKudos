@@ -7,4 +7,5 @@ export const environment = {
   production: false,
   web3Provider: ganacheProvider,
   defaultGasLimit: 6721975,
+  moesifToken: undefined,
 };
