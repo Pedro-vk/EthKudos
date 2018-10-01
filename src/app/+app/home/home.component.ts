@@ -20,8 +20,7 @@ export class HomeComponent extends AppCommonAbstract {
     .filter(_ => !!_ && !!_.address)
     .shareReplay();
   readonly activePoll$ = this.kudosToken$
-    .map(_ => _.activePoll)
-    .filter(_ => !!_ && !!_.address);
+    .map(_ => _.activePoll);
   readonly previousPolls$ = this.kudosToken$
     .map(_ => _.previousPolls || []);
 
