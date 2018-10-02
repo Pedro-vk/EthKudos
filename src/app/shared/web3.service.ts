@@ -133,7 +133,8 @@ export class Web3Service {
         .map(({transactions}) => transactions.map(transaction => transaction.to))
         .mergeMap(changes => Observable.from(
           changes
-            .filter(change => addrs.map(_ => (_ || '').toLowerCase()).indexOf((change || '').toLowerCase()) !== -1),
+            .filter(change => addrs.map(_ => (_ || '').toLowerCase()).indexOf((change || '').toLowerCase()) !== -1)
+            .filter((_, i , list) => list.indexOf(_) === i),
         )),
     )
     .share();
@@ -263,6 +264,7 @@ export class Web3Service {
     return this.watchingContractChanges$
       .filter((_ = '') => _.toLowerCase() === address.toLowerCase())
       .debounceTime(100)
+      .map(_ => _.toLowerCase())
       .share();
   }
 
