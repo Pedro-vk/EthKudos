@@ -7,6 +7,6 @@ export abstract class Page {
   protected async goToPath(path: string, wait: number = 0) {
     await browser.waitForAngularEnabled(false);
     await browser.get(path);
-    await browser.sleep(wait);
+    await browser.sleep(500 + wait);
   }
 }
