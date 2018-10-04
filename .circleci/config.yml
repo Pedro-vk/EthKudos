@@ -157,8 +157,9 @@ jobs:
           command: npm run eth:up
           background: true
       - run: rm -rf build/
+      - run: sudo npm i -g  protractor-retry
       - run: npm run deploy:dev
-      - run: npm run e2e
+      - run: sudo npm run e2e
   # Code quality
   lint-ng:
     <<: *NODE

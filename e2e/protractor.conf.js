@@ -5,8 +5,9 @@ const path = require('path');
 const { SpecReporter } = require('jasmine-spec-reporter');
 const { JUnitXmlReporter } = require('jasmine-reporters');
 const HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
+const retry = require('protractor-retry').retry;
 
-var htmlScreenshotReporter = new HtmlScreenshotReporter({
+const htmlScreenshotReporter = new HtmlScreenshotReporter({
   dest: 'test-results/screenshots',
 });
 
@@ -41,9 +42,14 @@ exports.config = {
       modifySuiteName: () => 'e2e',
     }));
     jasmine.getEnv().addReporter(htmlScreenshotReporter);
+    retry.onPrepare();
   },
-  afterLaunch: exitCode => {
-    return new Promise(resolve => htmlScreenshotReporter.afterLaunch(resolve.bind(this, exitCode)));
+  afterLaunch: async (exitCode) => {
+    await new Promise(resolve => htmlScreenshotReporter.afterLaunch(resolve.bind(this, exitCode)));
+    return await retry.afterLaunch(2);
+  },
+  onCleanUp: function (results) {
+    retry.onCleanUp(results);
   },
 };
 
