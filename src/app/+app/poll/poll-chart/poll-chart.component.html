@@ -14,10 +14,11 @@
   <mat-icon>close</mat-icon>
 </button>
 
-<div *ngIf="!loaded" class="loading-message" translate>Getting all the data to generate the graph...</div>
+<div *ngIf="!loaded" class="loading-message" @easeInOut translate>Getting all the data to generate the graph...</div>
 
 <eth-kudos-graph
   #graph
+  [class.visible]="loaded"
   [large]="true"
   [nodes]="gratitudesNodes$ | async"
   [edgesList]="gratitudesEdges$ | async"
