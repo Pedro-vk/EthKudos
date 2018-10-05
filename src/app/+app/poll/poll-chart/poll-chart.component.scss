@@ -64,3 +64,12 @@ mat-button-toggle-group {
     pointer-events: none;
   }
 }
+
+eth-kudos-graph {
+  transition: opacity .6s ease .5s;
+  opacity: 0;
+
+  &.visible {
+    opacity: 1;
+  }
+}

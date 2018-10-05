@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
@@ -21,7 +22,19 @@ import { AppCommonAbstract } from '../../common.abstract';
 @Component({
   selector: 'eth-kudos-poll-chart',
   templateUrl: './poll-chart.component.html',
-  styleUrls: ['./poll-chart.component.scss']
+  styleUrls: ['./poll-chart.component.scss'],
+  animations: [
+    trigger('easeInOut', [
+      transition(':enter', [
+        style({opacity: 0}),
+        animate('.5s ease-in-out', style({opacity: 1})),
+      ]),
+      transition(':leave', [
+        style({opacity: 1}),
+        animate('.5s ease-in-out', style({opacity: 0})),
+      ]),
+    ]),
+  ],
 })
 export class PollChartComponent extends AppCommonAbstract implements OnInit {
   loaded = false;
@@ -69,7 +82,7 @@ export class PollChartComponent extends AppCommonAbstract implements OnInit {
       .combineLatest(this.gratitudesEdges$)
       .first()
       .catch(() => Observable.empty())
-      .delay(10)
+      .delay(1)
       .subscribe(() => {
         this.loaded = true;
         this.graph.ngOnInit();
