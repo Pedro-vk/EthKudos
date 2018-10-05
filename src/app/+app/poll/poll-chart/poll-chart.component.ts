@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
@@ -14,7 +13,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/shareReplay';
 
 import { GraphComponent } from '../../../components';
-import { KudosTokenFactoryService, KudosPollFactoryService } from '../../../shared';
+import { KudosTokenFactoryService, KudosPollFactoryService, easeInOutAnimationTime } from '../../../shared';
 import * as fromRoot from '../../../shared/store/reducers';
 
 import { AppCommonAbstract } from '../../common.abstract';
@@ -23,18 +22,7 @@ import { AppCommonAbstract } from '../../common.abstract';
   selector: 'eth-kudos-poll-chart',
   templateUrl: './poll-chart.component.html',
   styleUrls: ['./poll-chart.component.scss'],
-  animations: [
-    trigger('easeInOut', [
-      transition(':enter', [
-        style({opacity: 0}),
-        animate('.5s ease-in-out', style({opacity: 1})),
-      ]),
-      transition(':leave', [
-        style({opacity: 1}),
-        animate('.5s ease-in-out', style({opacity: 0})),
-      ]),
-    ]),
-  ],
+  animations: [easeInOutAnimationTime(500)],
 })
 export class PollChartComponent extends AppCommonAbstract implements OnInit {
   loaded = false;
