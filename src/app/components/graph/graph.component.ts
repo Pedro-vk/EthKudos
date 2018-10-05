@@ -203,6 +203,11 @@ export class GraphComponent implements OnInit {
       const data = event.target.data();
       this.showNodeTooltip(position, data);
       this.cleanRandom();
+
+      const sel = event.target;
+      this.cy.elements().subtract(sel).subtract(sel.outgoers()).subtract(sel.incomers()).addClass('no-focus');
+      sel.outgoers().addClass('focus-out');
+      sel.incomers().addClass('focus-in');
     });
 
     this.cy.on('mouseout mousedown touchstart', 'edge', event => {
@@ -211,7 +216,13 @@ export class GraphComponent implements OnInit {
         event.target.removeClass('hover');
       }
     });
-    this.cy.on('mouseout mousedown touchstart', 'node', () => this.nodeHover$.next(undefined));
+    this.cy.on('mouseout mousedown touchstart', 'node', () => {
+      this.nodeHover$.next(undefined);
+      this.cy.elements()
+        .removeClass('no-focus')
+        .removeClass('focus-out')
+        .removeClass('focus-in');
+    });
   }
 
   showEdgeTooltip(position, data) {
@@ -248,6 +259,9 @@ export class GraphComponent implements OnInit {
           'background-image': (element) =>
             `url(${blockies({seed: (element.data().address || '#').toLowerCase(), size: 8, scale: 8}).toDataURL()})`,
           'background-fit': 'cover',
+          'transition-property': 'opacity',
+          'transition-timing-function': 'ease',
+          'transition-duration': '.2s',
         })
       .selector('edge')
         .css({
@@ -265,9 +279,10 @@ export class GraphComponent implements OnInit {
           'target-arrow-color': '#b3ccea',
           'source-distance-from-node': this.large ? 12 : 6,
           'target-distance-from-node': this.large ? 12 : 6,
-          'transition-property': 'color, line-color, target-arrow-color',
+          'transition-property': 'color, line-color, target-arrow-color, opacity',
           'transition-timing-function': 'ease',
           'transition-duration': '.4s',
+          'opacity': 1,
           'z-index': 1,
         })
       .selector('.highlight')
@@ -276,6 +291,24 @@ export class GraphComponent implements OnInit {
           'line-color': '#FFD23A',
           'target-arrow-color': '#FFD23A',
           'z-index': 2,
+        })
+      .selector('.no-focus')
+        .css({
+          'opacity': .3,
+        })
+      .selector('.focus-in')
+        .css({
+          'color': '#55B9B0',
+          'line-color': '#009688',
+          'target-arrow-color': '#009688',
+          'z-index': 3,
+        })
+      .selector('.focus-out')
+        .css({
+          'color': '#FFBA55',
+          'line-color': '#FF9800',
+          'target-arrow-color': '#FF9800',
+          'z-index': 3,
         })
       .selector('.hover')
         .css({
