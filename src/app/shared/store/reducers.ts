@@ -167,11 +167,8 @@ export const getCurrentKudosTokenWithFullData = createSelector(getRouterState, _
       const selectedPoll = (kudosToken.allPolls || [])
         .find(({address}) => (address || '').toLowerCase() === (selectedKudosPollAddress || '').toLowerCase());
       const {members, previousPolls} = kudosToken;
-      if (
-        [members, previousPolls].indexOf(undefined) !== -1
-        || previousPolls.length === 0
-        || previousPolls.findIndex(kudosPoll => !(kudosPoll && kudosPoll.gratitudes)) !== -1
-      ) {
+      const notFullLoaded = previousPolls.findIndex(kudosPoll => !(kudosPoll && kudosPoll.gratitudes)) !== -1;
+      if (!members || !previousPolls || previousPolls.length === 0 || notFullLoaded) {
         return <never>{
           ...kudosToken,
           ...loadedStatus,

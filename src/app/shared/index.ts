@@ -1,6 +1,7 @@
 export * from './moesif.helpers';
 
 export * from './animations/card-in-out';
+export * from './animations/ease-in-out';
 
 export * from './guards/is-connected.guard';
 export * from './guards/is-owner.guard';

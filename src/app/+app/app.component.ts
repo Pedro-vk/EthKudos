@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -26,18 +25,6 @@ import * as fromRoot from '../shared/store/reducers';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('easeInOut', [
-      transition(':enter', [
-        style({opacity: 0}),
-        animate('.3s ease-in-out', style({opacity: 1})),
-      ]),
-      transition(':leave', [
-        style({opacity: 1}),
-        animate('.3s ease-in-out', style({opacity: 0})),
-      ]),
-    ]),
-  ],
 })
 export class AppComponent implements OnInit {
   readonly status$ = this.store.select(fromRoot.getStatus);
