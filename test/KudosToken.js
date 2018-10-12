@@ -191,7 +191,7 @@ contract('KudosToken', accounts => {
     });
 
     it('should know the address of the current poll', async () => {
-      assert.ok(/^0x[0-9a-f]{40}$/.test(await instance.activePoll()), 'Wasn\'t an address');
+      assert.ok(/^0x[0-9a-f]{40}$/i.test(await instance.activePoll()), 'Wasn\'t an address');
     });
 
     it('should add the members to new poll', async () => {

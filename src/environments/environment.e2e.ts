@@ -1,7 +1,7 @@
-import HDWalletProvider from 'truffle-hdwallet-provider';
+import PrivateKeyProvider from 'truffle-privatekey-provider';
 
-const defaultGanacheMneonic = 'myth like bonus scare over problem client lizard pioneer submit female collect';
-const ganacheProvider = new HDWalletProvider(defaultGanacheMneonic, `http://localhost:8545`, 0, 10);
+const privateKey = '4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d';
+const ganacheProvider = new PrivateKeyProvider(privateKey, 'http://localhost:8545');
 
 export const environment = {
   production: false,

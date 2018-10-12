@@ -47,3 +47,7 @@ installed_contracts/*
 coverage\.json
 build/merged/
 
+
+scTopics
+
+allFiredEvents

@@ -18,7 +18,7 @@ contract('KudosRouter', accounts => {
     });
 
     it('should be able to get a resource', async () => {
-      const [version, at] = await instance.getResource('Test');
+      const {version, at} = await instance.getResource('Test');
 
       assert.equal(at, '0x0000000000000000000000000000000000000001', 'Must be 1 the address of the resource');
       assert.equal(version, '0.1', 'Must be 0.1 the version of the resource');
@@ -47,7 +47,7 @@ contract('KudosRouter', accounts => {
     it('should be able to overwrite a resource', async () => {
       await instance.setResource('Test', '0.2', '0x0000000000000000000000000000000000000002');
 
-      const [version, at] = await instance.getResource('Test');
+      const {version, at} = await instance.getResource('Test');
 
       assert.equal(at, '0x0000000000000000000000000000000000000002', 'Must be 2 the address of the resource');
       assert.equal(version, '0.2', 'Must be 0.2 the version of the resource');
