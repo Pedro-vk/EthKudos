@@ -112,8 +112,9 @@
     "rxjs-tslint-rules": "^4.7.2",
     "solidity-coverage": "^0.5.7",
     "solium": "^1.1.8",
-    "truffle": "4.1.11",
-    "truffle-hdwallet-provider": "0.0.6",
+    "truffle": "^5.0.0-beta.1",
+    "truffle-hdwallet-provider": "1.0.0-web3one.0",
+    "truffle-privatekey-provider": "0.1.0",
     "ts-node": "~7.0.1",
     "tslint": "~5.11.0",
     "typescript": "^2.9.2"

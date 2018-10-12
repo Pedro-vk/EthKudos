@@ -42,6 +42,7 @@ export class LandingHomePage extends Page {
   }
 
   async getSectionContent(sectionNumber: number): Promise<{h2?: string, h3?: string, p?: string[]}> {
+    await browser.sleep(200);
     const section: ElementFinder = await this.getSection(sectionNumber);
     const getTextOf = async (selector: string) => {
       const contentElem = section.element(by.css(selector));

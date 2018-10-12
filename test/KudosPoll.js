@@ -145,7 +145,7 @@ contract('KudosPoll', accounts => {
       assert.equal(+(gratitudesSize), 1, `1 wasn\'t the number of gratitudes of ${accounts[1]}`);
 
       const gratitude = await instance.getGratitudeOf.call(accounts[1], 0);
-      const [kudos, message, fromAddress] = gratitude;
+      const {kudos, message, from: fromAddress} = gratitude;
 
       assert.equal(kudos, 100, `1.00 wasn\'t the kudos sent`);
       assert.equal(message, 'Test message', `'Test message' wasn\'t the message sent`);
@@ -220,7 +220,7 @@ contract('KudosPoll', accounts => {
       const resultsPromises = Array.from(new Array(+(await instance.getPollResultsSize())))
         .map((_, i) => instance.getPollResult(i));
       const results = (await Promise.all(resultsPromises))
-        .map(([member, kudos]) => ({member, kudos: +kudos}))
+        .map(({member, kudos}) => ({member, kudos: +kudos}))
         .sort((a, b) => b.kudos - a.kudos);
 
       const compared = [
