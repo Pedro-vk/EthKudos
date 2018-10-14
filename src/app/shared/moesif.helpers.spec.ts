@@ -76,6 +76,7 @@ describe('Moesif helpers', () => {
   it('should know the enviroment', () => {
     expect(moesifGetEnv('eth-kudos.com')).toBe('prod');
     expect(moesifGetEnv('pre.eth-kudos.com')).toBe('pre');
+    expect(moesifGetEnv('ethkudos-xhashx.now.sh')).toBe('snapshot');
     expect(moesifGetEnv('localhost')).toBe('dev');
     expect(moesifGetEnv('127.0.0.1')).toBe('dev');
     expect(moesifGetEnv('acme.org')).toBe('unknown');

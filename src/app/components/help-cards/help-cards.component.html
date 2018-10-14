@@ -24,6 +24,12 @@
   <h4>Simply open {{provider$ | async}} and follow the instructions to unlock it</h4>
 </mat-card>
 
+<mat-card class="help-card-enabled" *ngIf="(status$ | async) === 'no-enabled'" @cardInOut>
+  <h3>Connect to EthKudos</h3>
+  <h4>Is just necessary to connect EthKudos with {{provider$ | async}}</h4>
+  <button mat-raised-button color="primary" class="center" (click)="enableProvider()">Connect to {{provider$ | async}}</button>
+</mat-card>
+
 <mat-card class="help-card-network" *ngIf="(status$ | async) === 'no-network'" @cardInOut>
   <h3>Oops, you’re on the wrong network</h3>
   <h4>Simply open {{provider$ | async}} and switch <br> over to the <strong>Ropsten Ethereum Network</strong>.</h4>

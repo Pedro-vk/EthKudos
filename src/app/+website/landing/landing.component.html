@@ -25,6 +25,7 @@
     <span *ngIf="error === 'no-provider'" translate>You have not installed MetaMask.</span>
     <span *ngIf="error === 'no-network'" translate>You are not in the correct network.</span>
     <span *ngIf="error === 'no-account'">{{'PROVIDER_LOCKED' | translate : {PROVIDER: provider$ | async} }}</span>
+    <span *ngIf="error === 'no-enabled'">{{'PROVIDER_NO_ENABLED' | translate : {PROVIDER: provider$ | async} }}</span>
     <span *ngIf="error === 'timeout'">{{'PROVIDER_HUNG' | translate : {PROVIDER: provider$ | async} }}</span>
 
     <button mat-button (click)="showHelp = true">{{'Solve the error' | translate}}</button>

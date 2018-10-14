@@ -3,7 +3,7 @@ import { InjectionToken } from '@angular/core';
 export const MOESIF_INSTANCE_TOKEN = new InjectionToken('MOESIF_INSTANCE');
 
 const web3skipList = [
-  'eth_accounts', 'eth_blockNumber', 'net_version', 'eth_getBlockByNumber', 'eth_getBalance', 'eth_call',
+  'eth_accounts', 'eth_blockNumber', 'net_version', 'eth_getBlockByNumber', 'eth_getBalance', 'eth_call', 'eth_coinbase',
   'eth_getCode', 'eth_gasPrice', 'eth_getTransactionReceipt', 'eth_getTransactionByHash', 'eth_subscribe',
 ];
 
@@ -28,8 +28,12 @@ export function moesifSkipEvent(event: any = {}): boolean {
   return false;
 }
 
-export function moesifGetEnv(url?: string): 'prod' | 'pre' | 'dev' | 'unknown' {
-  switch (url || (window && window.location && window.location.hostname)) {
+export function moesifGetEnv(url?: string): 'prod' | 'pre' | 'dev' | 'snapshot' | 'unknown' {
+  const domain = url || (window && window.location && window.location.hostname);
+  if (domain.indexOf('now.sh') !== -1) {
+    return 'snapshot';
+  }
+  switch (domain) {
     case 'eth-kudos.com': return 'prod';
     case 'pre.eth-kudos.com': return 'pre';
     case 'localhost':

@@ -34,6 +34,7 @@ import * as Migrations from '../../../build/contracts/Migrations.json';
 export enum ConnectionStatus {
   Total = 'total',
   NoAccount = 'no-account',
+  NoEnabled = 'no-enabled',
   NoProvider = 'no-provider',
   NoNetwork = 'no-network',
   Timeout = 'timeout',
@@ -57,8 +58,9 @@ export const WEB3_PROVIDER = new InjectionToken('WEB3_PROVIDER');
 
 @Injectable()
 export class Web3Service {
-  static env: {status?: ConnectionStatus, network?: networkType, provider?: providerType} = {};
+  static env: {status?: ConnectionStatus, network?: networkType, provider?: providerType, enabled?: boolean} = {};
   status: ConnectionStatus;
+  providerEnabled: boolean;
   account: string;
   networkType: networkType;
   private existInNetwork: boolean;
@@ -114,6 +116,9 @@ export class Web3Service {
         return ConnectionStatus.Timeout;
       }
       if (!account) {
+        if (this.providerEnabled === false) {
+          return ConnectionStatus.NoEnabled;
+        }
         return ConnectionStatus.NoAccount;
       }
       if (!this.existInNetwork) {
@@ -168,6 +173,7 @@ export class Web3Service {
             this.moesif.identifyUser(account.toLowerCase());
           }
         });
+      this.interval$.subscribe(async () => this.providerEnabled = Web3Service.env.enabled = await this.isEnabled());
     }
   }
 
@@ -288,6 +294,27 @@ export class Web3Service {
 
   getBlock(number: BlockType, returnTransactions: boolean = false): Observable<Block> {
     return Observable.fromPromise(this.web3.eth.getBlock(number, returnTransactions));
+  }
+
+  async isEnabled(): Promise<boolean | undefined> {
+    const provider: any = this.web3 && this.web3.currentProvider;
+    if (!provider || !provider.enable || !provider.isEnabled) {
+      return;
+    }
+    return await provider.isEnabled();
+  }
+
+  async requestEnable(): Promise<boolean> {
+    const enabled = await this.isEnabled() === true;
+    if (enabled === true || enabled === undefined) {
+      return !!enabled;
+    }
+    try {
+      await (<any>this.web3.currentProvider).enable();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   getMetamaskInstallationLink(browser?: string): string {

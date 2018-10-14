@@ -40,6 +40,11 @@ mat-card {
   }
 }
 
+button.center {
+  display: table;
+  margin: auto;
+}
+
 .metamask-logo {
   &-wrapper {
     display: flex;
