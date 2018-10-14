@@ -62,6 +62,7 @@
   "One of the most grateful": "One of the most grateful",
   "PROVIDER_HUNG": "{PROVIDER, select, undefined{Ethereum provider} other{ {PROVIDER} } } is not working as expected.",
   "PROVIDER_LOCKED": "Your {PROVIDER, select, undefined{Ethereum provider} other{ {PROVIDER} } } is locked.",
+  "PROVIDER_NO_ENABLED": "Not connected to {PROVIDER, select, undefined{Ethereum provider} other{ {PROVIDER} } } yet.",
   "Pending transactions:": "Pending transactions:",
   "Previous polls": "Previous polls",
   "Remaining": "Remaining",
