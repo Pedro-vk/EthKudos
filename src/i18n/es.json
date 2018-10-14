@@ -62,6 +62,7 @@
   "One of the most grateful": "Uno de los más agradecidos",
   "PROVIDER_HUNG": "{PROVIDER, select, undefined{El proveedor de Ethereum} other{ {PROVIDER} } } no funciona como debería.",
   "PROVIDER_LOCKED": "{PROVIDER, select, undefined{El proveedor de Ethereum} other{ {PROVIDER} } } está bloqueado.",
+  "PROVIDER_NO_ENABLED": "No estás conectado a {PROVIDER, select, undefined{El proveedor de Ethereum} other{ {PROVIDER} } } aún.",
   "Pending transactions:": "Transacciones pendientes:",
   "Previous polls": "Votaciones previas",
   "Remaining": "Restante",

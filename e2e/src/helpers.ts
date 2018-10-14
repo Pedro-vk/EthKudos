@@ -2,15 +2,19 @@ import { protractor, browser, by, element, ElementFinder, ElementArrayFinder, Lo
 
 // URL helpers
 export async function getTitle() {
+  await browser.sleep(10);
   return await browser.getTitle();
 }
 export async function getUrl() {
+  await browser.sleep(10);
   return await browser.getCurrentUrl();
 }
 export async function getPath() {
+  await browser.sleep(10);
   return (<string>await browser.getCurrentUrl()).replace(/^[^#]*?:\/\/.*?(\/.*)$/, '$1');
 }
 export async function getNewTabUrlAndClose() {
+  await browser.sleep(10);
   const handles = await browser.getAllWindowHandles();
   browser.driver.switchTo().window(handles[1]);
   const url = await browser.getCurrentUrl();

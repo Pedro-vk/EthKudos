@@ -91,7 +91,12 @@ export function getCurrentValidLocale() {
     {provide: LOCALE_ID, useValue: getCurrentValidLocale()},
     {
       provide: WEB3_PROVIDER,
-      useValue: () => environment.web3Provider || Web3.givenProvider || ((<any>window).web3 && (<any>window).web3.currentProvider),
+      useValue:
+        () =>
+          environment.web3Provider
+          || (<any>window).ethereum
+          || Web3.givenProvider
+          || ((<any>window).web3 && (<any>window).web3.currentProvider),
     },
     ...(environment.moesifToken ? [{provide: MOESIF_INSTANCE_TOKEN, useValue: moesif}] : []),
   ],

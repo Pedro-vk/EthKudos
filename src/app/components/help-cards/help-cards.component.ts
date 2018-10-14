@@ -43,4 +43,8 @@ export class HelpCardsComponent implements AfterViewChecked {
   reload(): void {
     window.location.reload();
   }
+
+  enableProvider() {
+    this.web3Service.requestEnable();
+  }
 }
