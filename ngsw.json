@@ -9,7 +9,7 @@
       "urls": [
         "/favicon.png",
         "/index.html",
-        "/main.9736bd2ae6fc438d9e28.js",
+        "/main.7ef3e5a45f33d93ca958.js",
         "/polyfills.a92a0e12b75795db9cca.js",
         "/runtime.a66f828dca56eeb90e02.js"
       ],
@@ -43,10 +43,10 @@
     "/assets/metamask-network.png": "6f5bc166c9bb350cda57a9293213aa13f8c44394",
     "/assets/toshi.png": "bd849fac4d6f00b5cdfffd0f84053610cb868530",
     "/favicon.png": "75d5ba3d1973c0a65dd96d20456c23c110cee8d8",
-    "/i18n/en.json": "26966c4f44ca7a0aefcf9a966fbfa8aca86c08f6",
-    "/i18n/es.json": "e6cf79185c1be407119163c383c2674016ab2ca5",
-    "/index.html": "94a3e50760d31026ae39fb7b6b5799bdaa0bf988",
-    "/main.9736bd2ae6fc438d9e28.js": "60bea78e345f3bd61c530975a96fb87f6c69ffd9",
+    "/i18n/en.json": "5a3ede27b3da34b939e35c8477f721e44be81c4b",
+    "/i18n/es.json": "f9bd52c9b3392dcd0f852af7fd2d6e3e4724607c",
+    "/index.html": "e18a164c4e919c91ea462bd7b8e99b122feb34ae",
+    "/main.7ef3e5a45f33d93ca958.js": "1195adb510f0beeb924d66e99603db5b538e7532",
     "/polyfills.a92a0e12b75795db9cca.js": "0ba562477b9b0886461d20618b85e5f9f4b617f5",
     "/runtime.a66f828dca56eeb90e02.js": "078e320cc6fdaf355836c3b1c52b059cdd33fc7e"
   },
