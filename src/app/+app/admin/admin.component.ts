@@ -9,6 +9,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/shareReplay';
+import 'rxjs/add/operator/takeUntil';
 
 import * as fromRoot from '../../shared/store/reducers';
 
@@ -59,10 +60,12 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
   ngOnInit(): void {
     this.kudosToken$
       .filter(({imOwner}) => imOwner === false)
+      .takeUntil(this.onDestroy$)
       .subscribe(() => this.router.navigate(['../'], {relativeTo: this.activatedRoute}));
 
     this.kudosToken$
       .filter(_ => _ && _.members && !!_.members.length)
+      .takeUntil(this.onDestroy$)
       .subscribe(({members}) => {
         members.forEach(({member, name}) => this.memberName[member] = this.memberName[member] || name);
       });
@@ -82,6 +85,7 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
 
     this.activatedRoute.parent.params
       .map(({tokenAddress}) => this.kudosTokenFactoryService.getKudosTokenServiceAt(tokenAddress))
+      .takeUntil(this.onDestroy$)
       .subscribe(kudosTokenService => this.kudosTokenService = kudosTokenService);
   }
 

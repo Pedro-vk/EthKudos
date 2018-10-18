@@ -10,6 +10,7 @@ import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/shareReplay';
+import 'rxjs/add/operator/takeUntil';
 
 import { KudosTokenFactoryService } from '../../../shared';
 import * as fromRoot from '../../../shared/store/reducers';
@@ -83,6 +84,7 @@ export class PollActiveComponent extends AppCommonAbstract implements OnInit {
       });
     this.activePoll$
       .filter(({maxKudosToMember}) => !isNaN(maxKudosToMember))
+      .takeUntil(this.onDestroy$)
       .subscribe(({maxKudosToMember, myBalance}) => {
         this.maxKudos = maxKudosToMember;
         this.maxKudosInput = Math.min(maxKudosToMember, myBalance);

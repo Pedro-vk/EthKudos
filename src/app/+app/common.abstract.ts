@@ -1,8 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Subject } from 'rxjs/Subject';
 
-export abstract class AppCommonAbstract {
+export abstract class AppCommonAbstract implements OnDestroy {
+  protected onDestroy$: Subject<undefined> = new Subject();
   protected changeDetectorRef: ChangeDetectorRef;
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+  }
 
   protected onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {
     if (success) {
