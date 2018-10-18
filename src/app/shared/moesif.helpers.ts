@@ -4,7 +4,7 @@ export const MOESIF_INSTANCE_TOKEN = new InjectionToken('MOESIF_INSTANCE');
 
 const web3skipList = [
   'eth_accounts', 'eth_blockNumber', 'net_version', 'eth_getBlockByNumber', 'eth_getBalance', 'eth_call', 'eth_coinbase',
-  'eth_getCode', 'eth_gasPrice', 'eth_getTransactionReceipt', 'eth_getTransactionByHash', 'eth_subscribe',
+  'eth_getCode', 'eth_gasPrice', 'eth_getTransactionReceipt', 'eth_getTransactionByHash', 'eth_subscribe', 'eth_unsubscribe',
 ];
 
 function getEventData(event: any) {

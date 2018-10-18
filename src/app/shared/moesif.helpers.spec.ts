@@ -45,6 +45,7 @@ describe('Moesif helpers', () => {
     expect(moesifSkipEvent(getEventByCall('eth_getTransactionReceipt'))).toBeTruthy();
     expect(moesifSkipEvent(getEventByCall('eth_getTransactionByHash'))).toBeTruthy();
     expect(moesifSkipEvent(getEventByCall('eth_subscribe'))).toBeTruthy();
+    expect(moesifSkipEvent(getEventByCall('eth_unsubscribe'))).toBeTruthy();
   });
 
   it('should not skip some web3 calls that are in the skip list if returned an error', () => {
@@ -71,6 +72,7 @@ describe('Moesif helpers', () => {
     expect(moesifSkipEvent(getEventByCall('eth_getTransactionReceipt'))).toBeFalsy();
     expect(moesifSkipEvent(getEventByCall('eth_getTransactionByHash'))).toBeFalsy();
     expect(moesifSkipEvent(getEventByCall('eth_subscribe'))).toBeFalsy();
+    expect(moesifSkipEvent(getEventByCall('eth_unsubscribe'))).toBeFalsy();
   });
 
   it('should know the enviroment', () => {
