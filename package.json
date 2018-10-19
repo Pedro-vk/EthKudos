@@ -39,7 +39,7 @@
     "create-cname": "echo $(cat package.json | grep '\"homepage\"' | cut -d '\"' -f 4) > dist/CNAME",
     "heroku": "cp -fr ./.heroku/. ./dist",
     "now:deploy": "now --static --public --name eth-kudos dist/",
-    "deploy": "cp dist/index.html dist/404.html && cp -r .circleci dist/ && npm run create-cname && npm run heroku && npm run deploy:github-pages",
+    "deploy": "cp dist/index.html dist/404.html && cp -r .circleci dist/ && npm run heroku && npm run deploy:github-pages",
     "deploy:github-pages": "gh-pages -t -d dist/ -m \"Built from $(git rev-parse --short=16 HEAD): $(git log -n 1 --pretty=format:%s)\""
   },
   "dependencies": {
