@@ -104,7 +104,7 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
         this.newPoll.minDurationInMinutes,
       )
       .then(() => done(true))
-      .catch(err => console.warn(err) || done());
+      .catch(err => done());
   }
 
   closePoll() {
@@ -116,7 +116,7 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
     this.kudosTokenService
       .closePoll()
       .then(() => done(true))
-      .catch(err => console.warn(err) || done());
+      .catch(err => done());
   }
 
   addMember(form?: NgForm) {
@@ -129,7 +129,7 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
         this.newMember.contact,
       )
       .then(() => done(true))
-      .catch(err => console.warn(err) || done());
+      .catch(err => done());
   }
 
   editContact(address: string, name: string) {
@@ -141,7 +141,7 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
     this.kudosTokenService
       .editContact(address, name)
       .then(() => done(true))
-      .catch(err => console.warn(err) || done());
+      .catch(err => done());
   }
 
   removeMember(address: string) {
@@ -155,6 +155,6 @@ export class AdminComponent extends AppCommonAbstract implements OnInit {
     this.kudosTokenService
       .removeMember(address)
       .then(() => done(true))
-      .catch(err => console.warn(err) || done());
+      .catch(err => done());
   }
 }

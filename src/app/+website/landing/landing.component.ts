@@ -186,7 +186,7 @@ export class LandingComponent implements OnInit {
         this.newKudosTokenAddress.next(newKudosTokenAddress);
         done(true);
       })
-      .catch(err => console.warn(err) || done());
+      .catch(err => done());
   }
 
   private onActionFinished<T>(success: boolean, obj: T, setter: (d: T) => void, form: NgForm): void {
