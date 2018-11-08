@@ -1,4 +1,4 @@
-import { Component, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import * as MetamaskLogo from 'metamask-logo';
@@ -13,7 +13,7 @@ import { Web3Service, cardInOutAnimation } from '../../shared';
   styleUrls: ['./help-cards.component.scss'],
   animations: [cardInOutAnimation],
 })
-export class HelpCardsComponent implements AfterViewChecked {
+export class HelpCardsComponent implements OnInit, AfterViewChecked {
 
   metamaskInstallationClicked: boolean;
   metamaskInstallationLink: string = this.web3Service.getMetamaskInstallationLink();
@@ -24,6 +24,10 @@ export class HelpCardsComponent implements AfterViewChecked {
   readonly provider$ = this.store.select(fromRoot.getProvider);
 
   constructor(private store: Store<fromRoot.State>, private web3Service: Web3Service) { }
+
+  ngOnInit() {
+    this.web3Service.requestEnable();
+  }
 
   ngAfterViewChecked() {
     if (this.metamaskLogo && this.metamaskLogo.nativeElement.offsetParent) {

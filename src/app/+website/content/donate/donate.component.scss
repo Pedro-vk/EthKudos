@@ -88,6 +88,7 @@ eth-kudos-help-cards,
 .tx,
 .donation {
   max-width: 340px;
+  width: 100%;
   display: block;
 }
 
@@ -187,6 +188,15 @@ eth-kudos-help-cards,
     opacity: .7;
     position: relative;
     top: 1px;
+  }
+}
+
+.donate-opener {
+  text-align: center;
+
+  h3 {
+    margin-bottom: 20px;
+    opacity: .7;
   }
 }
 

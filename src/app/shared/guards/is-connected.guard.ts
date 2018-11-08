@@ -21,6 +21,10 @@ export class IsConnectedGuard implements CanActivate, CanActivateChild {
       .map(status => {
         const connected = status === ConnectionStatus.Total;
         if (!connected) {
+          const {tokenAddress} = next.params;
+          if (localStorage && tokenAddress && /^0x[a-f0-9]{40}$/i.test(tokenAddress)) {
+            localStorage.setItem('kudos-address', tokenAddress);
+          }
           this.router.navigate(['/error', status]);
         }
         return connected;

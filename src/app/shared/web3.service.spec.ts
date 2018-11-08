@@ -168,10 +168,10 @@ describe('Web3Service', () => {
     (<any>service).existInNetwork = false;
 
     intervalMock =    hot('-x-x-x-x-x|', {x: undefined}).share();
-    const expected = cold('p--a-n---t|', {
+    const expected = cold('p--a-n---t', {
       n: ConnectionStatus.NoNetwork,
       p: ConnectionStatus.NoProvider,
-      a: ConnectionStatus.NoAccount,
+      a: ConnectionStatus.NoEnabled,
       t: ConnectionStatus.Total,
     });
 

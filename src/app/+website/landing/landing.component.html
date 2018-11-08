@@ -22,11 +22,14 @@
 
   <nav *ngIf="!showHelp && (hasError$ | async) as error" class="warning" @warning>
     <mat-icon>warning</mat-icon>
-    <span *ngIf="error === 'no-provider'" translate>You have not installed MetaMask.</span>
-    <span *ngIf="error === 'no-network'" translate>You are not in the correct network.</span>
-    <span *ngIf="error === 'no-account'">{{'PROVIDER_LOCKED' | translate : {PROVIDER: provider$ | async} }}</span>
-    <span *ngIf="error === 'no-enabled'">{{'PROVIDER_NO_ENABLED' | translate : {PROVIDER: provider$ | async} }}</span>
-    <span *ngIf="error === 'timeout'">{{'PROVIDER_HUNG' | translate : {PROVIDER: provider$ | async} }}</span>
+    <ng-container [ngSwitch]="error">
+      <span *ngSwitchCase="'no-provider'" translate>You have not installed MetaMask.</span>
+      <span *ngSwitchCase="'no-network'" translate>You are not in the correct network.</span>
+      <span *ngSwitchCase="'no-account'">{{'PROVIDER_LOCKED' | translate : {PROVIDER: provider$ | async} }}</span>
+      <span *ngSwitchCase="'no-enabled'">{{'PROVIDER_NO_ENABLED' | translate : {PROVIDER: provider$ | async} }}</span>
+      <span *ngSwitchCase="'timeout'">{{'PROVIDER_HUNG' | translate : {PROVIDER: provider$ | async} }}</span>
+      <span *ngSwitchDefault translate>Something is not working as expected.</span>
+    </ng-container>
 
     <button mat-button (click)="showHelp = true">{{'Solve the error' | translate}}</button>
   </nav>
