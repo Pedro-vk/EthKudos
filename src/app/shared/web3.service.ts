@@ -16,6 +16,7 @@ import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/race';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -35,6 +36,8 @@ export enum ConnectionStatus {
   Total = 'total',
   NoAccount = 'no-account',
   NoEnabled = 'no-enabled',
+  WaitingForApproval = 'waiting-for-approval',
+  NoApproved = 'no-approved',
   NoProvider = 'no-provider',
   NoNetwork = 'no-network',
   Timeout = 'timeout',
@@ -60,13 +63,13 @@ export const WEB3_PROVIDER = new InjectionToken('WEB3_PROVIDER');
 export class Web3Service {
   static env: {status?: ConnectionStatus, network?: networkType, provider?: providerType, enabled?: boolean} = {};
   status: ConnectionStatus;
-  providerEnabled: boolean;
   account: string;
   networkType: networkType;
   private existInNetwork: boolean;
   private _web3: Web3;
   private _intervalMock: Function;
   private _newWatchingAddress$: BehaviorSubject<string> = new BehaviorSubject(undefined);
+  private _waitingForApproval$: BehaviorSubject<boolean> = new BehaviorSubject(undefined);
 
   private readonly interval$: Observable<any> = Observable.of(undefined)
     .mergeMap(() => (this._intervalMock && this._intervalMock()) || Observable.interval(250))
@@ -108,18 +111,19 @@ export class Web3Service {
           this.accountIfNetwork$,
         )),
     )
-    .map((account: string | 'timeout'): ConnectionStatus => {
+    .combineLatest(this._waitingForApproval$)
+    .map(([account, waitingForApproval]: [string | 'timeout', boolean]): ConnectionStatus => {
       if (!this.web3) {
         return ConnectionStatus.NoProvider;
       }
       if (account === 'timeout') {
         return ConnectionStatus.Timeout;
       }
+      if (waitingForApproval !== undefined) {
+        return waitingForApproval ? ConnectionStatus.WaitingForApproval : ConnectionStatus.NoApproved;
+      }
       if (!account) {
-        if (this.providerEnabled === false) {
-          return ConnectionStatus.NoEnabled;
-        }
-        return ConnectionStatus.NoAccount;
+        return ConnectionStatus.NoEnabled;
       }
       if (!this.existInNetwork) {
         return ConnectionStatus.NoNetwork;
@@ -173,7 +177,6 @@ export class Web3Service {
             this.moesif.identifyUser(account.toLowerCase());
           }
         });
-      this.interval$.subscribe(async () => this.providerEnabled = Web3Service.env.enabled = await this.isEnabled());
     }
   }
 
@@ -296,23 +299,14 @@ export class Web3Service {
     return Observable.fromPromise(this.web3.eth.getBlock(number, returnTransactions));
   }
 
-  async isEnabled(): Promise<boolean | undefined> {
-    const provider: any = this.web3 && this.web3.currentProvider;
-    if (!provider || !provider.enable || !provider.isEnabled) {
-      return;
-    }
-    return await provider.isEnabled();
-  }
-
   async requestEnable(): Promise<boolean> {
-    const enabled = await this.isEnabled() === true;
-    if (enabled === true || enabled === undefined) {
-      return !!enabled;
-    }
     try {
+      this._waitingForApproval$.next(true);
       await (<any>this.web3.currentProvider).enable();
+      this._waitingForApproval$.next(undefined);
       return true;
     } catch (e) {
+      this._waitingForApproval$.next(false);
       return false;
     }
   }

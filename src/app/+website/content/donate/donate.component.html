@@ -74,15 +74,25 @@
               <div class="warning" *ngIf="(status$ | async) !== 'main'">
                 <mat-icon>warning</mat-icon>
                 <em>
-                  Ether on testnet has no value.
-                  Change to main network, if not
-                  we will appreciate your support.
+                  Ether on testnet has no value, change to the main network.
+                  In any case, we'll appreciate your support.
                 </em>
               </div>
             </mat-card>
 
             <ng-template #noProvider>
-              <eth-kudos-help-cards></eth-kudos-help-cards>
+              <div *ngIf="!showHelp" class="donate-opener">
+                <h3>Send Ether directly</h3>
+
+                <button mat-raised-button
+                  color="primary"
+                  data-qa="landing-donate-open-help"
+                  (click)="showHelp = true">
+
+                  Donate
+                </button>
+              </div>
+              <eth-kudos-help-cards *ngIf="showHelp"></eth-kudos-help-cards>
             </ng-template>
 
           </div>

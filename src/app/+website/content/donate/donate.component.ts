@@ -15,6 +15,7 @@ import { ContentBaseComponent } from '../content-base.abstract';
 })
 export class DonateComponent extends ContentBaseComponent implements OnInit {
   copied: boolean;
+  showHelp: boolean;
   donationAmount = 0.01;
   pendingDonation: {working: boolean, tx?: string, confirmations?: number} = {working: undefined};
   @ViewChild('address') addressElement: ElementRef;

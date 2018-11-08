@@ -30,6 +30,17 @@
   <button mat-raised-button color="primary" class="center" (click)="enableProvider()">Connect to {{provider$ | async}}</button>
 </mat-card>
 
+<mat-card class="help-card-waiting" *ngIf="(status$ | async) === 'waiting-for-approval'" @cardInOut>
+  <h3>Approve EthKudos connection</h3>
+  <h4>Is just necessary to approve EthKudos on {{provider$ | async}}</h4>
+</mat-card>
+
+<mat-card class="help-card-no-approved" *ngIf="(status$ | async) === 'no-approved'" @cardInOut>
+  <h3>Connection not approved</h3>
+  <h4>Is just necessary to approve EthKudos on {{provider$ | async}}, just try again</h4>
+  <button mat-raised-button color="primary" class="center" (click)="enableProvider()">Connect to {{provider$ | async}}</button>
+</mat-card>
+
 <mat-card class="help-card-network" *ngIf="(status$ | async) === 'no-network'" @cardInOut>
   <h3>Oops, you’re on the wrong network</h3>
   <h4>Simply open {{provider$ | async}} and switch <br> over to the <strong>Ropsten Ethereum Network</strong>.</h4>
