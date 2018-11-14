@@ -9,7 +9,7 @@
       "urls": [
         "/favicon.png",
         "/index.html",
-        "/main.e78ef3c1eb537945cf15.js",
+        "/main.b5779f60fd178afabfbf.js",
         "/polyfills.a92a0e12b75795db9cca.js",
         "/runtime.a66f828dca56eeb90e02.js"
       ],
@@ -45,8 +45,8 @@
     "/favicon.png": "75d5ba3d1973c0a65dd96d20456c23c110cee8d8",
     "/i18n/en.json": "5a3ede27b3da34b939e35c8477f721e44be81c4b",
     "/i18n/es.json": "f9bd52c9b3392dcd0f852af7fd2d6e3e4724607c",
-    "/index.html": "f446a9f4170c533c5662786fab76f0613bd6df37",
-    "/main.e78ef3c1eb537945cf15.js": "1109d5d4c948afd51eefc3bbaa02b9e0d9a3355f",
+    "/index.html": "9e4d6d79879efdab91ee95126a5ea0dbffb10cd5",
+    "/main.b5779f60fd178afabfbf.js": "310e14f3db38f8023738cc9522ed1b431599bf6f",
     "/polyfills.a92a0e12b75795db9cca.js": "0ba562477b9b0886461d20618b85e5f9f4b617f5",
     "/runtime.a66f828dca56eeb90e02.js": "078e320cc6fdaf355836c3b1c52b059cdd33fc7e"
   },
